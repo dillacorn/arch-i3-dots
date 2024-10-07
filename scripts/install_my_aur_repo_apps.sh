@@ -47,6 +47,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         cava \
         otpclient \
         teams-for-linux \
+        vibrantlinux \
         vesktop \
         spotify \
         obs-studio-git \
