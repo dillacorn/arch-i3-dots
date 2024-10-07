@@ -11,9 +11,9 @@ gaps inner 10
 gaps outer 10
 
 # mod keys
-set $mod Mod1  # Default mod key is Mod1 (Alt)
+set $mod Mod1
 
-# direction keys (directly use without set)
+# direction keys
 set $left h
 set $down j
 set $up k
@@ -60,7 +60,7 @@ exec --no-startup-id xautolock -corners -000 -time 10 -locker 'i3lock' -c 000000
 ### binds ###
 #############
 
-# Lockscreen and window manager controls (using $mod)
+# Lockscreen and window manager controls
 set $i3exit [L]OCK       LOG[O]UT       [S]USPEND       [R]EBOOT       [P]OWEROFF
 bindsym $mod+ctrl+shift+p mode "i3exit"
 
@@ -75,24 +75,24 @@ mode "i3exit" {
     bindsym Escape mode "default"
 }
 
-# rofi launcher (Mod1 for run/drun)
+# rofi launcher
 bindsym $mod+p exec $drun
 bindsym $mod+shift+p exec $run
 
-# screenshots (Mod1 for screenshots)
+# screenshots
 bindsym --release $mod+shift+s exec $screenshot1
 bindsym $mod+ctrl+shift+s exec $screenshot2
 
-# capture gif (Mod1 for gif capture)
+# capture gif
 bindsym $mod+shift+g exec --no-startup-id ~/.config/i3/scripts/gif.sh
 
-# terminal (Mod1 for terminal)
+# terminal
 bindsym $mod+shift+Return exec $term
 
 # kill focused window
 bindsym $mod+shift+c kill
 
-# lock screen (Mod1 for locking)
+# lock screen
 bindsym $mod+ctrl+shift+l exec $lock
 
 # open file manager
@@ -107,7 +107,7 @@ bindsym $mod+shift+q restart
 # rotate alt/super config+reload script
 bindsym $mod+shift+r exec $rotate
 
-# theme change with rofi (Mod1 for changing themes)
+# theme change with rofi
 bindsym $mod+shift+t exec $themes
 
 # focus window navigation
