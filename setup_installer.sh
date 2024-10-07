@@ -252,6 +252,12 @@ if [ $? -ne 0 ]; then
 fi
 chown $SUDO_USER:$SUDO_USER "$HOME_DIR/Pictures/wallpapers/arch_geology.png"
 
+# Enable and start NetworkManager
+echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
+sudo systemctl enable NetworkManager
+sudo systemctl start NetworkManager
+
+# Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
 read -n 1 -r reboot_choice
 if [[ "$reboot_choice" == "y" || "$reboot_choice" == "Y" ]]; then
