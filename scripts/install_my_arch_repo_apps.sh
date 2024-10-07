@@ -109,6 +109,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         base-devel \
         clang \
         ninja \
+        go \
         gn
 
     # Print success message after installation
