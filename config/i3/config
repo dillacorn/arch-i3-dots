@@ -10,27 +10,11 @@ default_border pixel 1
 gaps inner 10
 gaps outer 10
 
-# mod keys
-set $mod Mod1
-
 # direction keys
 set $left h
 set $down j
 set $up k
 set $right l
-
-# terminal and applications
-set $term alacritty
-set $lock i3lock --color 000000
-set $files pcmanfm
-set $webcam mpv av://v4l1:/dev/video0 --profile=low-latency --untimed
-set $mpv mpv --force-window idle
-set $run rofi -show run
-set $drun rofi -show drun
-set $screenshot1 grim -s '%Y-%m-%d_%H:%M:%S.jpg' -e 'mv $f ~/Pictures'
-set $screenshot2 flameshot gui
-set $rotate ~/.config/i3/scripts/rotate_config_navigation.sh
-set $themes selected=$(ls ~/.config/i3/themes/ | rofi -dmenu -p "Select Theme") && bash ~/.config/i3/themes/$selected
 
 ####################
 ### input/output ###
@@ -62,7 +46,7 @@ exec --no-startup-id xautolock -corners -000 -time 10 -locker 'i3lock' -c 000000
 
 # Lockscreen and window manager controls
 set $i3exit [L]OCK       LOG[O]UT       [S]USPEND       [R]EBOOT       [P]OWEROFF
-bindsym $mod+ctrl+shift+p mode "i3exit"
+bindsym Mod1+ctrl+shift+p mode "i3exit"
 
 mode "i3exit" {
     bindsym l mode "default", exec --no-startup-id ~/.config/i3/scripts/i3exit.sh lock
@@ -76,61 +60,61 @@ mode "i3exit" {
 }
 
 # rofi launcher
-bindsym $mod+p exec $drun
-bindsym $mod+shift+p exec $run
+bindsym Mod1+p exec rofi -show drun
+bindsym Mod1+shift+p exec rofi -show run
 
 # screenshots
-bindsym --release $mod+shift+s exec $screenshot1
-bindsym $mod+ctrl+shift+s exec $screenshot2
+bindsym --release Mod4+shift+s exec grim -s '%Y-%m-%d_%H:%M:%S.jpg' -e 'mv $f ~/Pictures'
+bindsym Mod4+ctrl+shift+s exec flameshot gui
 
 # capture gif
-bindsym $mod+shift+g exec --no-startup-id ~/.config/i3/scripts/gif.sh
+bindsym Mod4+shift+g exec --no-startup-id ~/.config/i3/scripts/gif.sh
 
 # terminal
-bindsym $mod+shift+Return exec $term
+bindsym Mod1+shift+Return exec alacritty
 
 # kill focused window
-bindsym $mod+shift+c kill
+bindsym Mod1+shift+c kill
 
 # lock screen
-bindsym $mod+ctrl+shift+l exec $lock
+bindsym Mod1+ctrl+shift+l exec i3lock --color 000000
 
 # open file manager
-bindsym $mod+e exec $files
+bindsym Mod4+e exec pcmanfm
 
 # floating windows
-floating_modifier $mod
+floating_modifier Mod1
 
 # reload i3 config
-bindsym $mod+shift+q restart
+bindsym Mod1+shift+q restart
 
 # rotate alt/super config+reload script
-bindsym $mod+shift+r exec $rotate
+bindsym Mod4+shift+r exec ~/.config/i3/scripts/rotate_config_navigation.sh
 
 # theme change with rofi
-bindsym $mod+shift+t exec $themes
+bindsym Mod4+shift+t exec selected=$(ls ~/.config/i3/themes/ | rofi -dmenu -p "Select Theme") && bash ~/.config/i3/themes/$selected
 
 # focus window navigation
-bindsym $mod+$left focus left
-bindsym $mod+$down focus down
-bindsym $mod+$up focus up
-bindsym $mod+$right focus right
+bindsym Mod1+$left focus left
+bindsym Mod1+$down focus down
+bindsym Mod1+$up focus up
+bindsym Mod1+$right focus right
 # alternative with arrow keys
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym Mod1+Left focus left
+bindsym Mod1+Down focus down
+bindsym Mod1+Up focus up
+bindsym Mod1+Right focus right
 
 # move focused window
-bindsym $mod+shift+$left move left
-bindsym $mod+shift+$down move down
-bindsym $mod+shift+$up move up
-bindsym $mod+shift+$right move right
-# or use $mod1+[up|down|left|right]
-bindsym $mod+shift+Left move left
-bindsym $mod+shift+Down move down
-bindsym $mod+shift+Up move up
-bindsym $mod+shift+Right move right
+bindsym Mod1+shift+$left move left
+bindsym Mod1+shift+$down move down
+bindsym Mod1+shift+$up move up
+bindsym Mod1+shift+$right move right
+# or use Mod1+[up|down|left|right]
+bindsym Mod1+shift+Left move left
+bindsym Mod1+shift+Down move down
+bindsym Mod1+shift+Up move up
+bindsym Mod1+shift+Right move right
 
 ###################
 ### workspaces: ###
@@ -165,28 +149,28 @@ assign [class="^krita$"] $ws9
 assign [class="^obs$"] $ws0
 
 # Workspace switching
-bindsym $mod+1 workspace $ws1
-bindsym $mod+2 workspace $ws2
-bindsym $mod+3 workspace $ws3
-bindsym $mod+4 workspace $ws4
-bindsym $mod+5 workspace $ws5
-bindsym $mod+6 workspace $ws6
-bindsym $mod+7 workspace $ws7
-bindsym $mod+8 workspace $ws8
-bindsym $mod+9 workspace $ws9
-bindsym $mod+0 workspace $ws0
+bindsym Mod1+1 workspace $ws1
+bindsym Mod1+2 workspace $ws2
+bindsym Mod1+3 workspace $ws3
+bindsym Mod1+4 workspace $ws4
+bindsym Mod1+5 workspace $ws5
+bindsym Mod1+6 workspace $ws6
+bindsym Mod1+7 workspace $ws7
+bindsym Mod1+8 workspace $ws8
+bindsym Mod1+9 workspace $ws9
+bindsym Mod1+0 workspace $ws0
 
 # Move focused window to workspace
-bindsym $mod+shift+1 move container to workspace number $ws1
-bindsym $mod+shift+2 move container to workspace number $ws2
-bindsym $mod+shift+3 move container to workspace number $ws3
-bindsym $mod+shift+4 move container to workspace number $ws4
-bindsym $mod+shift+5 move container to workspace number $ws5
-bindsym $mod+shift+6 move container to workspace number $ws6
-bindsym $mod+shift+7 move container to workspace number $ws7
-bindsym $mod+shift+8 move container to workspace number $ws8
-bindsym $mod+shift+9 move container to workspace number $ws9
-bindsym $mod+shift+0 move container to workspace number $ws0
+bindsym Mod1+shift+1 move container to workspace number $ws1
+bindsym Mod1+shift+2 move container to workspace number $ws2
+bindsym Mod1+shift+3 move container to workspace number $ws3
+bindsym Mod1+shift+4 move container to workspace number $ws4
+bindsym Mod1+shift+5 move container to workspace number $ws5
+bindsym Mod1+shift+6 move container to workspace number $ws6
+bindsym Mod1+shift+7 move container to workspace number $ws7
+bindsym Mod1+shift+8 move container to workspace number $ws8
+bindsym Mod1+shift+9 move container to workspace number $ws9
+bindsym Mod1+shift+0 move container to workspace number $ws0
 
 ######################
 ### media controls ###
