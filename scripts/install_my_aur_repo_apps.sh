@@ -20,10 +20,16 @@ test $? -eq 0 || { echo -e "${RED}You should have sudo privileges to run this sc
 # Check if yay is installed, if not, install it
 if ! command -v yay &> /dev/null; then
     echo -e "${YELLOW}'yay' is not installed. Installing yay...${NC}"
+    
     sudo pacman -S --needed --noconfirm git base-devel
+    
+    # Clone the yay repository and build as the normal user
     git clone https://aur.archlinux.org/yay.git
     cd yay
-    makepkg -si --noconfirm
+    
+    # Switch to the SUDO_USER to build yay without sudo
+    sudo -u "$SUDO_USER" bash -c "cd $PWD && makepkg -si --noconfirm"
+    
     cd ..
     rm -rf yay
 fi
@@ -39,10 +45,10 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "\n${GREEN}Proceeding with installation of Dillacorn's chosen Arch AUR Linux applications...${NC}"
     
     # Update the package list
-    yay -Syu --noconfirm
+    sudo -u "$SUDO_USER" yay -Syu --noconfirm
 
-    # Install the applications using yay (list format)
-    yay -S --needed --noconfirm \
+    # Install the applications using yay as the user, avoiding sudo
+    sudo -u "$SUDO_USER" yay -S --needed --noconfirm \
         qimgv \
         cava \
         otpclient \
