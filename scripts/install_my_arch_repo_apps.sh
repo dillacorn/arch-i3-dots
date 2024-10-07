@@ -54,6 +54,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         micro \
         fastfetch \
         brightnessctl \
+        dos2unix \
         networkmanager \
         network-manager-applet \
         solaar \
