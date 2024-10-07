@@ -10,12 +10,6 @@ default_border pixel 1
 gaps inner 10
 gaps outer 10
 
-# direction keys
-set $left h
-set $down j
-set $up k
-set $right l
-
 ####################
 ### input/output ###
 ####################
@@ -95,10 +89,10 @@ bindsym Mod4+shift+r exec ~/.config/i3/scripts/rotate_config_navigation.sh
 bindsym Mod4+shift+t exec selected=$(ls ~/.config/i3/themes/ | rofi -dmenu -p "Select Theme") && bash ~/.config/i3/themes/$selected
 
 # focus window navigation
-bindsym Mod1+$left focus left
-bindsym Mod1+$down focus down
-bindsym Mod1+$up focus up
-bindsym Mod1+$right focus right
+bindsym Mod1+j focus left
+bindsym Mod1+h focus down
+bindsym Mod1+k focus up
+bindsym Mod1+l focus right
 # alternative with arrow keys
 bindsym Mod1+Left focus left
 bindsym Mod1+Down focus down
@@ -106,10 +100,10 @@ bindsym Mod1+Up focus up
 bindsym Mod1+Right focus right
 
 # move focused window
-bindsym Mod1+shift+$left move left
-bindsym Mod1+shift+$down move down
-bindsym Mod1+shift+$up move up
-bindsym Mod1+shift+$right move right
+bindsym Mod1+shift+h move left
+bindsym Mod1+shift+j move down
+bindsym Mod1+shift+k move up
+bindsym Mod1+shift+l move right
 # or use Mod1+[up|down|left|right]
 bindsym Mod1+shift+Left move left
 bindsym Mod1+shift+Down move down
@@ -121,16 +115,16 @@ bindsym Mod1+shift+Right move right
 ###################
 
 # define workspaces and icons
-set $ws1 "1: "
-set $ws2 "2: "
-set $ws3 "3: "
-set $ws4 "4: "
-set $ws5 "5: "
-set $ws6 "6: "
-set $ws7 "7: "
-set $ws8 "8: "
-set $ws9 "9: "
-set $ws0 "10: "
+set $ws1 "1  "
+set $ws2 "2  "
+set $ws3 "3  "
+set $ws4 "4  "
+set $ws5 "5  "
+set $ws6 "6  "
+set $ws7 "7  "
+set $ws8 "8  "
+set $ws9 "9  "
+set $ws0 "10  "
 
 # default workspaces for common programs
 assign [class="^Moonlight"] $ws1
