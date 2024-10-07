@@ -13,17 +13,13 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Ensure sudo privileges are available
-sudo -n true
-test $? -eq 0 || { echo -e "${RED}You should have sudo privileges to run this script.${NC}"; exit 1; }
-
-# Check if yay is installed, if not, install it
+# Check if yay is installed, if not, install it without sudo for makepkg
 if ! command -v yay &> /dev/null; then
     echo -e "${YELLOW}'yay' is not installed. Installing yay...${NC}"
     sudo pacman -S --needed --noconfirm git base-devel
     git clone https://aur.archlinux.org/yay.git
     cd yay
-    makepkg -si --noconfirm
+    sudo -u "$SUDO_USER" makepkg -si --noconfirm
     cd ..
     rm -rf yay
 fi
@@ -38,11 +34,11 @@ read -n1 -s choice
 if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "\n${GREEN}Proceeding with installation of Dillacorn's chosen Arch AUR Linux applications...${NC}"
     
-    # Update the package list
-    yay -Syu --noconfirm
+    # Update the package list without sudo for yay
+    sudo -u "$SUDO_USER" yay -Syu --noconfirm
 
     # Install the applications using yay (list format)
-    yay -S --needed --noconfirm \
+    sudo -u "$SUDO_USER" yay -S --needed --noconfirm \
         qimgv \
         cava \
         otpclient \
