@@ -103,6 +103,8 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         xsel \
         pipewire-pulse \
         bluez \
+        zsh \
+        bash \
         systemd-resolvconf \
         bridge-utils \
         qemu-guest-agent \
