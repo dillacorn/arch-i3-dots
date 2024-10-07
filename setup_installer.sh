@@ -262,7 +262,7 @@ echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
 read -n 1 -r reboot_choice
 if [[ "$reboot_choice" == "y" || "$reboot_choice" == "Y" ]]; then
     echo -e "\033[1;34mRebooting...\033[0m"
-    sleep 5
+    sleep 2
     reboot
 else
     echo -e "\033[1;32mReboot skipped. You can reboot manually later.\033[0m"
