@@ -69,7 +69,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         wget \
         git \
         octave \
-        cava \
         okular \
         tigervnc \
         timeshift \
