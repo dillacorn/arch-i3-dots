@@ -43,7 +43,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 
     # Install the applications using yay (list format)
     yay -S --needed --noconfirm \
-        i3-git \
         qimgv \
         cava \
         otpclient \

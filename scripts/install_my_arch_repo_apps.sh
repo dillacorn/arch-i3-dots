@@ -37,6 +37,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 
     # Install the applications using pacman (list format)
     sudo pacman -S --needed --noconfirm \
+        i3 \
         ttf-font-awesome \
         i3status \
         i3lock \
