@@ -14,7 +14,7 @@ gaps outer 10
 set $mod Mod1  # Default mod key is Mod1 (Alt)
 set $mod4 Mod4  # Secondary mod key is Mod4 (Super/Windows)
 
-# direction keys (directly use without set)
+# direction keys
 set $left h
 set $down j
 set $up k
@@ -63,7 +63,7 @@ exec --no-startup-id xautolock -corners -000 -time 10 -locker 'i3lock' -c 000000
 
 # Lockscreen and window manager controls (using Mod4)
 set $i3exit [L]OCK       LOG[O]UT       [S]USPEND       [R]EBOOT       [P]OWEROFF
-bindsym $mod4+ctrl+shift+p mode "i3exit"
+bindsym $mod+ctrl+shift+p mode "i3exit"
 
 mode "i3exit" {
     bindsym l mode "default", exec --no-startup-id ~/.config/i3/scripts/i3exit.sh lock
