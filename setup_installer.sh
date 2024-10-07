@@ -223,11 +223,12 @@ chmod 755 install_alacritty_themes.sh
 
 # Set alternatives for editor
 echo -e "\033[1;94mSetting micro as default editor...\033[0m"
-update-alternatives --set editor /usr/bin/micro
+echo 'export EDITOR=/usr/bin/micro' >> ~/.bashrc
+source ~/.bashrc
 
 # Set default file manager for directories
 echo -e "\033[1;94mSetting pcmanfm as default GUI file manager...\033[0m"
-xdg-mime default pcmanfm.desktop inode/directory application/x-gnome-saved-search
+xdg-mime default pcmanfm.desktop inode/directory
 
 # Change ownership of all files in .config to the sudo user
 echo -e "\033[1;32mConverting .config file ownership...\033[0m"
