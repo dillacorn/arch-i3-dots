@@ -47,8 +47,8 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         vesktop \
         spotify \
         obs-studio-git \
-        handbrake-git \
-        heroic-games-launcher-bin \
+        handbrake-full \
+        heroic-games-launcher \
         protonup-qt \
         itch-setup-bin \
         moonlight-qt \
