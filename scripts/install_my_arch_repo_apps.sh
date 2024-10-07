@@ -42,6 +42,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         ttf-hack \
         i3status \
         i3lock \
+        sed \
         feh \
         rofi \
         rofimoji \
