@@ -40,6 +40,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     sudo -u "$SUDO_USER" bash <<EOF
         yay -Syu --noconfirm
         yay -S --needed --noconfirm \
+            python2 \
             qimgv \
             cava \
             otpclient \
