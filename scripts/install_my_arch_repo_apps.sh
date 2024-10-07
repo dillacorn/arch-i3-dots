@@ -52,6 +52,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         lxappearance \
         micro \
         fastfetch \
+        brightnessctl \
         networkmanager \
         network-manager-applet \
         solaar \
