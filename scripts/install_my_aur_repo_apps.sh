@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Ensure the script is run with sudo
 if [ -z "$SUDO_USER" ]; then
     echo "This script must be run with sudo!"
@@ -13,15 +11,19 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Check if yay is installed, if not, install it without sudo for makepkg
+# Check if yay is installed, if not, install it as the normal user
 if ! command -v yay &> /dev/null; then
     echo -e "${YELLOW}'yay' is not installed. Installing yay...${NC}"
     sudo pacman -S --needed --noconfirm git base-devel
-    git clone https://aur.archlinux.org/yay.git /tmp/yay
-    cd /tmp/yay
-    sudo -u "$SUDO_USER" BUILDDIR=/tmp makepkg -si --noconfirm
-    cd ..
-    rm -rf /tmp/yay
+
+    # Temporarily become the non-root user to build yay
+    sudo -u "$SUDO_USER" bash <<EOF
+        git clone https://aur.archlinux.org/yay.git /tmp/yay
+        cd /tmp/yay
+        makepkg -si --noconfirm
+        cd ..
+        rm -rf /tmp/yay
+EOF
 fi
 
 # Prompt for package installation
@@ -34,29 +36,29 @@ read -n1 -s choice
 if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "\n${GREEN}Proceeding with installation of Dillacorn's chosen Arch AUR Linux applications...${NC}"
     
-    # Update the package list without sudo for yay
-    sudo -u "$SUDO_USER" yay -Syu --noconfirm
-
-    # Install the applications using yay (list format)
-    sudo -u "$SUDO_USER" yay -S --needed --noconfirm \
-        qimgv \
-        cava \
-        otpclient \
-        teams-for-linux \
-        vibrantlinux \
-        vesktop \
-        spotify \
-        obs-studio-git \
-        handbrake-full \
-        heroic-games-launcher \
-        protonup-qt \
-        itch-setup-bin \
-        moonlight-qt \
-        sunshine \
-        cura-bin \
-        localsend-bin \
-        librewolf-bin \
-        ungoogled-chromium
+    # Temporarily become the non-root user to run yay for package installation
+    sudo -u "$SUDO_USER" bash <<EOF
+        yay -Syu --noconfirm
+        yay -S --needed --noconfirm \
+            qimgv \
+            cava \
+            otpclient \
+            teams-for-linux \
+            vibrantlinux \
+            vesktop \
+            spotify \
+            obs-studio-git \
+            handbrake-full \
+            heroic-games-launcher \
+            protonup-qt \
+            itch-setup-bin \
+            moonlight-qt \
+            sunshine \
+            cura-bin \
+            localsend-bin \
+            librewolf-bin \
+            ungoogled-chromium
+EOF
 
     echo -e "\n${GREEN}Installation complete!${NC}"
 else
