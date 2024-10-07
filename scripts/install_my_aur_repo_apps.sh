@@ -17,11 +17,11 @@ NC='\033[0m' # No Color
 if ! command -v yay &> /dev/null; then
     echo -e "${YELLOW}'yay' is not installed. Installing yay...${NC}"
     sudo pacman -S --needed --noconfirm git base-devel
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
+    git clone https://aur.archlinux.org/yay.git /tmp/yay
+    cd /tmp/yay
     sudo -u "$SUDO_USER" makepkg -si --noconfirm
     cd ..
-    rm -rf yay
+    rm -rf /tmp/yay
 fi
 
 # Prompt for package installation
