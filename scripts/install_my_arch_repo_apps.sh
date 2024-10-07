@@ -39,6 +39,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     sudo pacman -S --needed --noconfirm \
         i3-wm \
         ttf-font-awesome \
+        ttf-hack \
         i3status \
         i3lock \
         feh \
