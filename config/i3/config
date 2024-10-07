@@ -153,6 +153,44 @@ bindsym Mod1+shift+8 move container to workspace "8: "
 bindsym Mod1+shift+9 move container to workspace "9: "
 bindsym Mod1+shift+0 move container to workspace "10: "
 
+# current window focus fullscreen
+bindsym Mod1+shift+f fullscreen
+
+# toggle focused window tiling and/or floating
+bindsym Mod1+f floating toggle
+
+# toggle sticky window
+bindsym Mod1+y sticky toggle
+
+###################
+### scratchpads ###
+###################
+
+bindsym Mod4+shift+x move scratchpad
+bindsym Mod4+x scratchpad show
+
+####################################
+### focused resize / adjust gaps ###
+####################################
+
+# resize windows:
+bindsym Mod1+ctrl+Right resize shrink width 100 px
+bindsym Mod1+ctrl+Up resize grow height 50 px
+bindsym Mod1+ctrl+Down resize shrink height 50 px
+bindsym Mod1+ctrl+Left resize grow width 100 px
+# same but vim keys
+bindsym Mod1+ctrl+l resize shrink width 100 px
+bindsym Mod1+ctrl+k resize grow height 50 px
+bindsym Mod1+ctrl+j resize shrink height 50 px
+bindsym Mod1+ctrl+h resize grow width 100 px
+
+# adjust inner gaps
+bindsym Mod1+ctrl+plus   gaps inner current plus 5
+bindsym Mod1+ctrl+minus  gaps inner current minus 5
+# adjust outer gaps
+bindsym Mod1+ctrl+shift+plus   gaps outer current plus 5
+bindsym Mod1+ctrl+shift+minus  gaps outer current minus 5 
+
 ######################
 ### media controls ###
 ######################
