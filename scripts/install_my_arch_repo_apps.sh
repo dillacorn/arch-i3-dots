@@ -40,6 +40,9 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         i3-wm \
         ttf-font-awesome \
         ttf-hack \
+        ttf-dejavu \
+        ttf-liberation \
+        noto-fonts \
         i3status \
         i3lock \
         sed \
