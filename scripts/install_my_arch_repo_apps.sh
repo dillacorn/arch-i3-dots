@@ -105,7 +105,11 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         qemu-guest-agent \
         lib32-mesa \
         lib32-nvidia-utils \
-        steam
+        steam \
+        base-devel \
+        clang \
+        ninja \
+        gn
 
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
