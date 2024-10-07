@@ -19,7 +19,7 @@ if ! command -v yay &> /dev/null; then
     sudo pacman -S --needed --noconfirm git base-devel
     git clone https://aur.archlinux.org/yay.git /tmp/yay
     cd /tmp/yay
-    sudo -u "$SUDO_USER" makepkg -si --noconfirm
+    sudo -u "$SUDO_USER" BUILDDIR=/tmp makepkg -si --noconfirm
     cd ..
     rm -rf /tmp/yay
 fi
