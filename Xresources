@@ -1,0 +1,8 @@
+# Edit $HOME/.Xresources
+
+# for i3-wm
+Xcursor.theme: ComixCursors-White
+
+# Raise/Lower font DPI ~ default value is 96
+Xft.dpi: 96
+# options: 96, 120, 144, 168, 192... etc, etc +24
