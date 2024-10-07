@@ -22,31 +22,31 @@ My keybinds (see [i3 config](https://github.com/dillacorn/arch-i3-dots/blob/main
 
 Here are some of my custom keybinds from the i3 configuration:
 
-- `mod4+shift+q` = **Reload i3 config**  
+- `Mod4+shift+q` = **Reload i3 config**  
   - Reloads the current i3 configuration to apply any changes.
   - Additionally randomizes wallpaper in `~/Pictures/wallpapers` directory. <- if you don't want this behavior modify the ([i3 config](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/config)).
   
-- `mod4+shift+r` = **Rotate i3 mod navigation**  
-  - Switches between `mod1(alt)` and `mod4(win/super)` navigation using a script: [rotate_config_navigation.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/rotate_config_navigation.sh).
+- `Mod4+shift+r` = **Rotate i3 mod navigation**  
+  - Switches between `Mod1(alt)` and `Mod4(win/super)` navigation using a script: [rotate_config_navigation.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/rotate_config_navigation.sh).
 
-- `mod1+ctrl+shift+p` = **i3 Power Menu**  
+- `Mod1+ctrl+shift+p` = **i3 Power Menu**  
   - Activates Selectable Power Menu script: [i3exit.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/i3exit.sh).
   - Escape(ESC) to cancel power menu.
 
-- `mod4+shift+t` = **i3 Theme Changer**
+- `Mod4+shift+t` = **i3 Theme Changer**
   - Launches a theme selector using Rofi: [View avaliable theme scripts](https://github.com/dillacorn/arch-i3-dots/tree/main/config/i3/themes).
   - You can easily add your own theme scripts to `~/.config/i3/themes`
   
-- `mod4+shift+g` = **Capture a GIF**  
+- `Mod4+shift+g` = **Capture a GIF**  
   - Starts a GIF recording with the script: [gif.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/gif.sh).  
   - **Repeat the keybind to finish recording!**
   - `gif_date_time.gif` saved in `~/Videos` directory.
   
-- `mod4+shift+s` = **Grim screenshot**  
+- `Mod4+shift+s` = **Grim screenshot**  
   - Takes a screenshot using Grim.
   - `date_time.jpg` saved in `~/Pictures` directory.
 
-- `mod4+ctrl+shift+s` = **Flameshot screenshot**  
+- `Mod4+ctrl+shift+s` = **Flameshot screenshot**  
   - Takes a screenshot using Flameshot with more customization options.
   - `date_time.png` normally saved in `~/Pictures` directory.
 
@@ -56,42 +56,42 @@ Here are some of my custom keybinds from the i3 configuration:
 
 Here are more example keybinds from my i3 config:
 
-Let me preface `"mod"` can equal `"mod1"` and/or `"mod4"` depending on [script navigation rotation](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/rotate_config_navigation.sh)
+Let me preface `"Mod1"` can equal `"Mod1"` or `"Mod4"` depending on [script navigation rotation](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/rotate_config_navigation.sh)
 
-- `mod+shift+enter` = **Open Terminal**
+- `Mod1+shift+enter` = **Open Terminal**
   - Launches the terminal (default: Alacritty).
 
-- `mod+p` = **Rofi Application Launcher**
+- `Mod1+p` = **Rofi Application Launcher**
   - Opens the Rofi app launcher for quick access to applications.
 
-- `mod4+ctrl+shift+l` = **Lock Screen**
+- `Mod4+ctrl+shift+l` = **Lock Screen**
   - Locks the screen using `i3lock`.
 
-- `mod+shift+c` = **Close Window**
+- `Mod1+shift+c` = **Close Window**
   - Closes the focused window.
 
-- `mod+f` = **Toggle Floating**
+- `Mod1+f` = **Toggle Floating**
   - Toggles between tiling and floating window layouts.
 
-- `mod+shift+f` = **Toggle Fullscreen**
+- `Mod1+shift+f` = **Toggle Fullscreen**
   - Toggles app focus ~ fullscreen.
 
-- `mod+arrow_keys` = **Change Focus**
+- `Mod1+arrow_keys` = **Change Focus**
   - Switch between open windows.
 
-- `mod+shift+arrow_keys` = **Move Windows**
+- `Mod1+shift+arrow_keys` = **Move Windows**
   - Move window location within workspace.
 
-- `mod+mouse_1` = **Move Floating Window**
+- `Mod1+mouse_1` = **Move Floating Window**
   - Move Floating Window with your mouse.
 
-- `mod+mouse_2` = **Resize Floating Window**
+- `Mod1+mouse_2` = **Resize Floating Window**
   - Resize Floating Window with your mouse.
 
-- `mod+1` to `mod+9` = **Workspace Switching**  
+- `Mod1+1` to `Mod1+9` = **Workspace Switching**  
   - Switches to workspaces 1 through 9.
 
-- `mod+shift+1` to `mod+shift+9` = **Move Focused Window to Workspace**  
+- `Mod1+shift+1` to `Mod1+shift+9` = **Move Focused Window to Workspace**  
   - Moves the currently focused window to the specified workspace.
 
 ---
