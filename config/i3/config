@@ -12,9 +12,8 @@ gaps outer 10
 
 # mod keys
 set $mod Mod1  # Default mod key is Mod1 (Alt)
-set $mod4 Mod4  # Secondary mod key is Mod4 (Super/Windows)
 
-# direction keys
+# direction keys (directly use without set)
 set $left h
 set $down j
 set $up k
@@ -40,7 +39,7 @@ set $themes selected=$(ls ~/.config/i3/themes/ | rofi -dmenu -p "Select Theme") 
 # custom res and configuration script
 exec --no-startup-id ~/.config/i3/scripts/custom_res.sh
 
-# persistant digital vibrance command
+# persistent digital vibrance command
 exec_always --no-startup-id vibrant-cli DisplayPort-1 1.4
 exec_always --no-startup-id vibrant-cli DisplayPort-2 1.4
 
@@ -61,7 +60,7 @@ exec --no-startup-id xautolock -corners -000 -time 10 -locker 'i3lock' -c 000000
 ### binds ###
 #############
 
-# Lockscreen and window manager controls (using Mod4)
+# Lockscreen and window manager controls (using $mod)
 set $i3exit [L]OCK       LOG[O]UT       [S]USPEND       [R]EBOOT       [P]OWEROFF
 bindsym $mod+ctrl+shift+p mode "i3exit"
 
@@ -80,12 +79,12 @@ mode "i3exit" {
 bindsym $mod+p exec $drun
 bindsym $mod+shift+p exec $run
 
-# screenshots (Mod4 for screenshots)
-bindsym --release $mod4+shift+s exec $screenshot1
-bindsym $mod4+ctrl+shift+s exec $screenshot2
+# screenshots (Mod1 for screenshots)
+bindsym --release $mod+shift+s exec $screenshot1
+bindsym $mod+ctrl+shift+s exec $screenshot2
 
-# capture gif (Mod4 for gif capture)
-bindsym $mod4+shift+g exec --no-startup-id ~/.config/i3/scripts/gif.sh
+# capture gif (Mod1 for gif capture)
+bindsym $mod+shift+g exec --no-startup-id ~/.config/i3/scripts/gif.sh
 
 # terminal (Mod1 for terminal)
 bindsym $mod+shift+Return exec $term
@@ -93,11 +92,11 @@ bindsym $mod+shift+Return exec $term
 # kill focused window
 bindsym $mod+shift+c kill
 
-# lock screen (Mod4 for locking)
-bindsym $mod4+ctrl+shift+l exec $lock
+# lock screen (Mod1 for locking)
+bindsym $mod+ctrl+shift+l exec $lock
 
 # open file manager
-bindsym $mod4+e exec $files
+bindsym $mod+e exec $files
 
 # floating windows
 floating_modifier $mod
@@ -105,11 +104,11 @@ floating_modifier $mod
 # reload i3 config
 bindsym $mod+shift+q restart
 
-# rotate alt/super config+reload script (Mod4 for rotating config)
-bindsym $mod4+shift+r exec $rotate
+# rotate alt/super config+reload script
+bindsym $mod+shift+r exec $rotate
 
-# theme change with rofi (Mod4 for changing themes)
-bindsym $mod4+shift+t exec $themes
+# theme change with rofi (Mod1 for changing themes)
+bindsym $mod+shift+t exec $themes
 
 # focus window navigation
 bindsym $mod+$left focus left
