@@ -110,6 +110,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         clang \
         ninja \
         go \
+        rust \
         gn
 
     # Print success message after installation
