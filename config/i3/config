@@ -229,13 +229,18 @@ bar {
 }
 #end of bar section
 
-# window title bars & borders section
+#start of window title bars & borders section
+
+# class                 border  bground text    indicator child_border
 client.focused          #262626 #E4DBBD #E3DDBA #E4DBBD   #BFB293
 client.focused_inactive #333333 #272727 #D79920 #484E50   #5F676A
 client.unfocused        #333333 #222222 #888888 #292D2E   #222222
 client.urgent           #2f343a #900000 #FFFFFF #900000   #900000
 client.placeholder      #000000 #303446 #FFFFFF #000000   #0C0C0C
+
 client.background       #FFFFFF
+
+#end of window title bars & borders section
 
 #################
 ### autostart ###
