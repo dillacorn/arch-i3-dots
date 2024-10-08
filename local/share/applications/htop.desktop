@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=false
+Exec=alacritty -e htop
+Name=htop
+Icon=utilities-terminal
