@@ -27,11 +27,15 @@ change these flags:
 
 Make chrome web store work:
 
-Navigate to : [`https://github.com/NeverDecaf/chromium-web-store`](https://github.com/NeverDecaf/chromium-web-store)
-
 Open Extensions Page: `chrome://extensions/`
 
-Drag and Drop from your file browser the `Chromium.Web.Store.crx` you downloaded with your prefered file browser. <- example browser for **Linux** = **pcmanfm or thunar**
+Enable `Developer mode` in the top right corner
+
+Reboot Ungoogled Chromium
+
+Navigate to : [`https://github.com/NeverDecaf/chromium-web-store`](https://github.com/NeverDecaf/chromium-web-store)
+
+Go to release page and click on `Chromium.Web.Store.crx` to install it
 
 Go install your extensions! -> [`https://chromewebstore.google.com/`](https://chromewebstore.google.com/)
 
