@@ -5,7 +5,7 @@ FireFox is still better.. Using Librewolf as my main browser
 
 # start here
 ```sh
-sudo yay -Ss ungoogled-chromium
+flatpak install io.github.ungoogled_software.ungoogled_chromium
 ```
 
 open "Ungoogled Chromium"
