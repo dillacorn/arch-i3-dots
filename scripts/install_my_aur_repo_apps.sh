@@ -59,7 +59,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             teams-for-linux-bin
             vibrantlinux
             vesktop-bin
-            spotify-bin
+            spotify
             obs-studio-bin
             handbrake-git
             heroic-games-launcher-bin
