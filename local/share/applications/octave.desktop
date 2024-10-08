@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Terminal=true
+Terminal=false
 Exec=alacritty -e octave
 Name=octave
 Icon=utilities-terminal
