@@ -55,21 +55,13 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             qimgv
             cava
             otpclient
-            teams-for-linux-bin
             vibrantlinux
-            vesktop-bin
-            spotify
             obs-studio-bin
-            handbrake-git
-            heroic-games-launcher-bin
             protonup-qt-bin
-            itch-setup-bin
             moonlight-qt-bin
             sunshine-bin
-            cura-bin
             localsend-bin
             librewolf-bin
-            ungoogled-chromium-bin
             mullvad-vpn-bin
         )
 

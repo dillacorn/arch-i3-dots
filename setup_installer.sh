@@ -132,6 +132,14 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Run install_my_flatpak_apps.sh before proceeding
+echo -e "\033[1;34mRunning install_my_flatpak_apps.sh...\033[0m"
+./install_my_flatpak_apps.sh
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31minstall_my_flatpak_apps.sh failed. Exiting.\033[0m"
+    exit 1
+fi
+
 # Ensure ~/.local/share/applications directory exists
 echo -e "\033[1;34mEnsuring ~/.local/share/applications directory exists...\033[0m"
 mkdir -p "$HOME_DIR/.local/share/applications"
