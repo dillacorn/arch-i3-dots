@@ -71,6 +71,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             localsend-bin
             librewolf-bin
             ungoogled-chromium-bin
+            mullvad-vpn-bin
         )
 
         # Install each package and clean up afterward
