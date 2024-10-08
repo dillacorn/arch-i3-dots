@@ -3,4 +3,4 @@ Name=Btop++
 Exec=alacritty -e btop
 Type=Application
 Terminal=false
-Categories=System;
+Categories=utilities-terminal
