@@ -95,6 +95,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         papirus-icon-theme \
         materia-gtk-theme \
         xcursor-comix \
+        libxcursor \
         xorg-server \
         xorg-xinit \
         xf86-input-libinput \
