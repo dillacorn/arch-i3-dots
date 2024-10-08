@@ -78,6 +78,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         octave \
         okular \
         tigervnc \
+        filelight \
         timeshift \
         virt-manager \
         wireguard-tools \
