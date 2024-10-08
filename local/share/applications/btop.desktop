@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Btop++
+Exec=alacritty -e btop
+Type=Application
+Terminal=false
+Categories=System;
