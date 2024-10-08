@@ -111,7 +111,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         bridge-utils \
         qemu-guest-agent \
         lib32-mesa \
-        lib32-nvidia-utils \
         steam \
         base-devel \
         clang \
