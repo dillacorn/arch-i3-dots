@@ -1,22 +1,38 @@
 #!/bin/bash
 
-CONFIG="$HOME/.config/i3/config"
+# Paths
+config_file="$HOME/.config/i3/config"
+backup_file="$HOME/.config/i3/config.bak"
 
-# Check if marked keybindings are currently using Mod1 or Mod4
-if grep -q '# toggleable-mod Mod1' "$CONFIG"; then
-    echo "Switching marked Mod1 to Mod4..."
-    
-    # Replace only the marked Mod1 bindings with Mod4
-    sed -i 's/Mod1/# toggleable-mod Mod4/g' "$CONFIG"
-    sed -i 's/# toggleable-mod Mod4/Mod4/g' "$CONFIG"
-    
+# Backup the config if not already backed up
+if [ ! -f "$backup_file" ]; then
+    echo "Creating backup..."
+    cp "$config_file" "$backup_file"
 else
-    echo "Switching marked Mod4 to Mod1..."
-    
-    # Replace only the marked Mod4 bindings with Mod1
-    sed -i 's/Mod4/# toggleable-mod Mod1/g' "$CONFIG"
-    sed -i 's/# toggleable-mod Mod1/Mod1/g' "$CONFIG"
+    echo "Backup already exists."
 fi
 
-# Reload i3 configuration to apply changes
-i3-msg reload
+# Function to switch to Mod4
+switch_to_Mod4() {
+    echo "Switching to Mod4..."
+    sed -i '/# font for window titles and bars/,/#end of window title bars & borders section/! {/bar {/,/}/! s/Mod1/Mod4/g}' "$config_file"
+    i3-msg reload
+    echo "Switched to Mod4"
+}
+
+# Function to switch to Mod1 (revert from backup)
+switch_to_Mod1() {
+    echo "Switching to Mod1..."
+    cp "$backup_file" "$config_file"
+    i3-msg reload
+    echo "Switched to Mod1"
+}
+
+# Check if Mod1 is active and switch to Mod4
+if grep -q "Mod1" "$config_file"; then
+    echo "Mod1 found in config, switching to Mod4..."
+    switch_to_Mod4
+else
+    echo "Mod4 found in config, switching to Mod1..."
+    switch_to_Mod1
+fi
