@@ -49,7 +49,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         feh \
         rofi \
         rofimoji \
-        maim \
+        scrot \
         slop \
         dunst \
         lxsession \

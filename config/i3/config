@@ -57,7 +57,7 @@ bindsym Mod1+p exec rofi -show drun
 bindsym Mod1+shift+p exec rofi -show run
 
 # Screenshots
-bindsym --release Mod4+shift+s exec maim -s $(slop) ~/Pictures/screenshot-$(date '+%Y-%m-%d_%H-%M-%S').jpg
+bindsym Mod4+shift+s exec scrot -s '%Y-%m-%d_%H:%M:%S.jpg' -e 'mv $f ~/Pictures'
 bindsym Mod4+ctrl+shift+s exec flameshot gui
 
 # capture gif
