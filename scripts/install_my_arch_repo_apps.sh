@@ -86,6 +86,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         alacritty \
         gcolor3 \
         audacity \
+        obs-studio \
         krita \
         shotcut \
         bleachbit \
