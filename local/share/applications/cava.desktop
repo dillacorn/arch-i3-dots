@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
 Terminal=true
-Exec=cava
+Exec=alacritty -e cava
 Name=cava
 Icon=utilities-terminal
