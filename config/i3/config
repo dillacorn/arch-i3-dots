@@ -79,7 +79,7 @@ bindsym Mod4+e exec pcmanfm
 floating_modifier Mod1
 
 # reload i3 config
-bindsym Mod1+shift+q restart
+bindsym Mod4+shift+q restart
 
 # rotate alt/super config+reload script
 bindsym Mod4+shift+r exec ~/.config/i3/scripts/rotate_config_navigation.sh
