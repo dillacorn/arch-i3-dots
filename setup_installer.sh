@@ -223,17 +223,16 @@ fi
 
 # Navigate to alacritty and make the installation script executable
 echo -e "\033[1;34mRunning install_alacritty_themes.sh...\033[0m"
-
 cd "$HOME_DIR/.config/alacritty" || exit
 
-# Check if the file exists before trying to change permissions or run it
-if [ ! -f "./install_alacritty_themes.sh" ]; then
-    echo "install_alacritty_themes.sh not found. Exiting."
+# Check if the script exists before trying to execute it
+if [ -f "./install_alacritty_themes.sh" ]; then
+    chmod +x ./install_alacritty_themes.sh
+    ./install_alacritty_themes.sh
+else
+    echo -e "\033[1;31minstall_alacritty_themes.sh not found. Exiting.\033[0m"
     exit 1
 fi
-
-# Make the installation script executable if it exists
-chmod 755 install_alacritty_themes.sh
 
 # Set alternatives for editor
 echo -e "\033[1;94mSetting micro as default editor...\033[0m"
