@@ -49,21 +49,21 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 
         # List of AUR packages to install with cleanup
         packages=(
-            python2
+            python2-bin
             qimgv
             cava
             otpclient
             teams-for-linux-bin
             vibrantlinux
-            vesktop
+            vesktop-bin
             spotify-bin
             obs-studio-bin
-            handbrake-full
-            heroic-games-launcher
-            protonup-qt
+            handbrake-git
+            heroic-games-launcher-bin
+            protonup-qt-bin
             itch-setup-bin
-            moonlight-qt
-            sunshine
+            moonlight-qt-bin
+            sunshine-bin
             cura-bin
             localsend-bin
             librewolf-bin
