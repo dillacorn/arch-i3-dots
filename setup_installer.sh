@@ -207,6 +207,20 @@ find "$HOME_DIR/.config/i3/scripts" -type f -exec chmod +x {} +
 echo -e "\033[1;34mMaking all files in $HOME_DIR/.config/i3/themes executable...\033[0m"
 find "$HOME_DIR/.config/i3/themes" -type f -exec chmod +x {} +
 
+# Make all files in the themes folder executable (recursively)
+echo -e "\033[1;34mMaking all files in $HOME_DIR/.config/i3/themes executable...\033[0m"
+find "$HOME_DIR/.config/i3/themes" -type f -exec chmod +x {} +
+
+# Convert line endings to Unix format in the i3 themes and scripts directories
+echo -e "\033[1;34mConverting line endings to Unix format for i3 themes and scripts...\033[0m"
+dos2unix $HOME_DIR/.config/i3/themes/./*
+dos2unix $HOME_DIR/.config/i3/scripts/./*
+
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mFailed to convert line endings. Exiting.\033[0m"
+    exit 1
+fi
+
 # Navigate to alacritty and make the installation script executable
 echo -e "\033[1;34mRunning install_alacritty_themes.sh...\033[0m"
 
