@@ -181,6 +181,21 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Edit /usr/share/X11/xorg.conf.d/40-libinput.conf
+echo -e "\033[1;34mEditing libinput settings in /usr/share/X11/xorg.conf.d/40-libinput.conf...\033[0m"
+if grep -q 'Identifier "libinput pointer catchall"' /usr/share/X11/xorg.conf.d/40-libinput.conf; then
+    sed -i '/Identifier "libinput pointer catchall"/,/EndSection/ s|EndSection|    Option "AccelProfile" "flat"\nEndSection|' /usr/share/X11/xorg.conf.d/40-libinput.conf
+    if [ $? -ne 0 ]; then
+        echo -e "\033[1;31mFailed to update libinput configuration. Exiting.\033[0m"
+        exit 1
+    else
+        echo -e "\033[1;32mSuccessfully updated libinput configuration.\033[0m"
+    fi
+else
+    echo -e "\033[1;31mlibinput pointer section not found in /usr/share/X11/xorg.conf.d/40-libinput.conf. Exiting.\033[0m"
+    exit 1
+fi
+
 # Copy .Xresources file
 echo -e "\033[1;34mCopying .Xresources to $HOME_DIR...\033[0m"
 cp "$HOME_DIR/arch-i3-dots/Xresources" "$HOME_DIR/.Xresources"
