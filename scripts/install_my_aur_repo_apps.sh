@@ -4,6 +4,9 @@ if [ -z "$SUDO_USER" ]; then
     exit 1
 fi
 
+# Temporarily enable passwordless sudo for the current user
+sudo bash -c "echo '$SUDO_USER ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/temp_sudo_nopasswd"
+
 # Define color codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -84,3 +87,6 @@ else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch AUR Linux applications.${NC}"
     exit 0
 fi
+
+# Remove the temporary passwordless sudo entry
+sudo rm -f /etc/sudoers.d/temp_sudo_nopasswd
