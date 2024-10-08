@@ -252,6 +252,17 @@ if [ $? -ne 0 ]; then
 fi
 chown $SUDO_USER:$SUDO_USER "$HOME_DIR/Pictures/wallpapers/arch_geology.png"
 
+# Set the cursor theme in /usr/share/icons/default/index.theme
+echo -e "\033[1;34mSetting cursor theme to ComixCursor-White...\033[0m"
+sudo bash -c 'cat > /usr/share/icons/default/index.theme <<EOF
+[Icon Theme]
+Inherits=ComixCursor-White
+EOF'
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mFailed to set cursor theme. Exiting.\033[0m"
+    exit 1
+fi
+
 # Enable and start NetworkManager
 echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
 sudo systemctl enable NetworkManager
