@@ -56,8 +56,8 @@ mode "[L]OCK       LOG[O]UT       [S]USPEND       [R]EBOOT       
 bindsym Mod1+p exec rofi -show drun
 bindsym Mod1+shift+p exec rofi -show run
 
-# screenshots
-bindsym --release Mod4+shift+s exec grim -s '%Y-%m-%d_%H:%M:%S.jpg' -e 'mv $f ~/Pictures'
+# Screenshots
+bindsym --release Mod4+shift+s exec grim ~/Pictures/screenshot-$(date '+%Y-%m-%d_%H-%M-%S').jpg
 bindsym Mod4+ctrl+shift+s exec flameshot gui
 
 # capture gif
