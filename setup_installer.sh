@@ -288,23 +288,16 @@ if [ $? -ne 0 ]; then
 fi
 chown $SUDO_USER:$SUDO_USER "$HOME_DIR/Pictures/wallpapers/arch_geology.png"
 
-# Set user-specific cursor theme
-echo -e "\033[1;34mSetting user-specific cursor theme to ComixCursor-White...\033[0m"
-mkdir -p "$HOME_DIR/.icons/default"
-echo "[Icon Theme]
-Inherits=ComixCursor-White" > "$HOME_DIR/.icons/default/index.theme"
-chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.icons"
-
-# Update GTK settings for cursor theme
-mkdir -p "$HOME_DIR/.config/gtk-3.0"
-echo "[Settings]
-gtk-cursor-theme-name = ComixCursor-White" > "$HOME_DIR/.config/gtk-3.0/settings.ini"
-chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/gtk-3.0"
-
-# Set Xcursor theme in Xresources
-echo "Xcursor.theme: ComixCursor-White" >> "$HOME_DIR/.Xresources"
-xrdb -merge "$HOME_DIR/.Xresources"
-chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.Xresources"
+# Set the cursor theme in /usr/share/icons/default/index.theme
+echo -e "\033[1;34mSetting cursor theme to ComixCursor-White...\033[0m"
+sudo bash -c 'cat > /usr/share/icons/default/index.theme <<EOF
+[Icon Theme]
+Inherits=ComixCursor-White
+EOF'
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mFailed to set cursor theme. Exiting.\033[0m"
+    exit 1
+fi
 
 # Enable and start NetworkManager
 echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
