@@ -205,6 +205,12 @@ bindsym XF86AudioMute exec pactl set-sink-mute 0 toggle
 bindsym XF86MonBrightnessUp exec brightnessctl set 10%+
 bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
 
+# media control: play/pause, next, previous
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioStop exec playerctl stop
+
 ####################
 ### bar / themes ###
 ####################
