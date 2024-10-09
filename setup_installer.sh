@@ -219,7 +219,7 @@ done
 
 # Copy mimeapps.list to ~/.config
 echo -e "\033[1;34mCopying mimeapps.list to $HOME_DIR/.config...\033[0m"
-cp "$HOME_DIR/arch-i3-dots/mimeapps.list" "$HOME_DIR/.config/"
+cp "$HOME_DIR/arch-i3-dots/config/mimeapps.list" "$HOME_DIR/.config/"
 if [ $? -ne 0 ]; then
     echo -e "\033[1;31mFailed to copy mimeapps.list. Exiting.\033[0m"
     exit 1
