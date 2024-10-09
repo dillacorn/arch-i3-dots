@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Attempt to clone the repo, prompt user if the directory already exists
+# Attempt to clone the repo, but prompt the user if the directory already exists
 if [ -d "alacritty-theme" ]; then
     echo "The 'alacritty-theme' directory already exists. Do you want to overwrite it? (y/n)"
     read -n 1 -s overwrite_alacritty_theme
