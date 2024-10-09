@@ -266,18 +266,98 @@ else
     exit 1
 fi
 
-# Set TTY console font
-echo -e "\033[1;34mSetting console font to lat9w-16 in /etc/vconsole.conf...\033[0m"
-if ! grep -q "^FONT=lat9w-16" /etc/vconsole.conf; then
-    echo 'FONT=lat9w-16' >> /etc/vconsole.conf
-    if [ $? -ne 0 ]; then
-        echo -e "\033[1;31mFailed to add console font to /etc/vconsole.conf. Exiting.\033[0m"
-        exit 1
+# Detect GPU type and apply appropriate settings for AMD, Intel, or Nvidia users
+GPU_VENDOR=$(lspci | grep -i 'vga\|3d\|2d' | grep -E 'AMD|NVIDIA|Intel' | awk '{print $1,$5}')
+
+echo -e "\033[1;34mDetecting GPU vendor...\033[0m"
+
+if echo "$GPU_VENDOR" | grep -q "AMD"; then
+    echo -e "\033[1;32mAMD GPU detected. Applying AMD-specific settings...\033[0m"
+    
+    # Ensure the linux-firmware package is installed for AMD GPUs
+    sudo pacman -S --needed --noconfirm linux-firmware
+
+    # Ask user if they want to install the AMDGPU driver
+    echo -e "\033[1;34mDo you want to install the recommended AMDGPU driver? (y/n)\033[0m"
+    read -n 1 -s install_amdgpu
+    echo
+    
+    if [[ "$install_amdgpu" == "y" || "$install_amdgpu" == "Y" ]]; then
+        if ! pacman -Q | grep -q "xf86-video-amdgpu"; then
+            echo -e "\033[1;34mInstalling AMDGPU driver...\033[0m"
+            sudo pacman -S --noconfirm xf86-video-amdgpu
+            if [ $? -ne 0 ]; then
+                echo -e "\033[1;31mFailed to install AMDGPU driver. Exiting.\033[0m"
+                exit 1
+            fi
+        else
+            echo -e "\033[1;32mAMDGPU driver already installed.\033[0m"
+        fi
     else
-        echo -e "\033[1;32mConsole font set to lat9w-16 in /etc/vconsole.conf.\033[0m"
+        echo -e "\033[1;33mSkipping AMDGPU driver installation as per user choice.\033[0m"
     fi
+
+    # Set the TTY console font to lat9w-16 in /etc/vconsole.conf
+    echo -e "\033[1;34mSetting console font to lat9w-16 for AMD users in /etc/vconsole.conf...\033[0m"
+    if ! grep -q "^FONT=lat9w-16" /etc/vconsole.conf; then
+        echo 'FONT=lat9w-16' >> /etc/vconsole.conf
+    fi
+
+    # Optionally add any AMD-specific kernel parameters to GRUB (such as amdgpu.dc=1)
+    if ! grep -q "amdgpu.dc=1" /etc/default/grub; then
+        sudo sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ amdgpu.dc=1"/' /etc/default/grub
+        sudo grub-mkconfig -o /boot/grub/grub.cfg
+        echo -e "\033[1;32mAMD-specific kernel parameters added to GRUB.\033[0m"
+    fi
+
+elif echo "$GPU_VENDOR" | grep -q "NVIDIA"; then
+    echo -e "\033[1;33mNVIDIA GPU detected. Applying NVIDIA-specific settings...\033[0m"
+    
+    # Ask user if they want to install the NVIDIA proprietary drivers
+    echo -e "\033[1;34mDo you want to install the recommended NVIDIA proprietary drivers? (y/n)\033[0m"
+    read -n 1 -s install_nvidia
+    echo
+
+    if [[ "$install_nvidia" == "y" || "$install_nvidia" == "Y" ]]; then
+        if ! pacman -Q | grep -q "nvidia"; then
+            echo -e "\033[1;34mInstalling NVIDIA proprietary drivers...\033[0m"
+            sudo pacman -S --noconfirm nvidia nvidia-utils
+            if [ $? -ne 0 ]; then
+                echo -e "\033[1;31mFailed to install NVIDIA proprietary drivers. Exiting.\033[0m"
+                exit 1
+            fi
+        else
+            echo -e "\033[1;32mNVIDIA proprietary drivers already installed.\033[0m"
+        fi
+    else
+        echo -e "\033[1;33mSkipping NVIDIA driver installation as per user choice.\033[0m"
+    fi
+
+elif echo "$GPU_VENDOR" | grep -q "Intel"; then
+    echo -e "\033[1;33mIntel GPU detected. Applying Intel-specific settings...\033[0m"
+    
+    # Ask user if they want to install the Intel driver
+    echo -e "\033[1;34mDo you want to install the recommended Intel driver? (y/n)\033[0m"
+    read -n 1 -s install_intel
+    echo
+
+    if [[ "$install_intel" == "y" || "$install_intel" == "Y" ]]; then
+        if ! pacman -Q | grep -q "xf86-video-intel"; then
+            echo -e "\033[1;34mInstalling Intel GPU driver...\033[0m"
+            sudo pacman -S --noconfirm xf86-video-intel
+            if [ $? -ne 0 ]; then
+                echo -e "\033[1;31mFailed to install Intel driver. Exiting.\033[0m"
+                exit 1
+            fi
+        else
+            echo -e "\033[1;32mIntel driver already installed.\033[0m"
+        fi
+    else
+        echo -e "\033[1;33mSkipping Intel driver installation as per user choice.\033[0m"
+    fi
+
 else
-    echo -e "\033[1;32mConsole font lat9w-16 is already set in /etc/vconsole.conf.\033[0m"
+    echo -e "\033[1;31mNo AMD, NVIDIA, or Intel GPU detected. No changes made.\033[0m"
 fi
 
 # Set alternatives for editor
