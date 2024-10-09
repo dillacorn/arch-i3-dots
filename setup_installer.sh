@@ -260,7 +260,10 @@ fi
 # Set alternatives for editor
 echo -e "\033[1;94mSetting micro as default editor...\033[0m"
 echo 'export EDITOR=/usr/bin/micro' >> ~/.bashrc
-source ~/.bashrc
+source ~/.bashrcs
+
+# Reload .bashrc after setting the default editor
+source "$HOME_DIR/.bashrc"
 
 # Set default file manager for directories
 echo -e "\033[1;94mSetting pcmanfm as default GUI file manager...\033[0m"
@@ -279,6 +282,12 @@ echo -e 'gtk-theme-name="Materia-dark"\ngtk-icon-theme-name="Papirus-Dark"' > "$
 chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.gtkrc-2.0.mine"
 chmod 644 "$HOME_DIR/.gtkrc-2.0.mine"
 
+# Ensure ~/Pictures directory exists and correct permissions are set
+echo -e "\033[1;34mChecking ~/Pictures directory...\033[0m"
+mkdir -p "$HOME_DIR/Pictures/wallpapers"
+sudo chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/Pictures"
+sudo chmod -R u+rwX "$HOME_DIR/Pictures"
+
 # Copy wallpaper to ~/Pictures/wallpapers directory
 echo -e "\033[1;94mCopying wallpaper...\033[0m"
 cp "$HOME_DIR/arch-i3-dots/arch_geology.png" "$HOME_DIR/Pictures/wallpapers/"
@@ -286,7 +295,6 @@ if [ $? -ne 0 ]; then
     echo -e "\033[1;31mFailed to copy wallpaper. Exiting.\033[0m"
     exit 1
 fi
-chown $SUDO_USER:$SUDO_USER "$HOME_DIR/Pictures/wallpapers/arch_geology.png"
 
 # Set the cursor theme in /usr/share/icons/default/index.theme
 echo -e "\033[1;34mSetting cursor theme to ComixCursor-White...\033[0m"
