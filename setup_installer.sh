@@ -249,23 +249,33 @@ cd "$HOME_DIR/.config/alacritty" || exit
 if [ -f "./install_alacritty_themes.sh" ]; then
     chmod +x ./install_alacritty_themes.sh
     ./install_alacritty_themes.sh
+
+    # Explicitly check the exit status and continue the script
     if [ $? -eq 0 ]; then
         echo -e "\033[1;32mAlacritty themes installed successfully.\033[0m"
     else
         echo -e "\033[1;31mAlacritty themes installation failed. Exiting.\033[0m"
         exit 1
     fi
+
+    # After running the Alacritty script, ensure continuation
+    echo -e "\033[1;34mContinuing with GPU detection...\033[0m"
 else
     echo -e "\033[1;31minstall_alacritty_themes.sh not found. Exiting.\033[0m"
     exit 1
 fi
 
-# Continue with the rest of the script (for detecting GPU, etc.)
+# Continue with the rest of the script
 
 # Detect GPU type and apply appropriate settings for AMD, Intel, or Nvidia users
 GPU_VENDOR=$(lspci | grep -i 'vga\|3d\|2d' | grep -E 'AMD|NVIDIA|Intel' | awk '{print $1,$5}')
 
 echo -e "\033[1;34mDetecting GPU vendor...\033[0m"
+
+if [ -z "$GPU_VENDOR" ]; then
+    echo -e "\033[1;31mNo GPU detected or unrecognized GPU. Skipping GPU-specific configuration.\033[0m"
+    exit 0
+fi
 
 if echo "$GPU_VENDOR" | grep -q "AMD"; then
     echo -e "\033[1;32mAMD GPU detected. Applying AMD-specific settings...\033[0m"
@@ -358,7 +368,7 @@ elif echo "$GPU_VENDOR" | grep -q "Intel"; then
     fi
 
 else
-    echo -e "\033[1;31mNo AMD, NVIDIA, or Intel GPU detected. No changes made.\033[0m"
+    echo -e "\033[1;31mNo AMD, NVIDIA, or Intel GPU detected. Skipping GPU-specific configuration.\033[0m"
 fi
 
 # Set alternatives for editor
