@@ -249,10 +249,18 @@ cd "$HOME_DIR/.config/alacritty" || exit
 if [ -f "./install_alacritty_themes.sh" ]; then
     chmod +x ./install_alacritty_themes.sh
     ./install_alacritty_themes.sh
+    if [ $? -eq 0 ]; then
+        echo -e "\033[1;32mAlacritty themes installed successfully.\033[0m"
+    else
+        echo -e "\033[1;31mAlacritty themes installation failed. Exiting.\033[0m"
+        exit 1
+    fi
 else
     echo -e "\033[1;31minstall_alacritty_themes.sh not found. Exiting.\033[0m"
     exit 1
 fi
+
+# Continue with the rest of the script (for detecting GPU, etc.)
 
 # Detect GPU type and apply appropriate settings for AMD, Intel, or Nvidia users
 GPU_VENDOR=$(lspci | grep -i 'vga\|3d\|2d' | grep -E 'AMD|NVIDIA|Intel' | awk '{print $1,$5}')
