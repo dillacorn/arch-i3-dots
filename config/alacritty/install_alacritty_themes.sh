@@ -1,21 +1,41 @@
 #!/bin/bash
 
-# make executable:
-# chmod +x install_alacritty_themes.sh
-
-# Attempt to clone the repo, but don't fail the script if the directory already exists
-if git clone https://github.com/alacritty/alacritty-theme; then
-    echo "Repository cloned successfully."
+# Attempt to clone the repo, prompt user if the directory already exists
+if [ -d "alacritty-theme" ]; then
+    echo "The 'alacritty-theme' directory already exists. Do you want to overwrite it? (y/n)"
+    read -n 1 -s overwrite_alacritty_theme
+    echo
+    if [[ "$overwrite_alacritty_theme" == "y" || "$overwrite_alacritty_theme" == "Y" ]]; then
+        echo "Overwriting 'alacritty-theme' directory..."
+        rm -rf alacritty-theme
+        git clone https://github.com/alacritty/alacritty-theme
+        if [ $? -ne 0 ]; then
+            echo "Error: Failed to clone the repository. Exiting."
+            exit 1
+        fi
+    else
+        echo "Skipping cloning of 'alacritty-theme'."
+    fi
 else
-    echo "Warning: alacritty-theme directory already exists or could not be cloned."
+    git clone https://github.com/alacritty/alacritty-theme
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to clone the repository. Exiting."
+        exit 1
+    fi
 fi
 
-# Move the directory only if it doesn't already exist
-if [ ! -d "themes" ]; then
+# Move the directory only if it doesn't already exist, otherwise prompt the user
+if [ -d "themes" ]; then
+    echo "The 'themes' directory already exists. Do you want to overwrite it? (y/n)"
+    read -n 1 -s overwrite_themes
+    echo
+    if [[ "$overwrite_themes" == "y" || "$overwrite_themes" == "Y" ]]; then
+        echo "Overwriting 'themes' directory..."
+        rm -rf themes
+        mv alacritty-theme themes
+    else
+        echo "Skipping moving of 'alacritty-theme' to 'themes'."
+    fi
+else
     mv alacritty-theme themes
-else
-    echo "Warning: 'themes' directory already exists and was not overwritten."
 fi
-
-# run command:
-# ./install_alacritty_themes.sh
