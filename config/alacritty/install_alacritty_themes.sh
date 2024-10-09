@@ -24,21 +24,13 @@ else
     fi
 fi
 
-# Move the directory only if it doesn't already exist, otherwise prompt the user
+# Always move 'alacritty-theme' to 'themes' directory without prompt
 if [ -d "themes" ]; then
-    echo "The 'themes' directory already exists. Do you want to overwrite it? (y/n)"
-    read -n 1 -s overwrite_themes
-    echo
-    if [[ "$overwrite_themes" == "y" || "$overwrite_themes" == "Y" ]]; then
-        echo "Overwriting 'themes' directory..."
-        rm -rf themes
-        mv alacritty-theme themes
-    else
-        echo "Skipping moving of 'alacritty-theme' to 'themes'."
-    fi
-else
-    mv alacritty-theme themes
+    echo "Overwriting 'themes' directory..."
+    rm -rf themes
 fi
+
+mv alacritty-theme themes
 
 # Add debug statement to confirm completion of this script
 echo "Finished running install_alacritty_themes.sh"
