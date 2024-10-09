@@ -96,8 +96,21 @@ done
 
 # Install git if it's not already installed
 echo -e "\033[1;34mUpdating package list and installing git...\033[0m"
-pacman -Syu --noconfirm
-pacman -S --needed --noconfirm git
+if ! pacman -Syu --noconfirm; then
+    echo -e "\033[1;31mFailed to update package list. Refreshing mirrors...\033[0m"
+    sudo reflector --verbose --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+    echo -e "\033[1;34mMirrors refreshed. Retrying package list update...\033[0m"
+    if ! pacman -Syu --noconfirm; then
+        echo -e "\033[1;31mFailed to update package list after refreshing mirrors. Exiting.\033[0m"
+        exit 1
+    fi
+fi
+
+# Install git if it's not already installed
+if ! pacman -S --needed --noconfirm git; then
+    echo -e "\033[1;31mFailed to install git. Exiting.\033[0m"
+    exit 1
+fi
 
 # Clone the arch-i3-dots repository into the home directory if it doesn't already exist
 if [ ! -d "$HOME_DIR/arch-i3-dots" ]; then
