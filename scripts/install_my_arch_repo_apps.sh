@@ -103,6 +103,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         xautolock \
         xclip \
         xsel \
+        playerctl \
         xorg-xinput \
         pipewire-pulse \
         bluez \
