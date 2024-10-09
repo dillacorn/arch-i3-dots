@@ -28,6 +28,19 @@ if [ -z "$SUDO_USER" ]; then
     exit 1
 fi
 
+# Ensure script is being run from the correct directory
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd "$SCRIPT_DIR"
+
+# Check if there's enough disk space (e.g., 1GB)
+REQUIRED_SPACE_MB=1024
+AVAILABLE_SPACE_MB=$(df / | tail -1 | awk '{print $4}')
+
+if [ "$AVAILABLE_SPACE_MB" -lt "$REQUIRED_SPACE_MB" ]; then
+    echo -e "\033[1;31mNot enough disk space (1GB required). Exiting.\033[0m"
+    exit 1
+fi
+
 set -eu -o pipefail # fail on error and report it, debug all lines
 
 # Add a warning message for overwriting directories
@@ -165,7 +178,7 @@ else
 fi
 
 # Set correct permissions for ~/.icons
-chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.icons"
+chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.icons" || { echo -e "\033[1;31mFailed to set ownership for ~/.icons. Exiting.\033[0m"; exit 1; }
 
 # Run the micro themes installation script
 echo -e "\033[1;34mRunning install_micro_themes.sh...\033[0m"
@@ -387,10 +400,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # Enable and start NetworkManager
-# Enable and start NetworkManager
 echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
-sudo systemctl enable NetworkManager || { echo -e "\033[1;31mFailed to enable NetworkManager. Exiting.\033[0m"; exit 1; }
-sudo systemctl start NetworkManager || { echo -e "\033[1;31mFailed to start NetworkManager. Exiting.\033[0m"; exit 1; }
+sudo systemctl enable --now NetworkManager || { echo -e "\033[1;31mFailed to enable or start NetworkManager. Exiting.\033[0m"; exit 1; }
 
 # Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
