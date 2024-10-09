@@ -217,6 +217,15 @@ for config in "${config_dirs[@]}"; do
     chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/$config"
 done
 
+# Copy mimeapps.list to ~/.config
+echo -e "\033[1;34mCopying mimeapps.list to $HOME_DIR/.config...\033[0m"
+cp "$HOME_DIR/arch-i3-dots/mimeapps.list" "$HOME_DIR/.config/"
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mFailed to copy mimeapps.list. Exiting.\033[0m"
+    exit 1
+fi
+chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/mimeapps.list"
+
 # Set permissions for .config
 echo -e "\033[1;34mSetting permissions on configuration files and directories...\033[0m"
 find "$HOME_DIR/.config/" -type d -exec chmod 755 {} +
