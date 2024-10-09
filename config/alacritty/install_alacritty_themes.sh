@@ -24,9 +24,6 @@ else
     fi
 fi
 
-# Ensure it goes past the first part
-echo "Finished with alacritty-theme cloning step."
-
 # Move the directory only if it doesn't already exist, otherwise prompt the user
 if [ -d "themes" ]; then
     echo "The 'themes' directory already exists. Do you want to overwrite it? (y/n)"
@@ -43,5 +40,6 @@ else
     mv alacritty-theme themes
 fi
 
-# Ensure it reaches the end
-echo "Finished handling themes directory."
+# Add debug statement to confirm completion of this script
+echo "Finished running install_alacritty_themes.sh"
+exit 0  # Explicitly return control
