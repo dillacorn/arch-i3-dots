@@ -106,54 +106,35 @@ if ! pacman -Syu --noconfirm; then
     fi
 fi
 
-# Install git if it's not already installed
 if ! pacman -S --needed --noconfirm git; then
     echo -e "\033[1;31mFailed to install git. Exiting.\033[0m"
     exit 1
 fi
 
-# Clone the arch-i3-dots repository into the home directory if it doesn't already exist
+# Clone the arch-i3-dots repository
 if [ ! -d "$HOME_DIR/arch-i3-dots" ]; then
     echo -e "\033[1;34mCloning arch-i3-dots repository...\033[0m"
-    git clone https://github.com/dillacorn/arch-i3-dots "$HOME_DIR/arch-i3-dots"
-    if [ $? -ne 0 ]; then
-        echo -e "\033[1;31mFailed to clone the arch-i3-dots repository. Exiting.\033[0m"
-        exit 1
-    fi
+    git clone https://github.com/dillacorn/arch-i3-dots "$HOME_DIR/arch-i3-dots" || { echo -e "\033[1;31mFailed to clone arch-i3-dots repository. Exiting.\033[0m"; exit 1; }
     chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/arch-i3-dots"
 else
     echo -e "\033[1;32march-i3-dots repository already exists in $HOME_DIR\033[0m"
 fi
 
-# Navigate to ~/arch-i3-dots/scripts and make scripts executable
+# Make scripts executable
 echo -e "\033[1;34mMaking ~/arch-i3-dots/scripts executable!\033[0m"
 cd "$HOME_DIR/arch-i3-dots/scripts" || exit
 chmod +x *
 chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/arch-i3-dots/scripts"
 
-# Run install_my_arch_repo_apps.sh before proceeding
+# Run installation scripts for packages
 echo -e "\033[1;34mRunning install_my_arch_repo_apps.sh...\033[0m"
-./install_my_arch_repo_apps.sh
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31minstall_my_arch_repo_apps.sh failed. Exiting.\033[0m"
-    exit 1
-fi
+./install_my_arch_repo_apps.sh || { echo -e "\033[1;31minstall_my_arch_repo_apps.sh failed. Exiting.\033[0m"; exit 1; }
 
-# Run install_my_aur_repo_apps.sh before proceeding
 echo -e "\033[1;34mRunning install_my_aur_repo_apps.sh...\033[0m"
-./install_my_aur_repo_apps.sh
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31minstall_my_aur_repo_apps.sh failed. Exiting.\033[0m"
-    exit 1
-fi
+./install_my_aur_repo_apps.sh || { echo -e "\033[1;31minstall_my_aur_repo_apps.sh failed. Exiting.\033[0m"; exit 1; }
 
-# Run install_my_flatpak_apps.sh before proceeding
 echo -e "\033[1;34mRunning install_my_flatpak_apps.sh...\033[0m"
-./install_my_flatpak_apps.sh
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31minstall_my_flatpak_apps.sh failed. Exiting.\033[0m"
-    exit 1
-fi
+./install_my_flatpak_apps.sh || { echo -e "\033[1;31minstall_my_flatpak_apps.sh failed. Exiting.\033[0m"; exit 1; }
 
 # Ensure ~/.local/share/applications directory exists
 create_directory "$HOME_DIR/.local/share/applications"
@@ -162,35 +143,40 @@ create_directory "$HOME_DIR/.local/share/applications"
 echo -e "\033[1;34mCopying .desktop files to ~/.local/share/applications...\033[0m"
 cp -r "$HOME_DIR/arch-i3-dots/local/share/applications/." "$HOME_DIR/.local/share/applications"
 
-# Fix ownership and permissions for ~/.local, ~/.local/share, and ~/.local/share/applications
-echo -e "\033[1;34mSetting ownership and permissions for ~/.local, ~/.local/share, and ~/.local/share/applications...\033[0m"
-
-# Set ownership recursively for the entire .local directory
+# Set correct permissions for ~/.local
 chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.local"
-
-# Ensure ~/.local and ~/.local/share have correct permissions
 chmod u+rwx "$HOME_DIR/.local"
 chmod u+rwx "$HOME_DIR/.local/share"
+echo -e "\033[1;32mOwnership and permissions for ~/.local set correctly.\033[0m"
 
-echo -e "\033[1;32mOwnership and permissions for ~/.local, ~/.local/share, and ~/.local/share/applications set correctly.\033[0m"
+# Ensure ~/.icons/default directory exists
+create_directory "$HOME_DIR/.icons/default"
 
-echo -e "\033[1;34mRunning install_micro_themes.sh...\033[0m"
-./install_micro_themes.sh
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31minstall_micro_themes.sh failed. Exiting.\033[0m"
-    exit 1
+# Check if index.theme exists; do not overwrite
+if [ ! -f "$HOME_DIR/.icons/default/index.theme" ]; then
+    echo -e "\033[1;34mSetting cursor theme to ComixCursors-White in ~/.icons/default/index.theme...\033[0m"
+    cat > "$HOME_DIR/.icons/default/index.theme" <<EOL
+[Icon Theme]
+Inherits=ComixCursors-White
+EOL
+    echo -e "\033[1;32mindex.theme created with ComixCursors-White.\033[0m"
+else
+    echo -e "\033[1;33mindex.theme already exists, not overwriting.\033[0m"
 fi
+
+# Set correct permissions for ~/.icons
+chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.icons"
+
+# Run the micro themes installation script
+echo -e "\033[1;34mRunning install_micro_themes.sh...\033[0m"
+./install_micro_themes.sh || { echo -e "\033[1;31minstall_micro_themes.sh failed. Exiting.\033[0m"; exit 1; }
 
 # Copy X11 configuration
-echo -e "\033[1;34mCopying X11 config...\033[0m"
 create_directory "/etc/X11/xinit"
-cp "$HOME_DIR/arch-i3-dots/etc/X11/xinit/xinitrc" /etc/X11/xinit/
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31mFailed to copy xinitrc. Exiting.\033[0m"
-    exit 1
-fi
+echo -e "\033[1;34mCopying X11 config...\033[0m"
+cp "$HOME_DIR/arch-i3-dots/etc/X11/xinit/xinitrc" /etc/X11/xinit/ || { echo -e "\033[1;31mFailed to copy xinitrc. Exiting.\033[0m"; exit 1; }
 
-# Edit /usr/share/X11/xorg.conf.d/40-libinput.conf
+# Edit libinput configuration
 echo -e "\033[1;34mEditing libinput settings in /usr/share/X11/xorg.conf.d/40-libinput.conf...\033[0m"
 if grep -q 'Identifier "libinput pointer catchall"' /usr/share/X11/xorg.conf.d/40-libinput.conf; then
     sed -i '/Identifier "libinput pointer catchall"/,/EndSection/ s|EndSection|    Option "AccelProfile" "flat"\nEndSection|' /usr/share/X11/xorg.conf.d/40-libinput.conf
@@ -207,32 +193,20 @@ fi
 
 # Copy .Xresources file
 echo -e "\033[1;34mCopying .Xresources to $HOME_DIR...\033[0m"
-cp "$HOME_DIR/arch-i3-dots/Xresources" "$HOME_DIR/.Xresources"
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31mFailed to copy .Xresources. Exiting.\033[0m"
-    exit 1
-fi
+cp "$HOME_DIR/arch-i3-dots/Xresources" "$HOME_DIR/.Xresources" || { echo -e "\033[1;31mFailed to copy .Xresources. Exiting.\033[0m"; exit 1; }
 
-# Copy other configuration files
+# Copy configuration files for alacritty, dunst, i3, rofi, gtk-3.0
 config_dirs=("alacritty" "dunst" "i3" "rofi" "gtk-3.0")
 
 for config in "${config_dirs[@]}"; do
     echo -e "\033[1;32mCopying $config config...\033[0m"
-    cp -r "$HOME_DIR/arch-i3-dots/config/$config" "$HOME_DIR/.config"
-    if [ $? -ne 0 ]; then
-        echo -e "\033[1;31mFailed to copy $config config. Exiting.\033[0m"
-        exit 1
-    fi
+    cp -r "$HOME_DIR/arch-i3-dots/config/$config" "$HOME_DIR/.config" || { echo -e "\033[1;31mFailed to copy $config config. Exiting.\033[0m"; exit 1; }
     chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/$config"
 done
 
 # Copy mimeapps.list to ~/.config
 echo -e "\033[1;34mCopying mimeapps.list to $HOME_DIR/.config...\033[0m"
-cp "$HOME_DIR/arch-i3-dots/config/mimeapps.list" "$HOME_DIR/.config/"
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31mFailed to copy mimeapps.list. Exiting.\033[0m"
-    exit 1
-fi
+cp "$HOME_DIR/arch-i3-dots/config/mimeapps.list" "$HOME_DIR/.config/" || { echo -e "\033[1;31mFailed to copy mimeapps.list. Exiting.\033[0m"; exit 1; }
 chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/mimeapps.list"
 
 # Set permissions for .config
@@ -240,45 +214,26 @@ echo -e "\033[1;34mSetting permissions on configuration files and directories...
 find "$HOME_DIR/.config/" -type d -exec chmod 755 {} +
 find "$HOME_DIR/.config/" -type f -exec chmod 644 {} +
 
-# Make specific i3-related scripts executable (recursively)
+# Make i3-related scripts executable (recursively)
 echo -e "\033[1;34mMaking i3-related scripts executable...\033[0m"
 find "$HOME_DIR/.config/i3/scripts" -type f -exec chmod +x {} +
 
-# Convert line endings to Unix format in the i3 themes and scripts directories
+# Convert line endings to Unix format for i3 themes and scripts directories
 echo -e "\033[1;34mConverting line endings to Unix format for i3 themes and scripts...\033[0m"
-dos2unix $HOME_DIR/.config/i3/themes/./*
-dos2unix $HOME_DIR/.config/i3/scripts/./*
+dos2unix $HOME_DIR/.config/i3/themes/./* || { echo -e "\033[1;31mFailed to convert line endings for i3 themes. Exiting.\033[0m"; exit 1; }
+dos2unix $HOME_DIR/.config/i3/scripts/./* || { echo -e "\033[1;31mFailed to convert line endings for i3 scripts. Exiting.\033[0m"; exit 1; }
 
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31mFailed to convert line endings. Exiting.\033[0m"
-    exit 1
-fi
-
-# Navigate to alacritty and make the installation script executable
+# Install Alacritty themes
 echo -e "\033[1;34mRunning install_alacritty_themes.sh...\033[0m"
 cd "$HOME_DIR/.config/alacritty" || exit
-
-# Check if the install_alacritty_themes.sh script exists before executing it
 if [ -f "./install_alacritty_themes.sh" ]; then
     chmod +x ./install_alacritty_themes.sh
-    ./install_alacritty_themes.sh
-
-    # Explicitly check the exit status and continue the script
-    if [ $? -eq 0 ]; then
-        echo -e "\033[1;32mAlacritty themes installed successfully.\033[0m"
-    else
-        echo -e "\033[1;31mAlacritty themes installation failed. Exiting.\033[0m"
-        exit 1
-    fi
-
-    # After running the Alacritty script, ensure continuation
-    echo -e "\033[1;34mContinuing with GPU detection...\033[0m"
+    ./install_alacritty_themes.sh || { echo -e "\033[1;31mAlacritty themes installation failed. Exiting.\033[0m"; exit 1; }
+    echo -e "\033[1;32mAlacritty themes installed successfully.\033[0m"
 else
     echo -e "\033[1;31minstall_alacritty_themes.sh not found. Exiting.\033[0m"
     exit 1
 fi
-
-# Continue with the rest of the script
 
 # Detect if running in a virtual machine
 if systemd-detect-virt -q; then
@@ -394,9 +349,6 @@ echo -e "\033[1;94mSetting micro as default editor...\033[0m"
 echo 'export EDITOR=/usr/bin/micro' >> ~/.bashrc
 source ~/.bashrc
 
-# Reload .bashrc after setting the default editor
-source "$HOME_DIR/.bashrc"
-
 # Set default file manager for directories
 echo -e "\033[1;94mSetting pcmanfm as default GUI file manager...\033[0m"
 xdg-mime default pcmanfm.desktop inode/directory
@@ -419,11 +371,7 @@ create_directory "$HOME_DIR/Pictures/wallpapers"
 
 # Copy wallpaper to ~/Pictures/wallpapers directory
 echo -e "\033[1;94mCopying wallpaper...\033[0m"
-cp "$HOME_DIR/arch-i3-dots/arch_geology.png" "$HOME_DIR/Pictures/wallpapers/"
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31mFailed to copy wallpaper. Exiting.\033[0m"
-    exit 1
-fi
+cp "$HOME_DIR/arch-i3-dots/arch_geology.png" "$HOME_DIR/Pictures/wallpapers/" || { echo -e "\033[1;31mFailed to copy wallpaper. Exiting.\033[0m"; exit 1; }
 
 # Set the cursor theme in /usr/share/icons/default/index.theme
 echo -e "\033[1;34mSetting cursor theme to ComixCursor-White...\033[0m"
@@ -446,7 +394,7 @@ echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
 read -n 1 -r reboot_choice
 if [[ "$reboot_choice" == "y" || "$reboot_choice" == "Y" ]]; then
     echo -e "\033[1;34mRebooting...\033[0m"
-    sleep 2
+    sleep 1
     reboot
 else
     echo -e "\033[1;32mReboot skipped. You can reboot manually later.\033[0m"
