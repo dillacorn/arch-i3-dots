@@ -111,6 +111,8 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         systemd-resolvconf \
         bridge-utils \
         qemu-guest-agent \
+        xdg-desktop-portal \
+        xdg-desktop-portal-gtk \
         lib32-mesa \
         steam \
         base-devel \
