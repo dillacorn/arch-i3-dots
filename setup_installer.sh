@@ -268,10 +268,16 @@ fi
 
 # Set TTY console font
 echo -e "\033[1;34mSetting console font to lat9w-16 in /etc/vconsole.conf...\033[0m"
-echo 'FONT=lat9w-16' > /etc/vconsole.conf
-if [ $? -ne 0 ]; then
-    echo -e "\033[1;31mFailed to set console font. Exiting.\033[0m"
-    exit 1
+if ! grep -q "^FONT=lat9w-16" /etc/vconsole.conf; then
+    echo 'FONT=lat9w-16' >> /etc/vconsole.conf
+    if [ $? -ne 0 ]; then
+        echo -e "\033[1;31mFailed to add console font to /etc/vconsole.conf. Exiting.\033[0m"
+        exit 1
+    else
+        echo -e "\033[1;32mConsole font set to lat9w-16 in /etc/vconsole.conf.\033[0m"
+    fi
+else
+    echo -e "\033[1;32mConsole font lat9w-16 is already set in /etc/vconsole.conf.\033[0m"
 fi
 
 # Set alternatives for editor
