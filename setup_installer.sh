@@ -269,7 +269,7 @@ fi
 # Set alternatives for editor
 echo -e "\033[1;94mSetting micro as default editor...\033[0m"
 echo 'export EDITOR=/usr/bin/micro' >> ~/.bashrc
-source ~/.bashrcs
+source ~/.bashrc
 
 # Reload .bashrc after setting the default editor
 source "$HOME_DIR/.bashrc"
