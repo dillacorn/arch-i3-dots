@@ -22,4 +22,6 @@ save and reboot.
 
 `sudo chown dillacorn:dillacorn /mnt/M2`
 
-Check that your drive has auto-mounted with your favorite file manager. - I use "pcmanfm"
+to view directory... use a terminal or file manager
+
+`cd /mnt/M2`
