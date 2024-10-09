@@ -69,8 +69,16 @@ echo -e "\033[1;32mProceeding with the installation...\033[0m"
 # Set the home directory of the sudo user
 HOME_DIR="/home/$SUDO_USER"
 
-# Check if required directories are present, and create them if not
-echo -e "\033[1;34mChecking for required directories...\033[0m"
+# Function to check and create directories if they don't exist
+create_directory() {
+    if [ ! -d "$1" ]; then
+        echo -e "\033[1;33mCreating missing directory: $1\033[0m"
+        mkdir -p "$1"
+        chown $SUDO_USER:$SUDO_USER "$1"
+    else
+        echo -e "\033[1;32mDirectory already exists: $1\033[0m"
+    fi
+}
 
 # List of directories to check/create
 required_dirs=(
@@ -81,15 +89,9 @@ required_dirs=(
     "$HOME_DIR/Downloads"
 )
 
-# Loop through and create any missing directories
+# Create the required directories
 for dir in "${required_dirs[@]}"; do
-    if [ ! -d "$dir" ]; then
-        echo -e "\033[1;33mCreating missing directory: $dir\033[0m"
-        mkdir -p "$dir"
-        chown $SUDO_USER:$SUDO_USER "$dir"
-    else
-        echo -e "\033[1;32mDirectory already exists: $dir\033[0m"
-    fi
+    create_directory "$dir"
 done
 
 # Install git if it's not already installed
@@ -141,8 +143,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Ensure ~/.local/share/applications directory exists
-echo -e "\033[1;34mEnsuring ~/.local/share/applications directory exists...\033[0m"
-mkdir -p "$HOME_DIR/.local/share/applications"
+create_directory "$HOME_DIR/.local/share/applications"
 
 # Copy .desktop files into ~/.local/share/applications
 echo -e "\033[1;34mCopying .desktop files to ~/.local/share/applications...\033[0m"
@@ -154,12 +155,7 @@ echo -e "\033[1;34mSetting ownership and permissions for ~/.local, ~/.local/shar
 # Set ownership recursively for the entire .local directory
 chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.local"
 
-# Check if the .local directory exists before setting permissions
-if [ -d "$HOME_DIR/.local" ]; then
-    chmod -R u+rwX "$HOME_DIR/.local"
-fi
-
-# Ensure ~/.local and ~/.local/share have correct permissions (including for Xorg)
+# Ensure ~/.local and ~/.local/share have correct permissions
 chmod u+rwx "$HOME_DIR/.local"
 chmod u+rwx "$HOME_DIR/.local/share"
 
@@ -174,7 +170,7 @@ fi
 
 # Copy X11 configuration
 echo -e "\033[1;34mCopying X11 config...\033[0m"
-mkdir -p /etc/X11/xinit
+create_directory "/etc/X11/xinit"
 cp "$HOME_DIR/arch-i3-dots/etc/X11/xinit/xinitrc" /etc/X11/xinit/
 if [ $? -ne 0 ]; then
     echo -e "\033[1;31mFailed to copy xinitrc. Exiting.\033[0m"
@@ -234,14 +230,6 @@ find "$HOME_DIR/.config/" -type f -exec chmod 644 {} +
 # Make specific i3-related scripts executable (recursively)
 echo -e "\033[1;34mMaking i3-related scripts executable...\033[0m"
 find "$HOME_DIR/.config/i3/scripts" -type f -exec chmod +x {} +
-
-# Make all files in the themes folder executable (recursively)
-echo -e "\033[1;34mMaking all files in $HOME_DIR/.config/i3/themes executable...\033[0m"
-find "$HOME_DIR/.config/i3/themes" -type f -exec chmod +x {} +
-
-# Make all files in the themes folder executable (recursively)
-echo -e "\033[1;34mMaking all files in $HOME_DIR/.config/i3/themes executable...\033[0m"
-find "$HOME_DIR/.config/i3/themes" -type f -exec chmod +x {} +
 
 # Convert line endings to Unix format in the i3 themes and scripts directories
 echo -e "\033[1;34mConverting line endings to Unix format for i3 themes and scripts...\033[0m"
@@ -308,7 +296,11 @@ if echo "$GPU_VENDOR" | grep -q "AMD"; then
     if ! grep -q "amdgpu.dc=1" /etc/default/grub; then
         sudo sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ amdgpu.dc=1"/' /etc/default/grub
         sudo grub-mkconfig -o /boot/grub/grub.cfg
-        echo -e "\033[1;32mAMD-specific kernel parameters added to GRUB.\033[0m"
+        if [ $? -eq 0 ]; then
+            echo -e "\033[1;32mAMD-specific kernel parameters added to GRUB.\033[0m"
+        else
+            echo -e "\033[1;31mError updating GRUB configuration. Please check the output above for details.\033[0m"
+        fi
     fi
 
 elif echo "$GPU_VENDOR" | grep -q "NVIDIA"; then
@@ -387,10 +379,7 @@ chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.gtkrc-2.0.mine"
 chmod 644 "$HOME_DIR/.gtkrc-2.0.mine"
 
 # Ensure ~/Pictures directory exists and correct permissions are set
-echo -e "\033[1;34mChecking ~/Pictures directory...\033[0m"
-mkdir -p "$HOME_DIR/Pictures/wallpapers"
-sudo chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/Pictures"
-sudo chmod -R u+rwX "$HOME_DIR/Pictures"
+create_directory "$HOME_DIR/Pictures/wallpapers"
 
 # Copy wallpaper to ~/Pictures/wallpapers directory
 echo -e "\033[1;94mCopying wallpaper...\033[0m"
