@@ -317,7 +317,7 @@ else
         if [[ "$install_nvidia" == "y" || "$install_nvidia" == "Y" ]]; then
             if ! pacman -Q | grep -q "nvidia"; then
                 echo -e "\033[1;34mInstalling NVIDIA proprietary drivers...\033[0m"
-                sudo pacman -S --noconfirm nvidia nvidia-utils
+                sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
                 if [ $? -ne 0 ]; then
                     echo -e "\033[1;31mFailed to install NVIDIA proprietary drivers. Exiting.\033[0m"
                     exit 1
