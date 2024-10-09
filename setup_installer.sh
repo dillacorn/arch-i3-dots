@@ -266,6 +266,14 @@ else
     exit 1
 fi
 
+# Set TTY console font
+echo -e "\033[1;34mSetting console font to lat9w-16 in /etc/vconsole.conf...\033[0m"
+echo 'FONT=lat9w-16' > /etc/vconsole.conf
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mFailed to set console font. Exiting.\033[0m"
+    exit 1
+fi
+
 # Set alternatives for editor
 echo -e "\033[1;94mSetting micro as default editor...\033[0m"
 echo 'export EDITOR=/usr/bin/micro' >> ~/.bashrc
