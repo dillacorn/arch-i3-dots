@@ -253,16 +253,16 @@ if systemd-detect-virt -q; then
     echo -e "\033[1;33mRunning in a virtual machine. Skipping GPU-specific configuration.\033[0m"
 else
     # Detect GPU type and apply appropriate settings for AMD, Intel, or Nvidia users
-    GPU_VENDOR=$(lspci | grep -i 'vga\|3d\|2d' | grep -E 'AMD|NVIDIA|Intel' | awk '{print $1,$5}')
+    GPU_VENDOR=$(lspci | grep -i 'vga\|3d\|2d' | grep -i 'Radeon\|NVIDIA\|Intel\|Advanced Micro Devices')
 
     echo -e "\033[1;34mDetecting GPU vendor...\033[0m"
 
     if [ -z "$GPU_VENDOR" ]; then
-        echo -e "\033[1;31mNo GPU detected or unrecognized GPU. Skipping GPU-specific configuration.\033[0m"
+        echo -e "\033[1;31mNo AMD, NVIDIA, or Intel GPU detected. Skipping GPU-specific configuration.\033[0m"
         exit 0
     fi
 
-    if echo "$GPU_VENDOR" | grep -q "AMD"; then
+    if echo "$GPU_VENDOR" | grep -iq "Radeon"; then
         echo -e "\033[1;32mAMD GPU detected. Applying AMD-specific settings...\033[0m"
         
         # Ensure the linux-firmware package is installed for AMD GPUs
@@ -292,7 +292,7 @@ else
         # Set the TTY console font to lat9w-16 in /etc/vconsole.conf
         echo -e "\033[1;34mSetting console font to lat9w-16 for AMD users in /etc/vconsole.conf...\033[0m"
         if ! grep -q "^FONT=lat9w-16" /etc/vconsole.conf; then
-            echo 'FONT=lat9w-16' >> /etc/vconsole.conf
+            echo 'FONT=lat9w-16' | sudo tee -a /etc/vconsole.conf
         fi
 
         # Optionally add any AMD-specific kernel parameters to GRUB (such as amdgpu.dc=1)
@@ -306,7 +306,7 @@ else
             fi
         fi
 
-    elif echo "$GPU_VENDOR" | grep -q "NVIDIA"; then
+    elif echo "$GPU_VENDOR" | grep -iq "NVIDIA"; then
         echo -e "\033[1;33mNVIDIA GPU detected. Applying NVIDIA-specific settings...\033[0m"
         
         # Ask user if they want to install the NVIDIA proprietary drivers
@@ -329,7 +329,7 @@ else
             echo -e "\033[1;33mSkipping NVIDIA driver installation as per user choice.\033[0m"
         fi
 
-    elif echo "$GPU_VENDOR" | grep -q "Intel"; then
+    elif echo "$GPU_VENDOR" | grep -iq "Intel"; then
         echo -e "\033[1;33mIntel GPU detected. Applying Intel-specific settings...\033[0m"
         
         # Ask user if they want to install the Intel driver
