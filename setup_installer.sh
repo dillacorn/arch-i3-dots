@@ -279,6 +279,7 @@ if echo "$GPU_VENDOR" | grep -q "AMD"; then
 
     # Ask user if they want to install the AMDGPU driver
     echo -e "\033[1;34mDo you want to install the recommended AMDGPU driver? (y/n)\033[0m"
+    echo -e "\033[1;33mInstalling this driver is recommended for better performance and full compatibility with your AMD GPU.\033[0m"
     read -n 1 -s install_amdgpu
     echo
     
