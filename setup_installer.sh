@@ -73,8 +73,8 @@ HOME_DIR="/home/$SUDO_USER"
 create_directory() {
     if [ ! -d "$1" ]; then
         echo -e "\033[1;33mCreating missing directory: $1\033[0m"
-        mkdir -p "$1"
-        chown $SUDO_USER:$SUDO_USER "$1"
+        mkdir -p "$1" || { echo -e "\033[1;31mFailed to create directory $1. Exiting.\033[0m"; exit 1; }
+        chown $SUDO_USER:$SUDO_USER "$1" || { echo -e "\033[1;31mFailed to set ownership for $1. Exiting.\033[0m"; exit 1; }
     else
         echo -e "\033[1;32mDirectory already exists: $1\033[0m"
     fi
@@ -141,7 +141,7 @@ create_directory "$HOME_DIR/.local/share/applications"
 
 # Copy .desktop files into ~/.local/share/applications
 echo -e "\033[1;34mCopying .desktop files to ~/.local/share/applications...\033[0m"
-cp -r "$HOME_DIR/arch-i3-dots/local/share/applications/." "$HOME_DIR/.local/share/applications"
+cp -r "$HOME_DIR/arch-i3-dots/local/share/applications/." "$HOME_DIR/.local/share/applications" || { echo -e "\033[1;31mFailed to copy .desktop files. Exiting.\033[0m"; exit 1; }
 
 # Set correct permissions for ~/.local
 chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.local"
@@ -346,8 +346,10 @@ fi
 
 # Set alternatives for editor
 echo -e "\033[1;94mSetting micro as default editor...\033[0m"
-echo 'export EDITOR=/usr/bin/micro' >> ~/.bashrc
-source ~/.bashrc
+echo 'export EDITOR=/usr/bin/micro' >> "$HOME_DIR/.bashrc" || { echo -e "\033[1;31mFailed to set micro as default editor. Exiting.\033[0m"; exit 1; }
+
+# Reload .bashrc after setting the default editor
+source "$HOME_DIR/.bashrc" || { echo -e "\033[1;31mFailed to reload .bashrc. Exiting.\033[0m"; exit 1; }
 
 # Set default file manager for directories
 echo -e "\033[1;94mSetting pcmanfm as default GUI file manager...\033[0m"
@@ -385,9 +387,10 @@ if [ $? -ne 0 ]; then
 fi
 
 # Enable and start NetworkManager
+# Enable and start NetworkManager
 echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
-sudo systemctl enable NetworkManager
-sudo systemctl start NetworkManager
+sudo systemctl enable NetworkManager || { echo -e "\033[1;31mFailed to enable NetworkManager. Exiting.\033[0m"; exit 1; }
+sudo systemctl start NetworkManager || { echo -e "\033[1;31mFailed to start NetworkManager. Exiting.\033[0m"; exit 1; }
 
 # Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
