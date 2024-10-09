@@ -20,4 +20,6 @@ Create a new line at the end starting with "#" - add description for auto-mounti
 
 save and reboot.
 
+`sudo chown dillon:dillon /mnt/M2`
+
 Check that your drive has auto-mounted with your favorite file manager. - I use "pcmanfm"
