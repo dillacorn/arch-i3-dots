@@ -257,6 +257,23 @@ fi
 echo -e "\033[1;34mRunning install_alacritty_themes.sh...\033[0m"
 cd "$HOME_DIR/.config/alacritty" || exit
 
+# Check if the alacritty-theme directory already exists
+if [ -d "$HOME_DIR/.config/alacritty/alacritty-theme" ]; then
+    echo -e "\033[1;33mThe alacritty-theme directory already exists. Do you want to overwrite it? (y/n)\033[0m"
+    read -n 1 -s overwrite_themes
+    echo
+    if [[ "$overwrite_themes" != "y" && "$overwrite_themes" != "Y" ]]; then
+        echo -e "\033[1;33mSkipping alacritty-theme installation as per user choice.\033[0m"
+    else
+        echo -e "\033[1;34mOverwriting alacritty-theme...\033[0m"
+        rm -rf "$HOME_DIR/.config/alacritty/alacritty-theme"
+        git clone <repository_url> "$HOME_DIR/.config/alacritty/alacritty-theme"
+    fi
+else
+    # If the directory does not exist, clone the repository
+    git clone <repository_url> "$HOME_DIR/.config/alacritty/alacritty-theme"
+fi
+
 # Check if the script exists before trying to execute it
 if [ -f "./install_alacritty_themes.sh" ]; then
     chmod +x ./install_alacritty_themes.sh
