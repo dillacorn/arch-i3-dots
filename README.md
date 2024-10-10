@@ -1,5 +1,5 @@
 # `arch dilla.i3.files`
-- **Preview Images**: `TO BE ADDED`
+- **Preview Images**: [View Here](https://github.com/dillacorn/arch-i3-dots/tree/main/preview_images/preview_page.md)
 - **Distro**: [Arch](https://archlinux.org/)
 - **X11**: [i3-wm](https://github.com/i3/i3)
 - **Kernel**: [linux-tkg](https://github.com/Frogging-Family/linux-tkg)
