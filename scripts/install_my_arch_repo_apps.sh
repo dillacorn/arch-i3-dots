@@ -109,6 +109,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         bluez \
         zsh \
         bash \
+        inetutils \
         systemd-resolvconf \
         bridge-utils \
         qemu-guest-agent \
