@@ -65,6 +65,10 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         arandr \
         pavucontrol \
         pcmanfm \
+        gvfs \
+        gvfs-smb \
+        gvfs-mtp \
+        gvfs-afc \
         ffmpeg \
         mpv \
         cheese \
