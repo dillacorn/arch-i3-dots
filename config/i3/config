@@ -81,8 +81,8 @@ floating_modifier Mod1
 # reload i3 config
 bindsym Mod4+shift+q restart
 
-# rotate alt/super config+reload script
-bindsym Mod4+shift+r exec ~/.config/i3/scripts/rotate_config_navigation.sh
+# toggle mod script
+bindsym Mod4+shift+r exec ~/.config/i3/scripts/toggle_mod_switch.sh
 
 # theme change with rofi
 bindsym Mod4+shift+t exec selected=$(ls ~/.config/i3/themes/ | rofi -dmenu -p "Select Theme") && bash ~/.config/i3/themes/$selected
