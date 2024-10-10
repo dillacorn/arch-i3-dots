@@ -26,8 +26,8 @@ Here are some of my custom keybinds from the i3 configuration:
   - Reloads the current i3 configuration to apply any changes.
   - Additionally randomizes wallpaper in `~/Pictures/wallpapers` directory. <- if you don't want this behavior modify the ([i3 config](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/config)).
   
-- `Mod4+shift+r` = **Rotate i3 mod navigation**  
-  - Switches between `Mod1(alt)` and `Mod4(win/super)` navigation using a script: [rotate_config_navigation.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/rotate_config_navigation.sh).
+- `Mod4+shift+r` = **Toggle i3 mod navigation**  
+  - Switches between `Mod1(alt)` and `Mod4(meta)` navigation using a script: [toggle mod script](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/toggle_mod_switch.sh).
 
 - `Mod1+ctrl+shift+p` = **i3 Power Menu**  
   - Activates Selectable Power Menu script: [i3exit.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/i3exit.sh).
@@ -56,7 +56,7 @@ Here are some of my custom keybinds from the i3 configuration:
 
 Here are more example keybinds from my i3 config:
 
-Let me preface `"Mod1"` can equal `"Mod1"` or `"Mod4"` depending on [script navigation rotation](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/rotate_config_navigation.sh)
+Let me preface `"Mod1"` can equal `"Mod1"` or `"Mod4"` depending on [mod toggle script](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/toggle_mod_switch.sh)
 
 - `Mod1+shift+enter` = **Open Terminal**
   - Launches the terminal (default: Alacritty).
