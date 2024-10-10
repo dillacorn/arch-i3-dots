@@ -8,13 +8,7 @@ Notes From Repo: https://github.com/dillacorn/arch-i3-dots
 sudo micro /etc/default/grub
 ```
 
-### comment out default GRUB selection line.
-
-```sh
-# GRUB_DEFAULT=0
-```
-
-### add save last boot kernal
+### add and/or edit save last boot kernal
 ```sh
 # Save last selected kernal
 GRUB_DEFAULT=saved
