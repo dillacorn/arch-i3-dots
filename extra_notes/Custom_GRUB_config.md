@@ -1,6 +1,6 @@
 Notes From Repo: https://github.com/dillacorn/arch-i3-dots
 
-# I've been annoyed by grub auto-selecting the newely install Debian kernal.
+# I've been annoyed by grub auto-selecting the newely install Arch kernal.
 
 ### Edit grub config
 
