@@ -42,10 +42,28 @@ if grep -q "bindsym Mod1+p exec rofi -show drun" "$I3_CONFIG"; then
     s/bindsym Mod1+shift+Right/bindsym Mod4+shift+Right/;
     
     # Workspace switching
-    s/bindsym Mod1+[0-9]/bindsym Mod4&/;
+    s/bindsym Mod1+1/bindsym Mod4+1/;
+    s/bindsym Mod1+2/bindsym Mod4+2/;
+    s/bindsym Mod1+3/bindsym Mod4+3/;
+    s/bindsym Mod1+4/bindsym Mod4+4/;
+    s/bindsym Mod1+5/bindsym Mod4+5/;
+    s/bindsym Mod1+6/bindsym Mod4+6/;
+    s/bindsym Mod1+7/bindsym Mod4+7/;
+    s/bindsym Mod1+8/bindsym Mod4+8/;
+    s/bindsym Mod1+9/bindsym Mod4+9/;
+    s/bindsym Mod1+0/bindsym Mod4+0/;
     
     # Move focused window to workspace
-    s/bindsym Mod1+shift+[0-9]/bindsym Mod4+shift&/;
+    s/bindsym Mod1+shift+1/bindsym Mod4+shift+1/;
+    s/bindsym Mod1+shift+2/bindsym Mod4+shift+2/;
+    s/bindsym Mod1+shift+3/bindsym Mod4+shift+3/;
+    s/bindsym Mod1+shift+4/bindsym Mod4+shift+4/;
+    s/bindsym Mod1+shift+5/bindsym Mod4+shift+5/;
+    s/bindsym Mod1+shift+6/bindsym Mod4+shift+6/;
+    s/bindsym Mod1+shift+7/bindsym Mod4+shift+7/;
+    s/bindsym Mod1+shift+8/bindsym Mod4+shift+8/;
+    s/bindsym Mod1+shift+9/bindsym Mod4+shift+9/;
+    s/bindsym Mod1+shift+0/bindsym Mod4+shift+0/;
     
     # Fullscreen and floating window toggling
     s/bindsym Mod1+shift+f/bindsym Mod4+shift+f/;
@@ -109,10 +127,28 @@ else
     s/bindsym Mod4+shift+Right/bindsym Mod1+shift+Right/;
     
     # Workspace switching
-    s/bindsym Mod4+[0-9]/bindsym Mod1&/;
+    s/bindsym Mod4+1/bindsym Mod1+1/;
+    s/bindsym Mod4+2/bindsym Mod1+2/;
+    s/bindsym Mod4+3/bindsym Mod1+3/;
+    s/bindsym Mod4+4/bindsym Mod1+4/;
+    s/bindsym Mod4+5/bindsym Mod1+5/;
+    s/bindsym Mod4+6/bindsym Mod1+6/;
+    s/bindsym Mod4+7/bindsym Mod1+7/;
+    s/bindsym Mod4+8/bindsym Mod1+8/;
+    s/bindsym Mod4+9/bindsym Mod1+9/;
+    s/bindsym Mod4+0/bindsym Mod1+0/;
     
     # Move focused window to workspace
-    s/bindsym Mod4+shift+[0-9]/bindsym Mod1+shift&/;
+    s/bindsym Mod4+shift+1/bindsym Mod1+shift+1/;
+    s/bindsym Mod4+shift+2/bindsym Mod1+shift+2/;
+    s/bindsym Mod4+shift+3/bindsym Mod1+shift+3/;
+    s/bindsym Mod4+shift+4/bindsym Mod1+shift+4/;
+    s/bindsym Mod4+shift+5/bindsym Mod1+shift+5/;
+    s/bindsym Mod4+shift+6/bindsym Mod1+shift+6/;
+    s/bindsym Mod4+shift+7/bindsym Mod1+shift+7/;
+    s/bindsym Mod4+shift+8/bindsym Mod1+shift+8/;
+    s/bindsym Mod4+shift+9/bindsym Mod1+shift+9/;
+    s/bindsym Mod4+shift+0/bindsym Mod1+shift+0/;
     
     # Fullscreen and floating window toggling
     s/bindsym Mod4+shift+f/bindsym Mod1+shift+f/;
