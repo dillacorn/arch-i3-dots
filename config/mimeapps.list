@@ -7,9 +7,15 @@ x-scheme-handler/unknown=io.github.ungoogled_software.ungoogled_chromium.desktop
 text/plain=micro.desktop
 image/png=qimgv.desktop
 video/mp4=mpv.desktop
+audio/flac=mpv.desktop
+image/jpeg=qimgv.desktop
+model/stl=com.ultimaker.cura.desktop
+image/vnd.microsoft.icon=qimgv.desktop
 
 [Added Associations]
 application/octet-stream=micro.desktop;
-text/plain=micro.desktop;
-image/png=qimgv.desktop;
+image/png=qimgv.desktop;mpv.desktop;
 video/mp4=mpv.desktop;
+audio/flac=mpv.desktop;
+image/jpeg=qimgv.desktop;
+image/vnd.microsoft.icon=qimgv.desktop;
