@@ -110,6 +110,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         zsh \
         bash \
         inetutils \
+        openssh \
         systemd-resolvconf \
         bridge-utils \
         qemu-guest-agent \
