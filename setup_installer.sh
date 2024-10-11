@@ -267,28 +267,15 @@ else
         
         # Ensure the linux-firmware package is installed for AMD GPUs
         sudo pacman -S --needed --noconfirm linux-firmware
-
-        # Ask user if they want to install the AMDGPU driver
-        echo -e "\033[1;34mDo you want to install the recommended AMDGPU driver? (y/n)\033[0m"
-        echo -e "\033[1;33mInstalling this driver is recommended for better performance and full compatibility with your AMD GPU.\033[0m"
-        read -n 1 -s install_amdgpu
-        echo
         
-        if [[ "$install_amdgpu" == "y" || "$install_amdgpu" == "Y" ]]; then
-            if ! pacman -Q | grep -q "xf86-video-amdgpu"; then
-                echo -e "\033[1;34mInstalling AMDGPU driver...\033[0m"
-                sudo pacman -S --noconfirm xf86-video-amdgpu
-                if [ $? -ne 0 ]; then
-                    echo -e "\033[1;31mFailed to install AMDGPU driver. Exiting.\033[0m"
-                    exit 1
-                fi
-            else
-                echo -e "\033[1;32mAMDGPU driver already installed.\033[0m"
-            fi
-        else
-            echo -e "\033[1;33mSkipping AMDGPU driver installation as per user choice.\033[0m"
-        fi
+        # Install AMD video decoding libraries (VA-API and VDPAU)
+        sudo pacman -S --needed --noconfirm libva-mesa-driver mesa-vdpau
 
+        # Validate VA-API and VDPAU support
+        echo -e "\033[1;34mValidating hardware acceleration (VA-API and VDPAU)...\033[0m"
+        vainfo || echo -e "\033[1;31mVA-API not working properly.\033[0m"
+        vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
+        
         # Set the TTY console font to lat9w-16 in /etc/vconsole.conf
         echo -e "\033[1;34mSetting console font to lat9w-16 for AMD users in /etc/vconsole.conf...\033[0m"
         if ! grep -q "^FONT=lat9w-16" /etc/vconsole.conf; then
@@ -299,11 +286,6 @@ else
         if ! grep -q "amdgpu.dc=1" /etc/default/grub; then
             sudo sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ amdgpu.dc=1"/' /etc/default/grub
             sudo grub-mkconfig -o /boot/grub/grub.cfg
-            if [ $? -eq 0 ]; then
-                echo -e "\033[1;32mAMD-specific kernel parameters added to GRUB.\033[0m"
-            else
-                echo -e "\033[1;31mError updating GRUB configuration. Please check the output above for details.\033[0m"
-            fi
         fi
 
     elif echo "$GPU_VENDOR" | grep -iq "NVIDIA"; then
@@ -318,6 +300,14 @@ else
             if ! pacman -Q | grep -q "nvidia"; then
                 echo -e "\033[1;34mInstalling NVIDIA proprietary drivers...\033[0m"
                 sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
+                
+                # Install video decoding libraries for NVIDIA
+                sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo
+                
+                # Validate VDPAU support
+                echo -e "\033[1;34mValidating VDPAU hardware acceleration...\033[0m"
+                vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
+                
                 if [ $? -ne 0 ]; then
                     echo -e "\033[1;31mFailed to install NVIDIA proprietary drivers. Exiting.\033[0m"
                     exit 1
