@@ -68,6 +68,31 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         noto-fonts
 
     # ----------------------------
+    # Themes
+    # ----------------------------
+    echo -e "${CYAN}Installing themes...${NC}"
+    sudo pacman -S --needed --noconfirm \
+        papirus-icon-theme \
+        materia-gtk-theme \
+        xcursor-comix
+
+    # ----------------------------
+    # Terminal Applications
+    # ----------------------------
+    echo -e "${CYAN}Installing terminal applications...${NC}"
+    sudo pacman -S --needed --noconfirm \
+        micro \
+        alacritty \
+        fastfetch \
+        btop \
+        htop \
+        curl \
+        wget \
+        git \
+        dos2unix \
+        brightnessctl
+
+    # ----------------------------
     # Utilities
     # ----------------------------
     echo -e "${CYAN}Installing general utilities...${NC}"
@@ -75,10 +100,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         dunst \
         lxsession \
         lxappearance \
-        micro \
-        fastfetch \
-        brightnessctl \
-        dos2unix \
         networkmanager \
         network-manager-applet \
         solaar \
@@ -91,17 +112,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         gvfs-afc \
         filelight \
         timeshift \
-        btop \
-        htop \
-        flameshot \
-        curl \
-        wget \
-        git \
-        alacritty \
-        gcolor3 \
-        papirus-icon-theme \
-        materia-gtk-theme \
-        xcursor-comix
+        flameshot
 
     # ----------------------------
     # Multimedia Tools
@@ -143,11 +154,22 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Networking and Security
     # ----------------------------
     echo -e "${CYAN}Installing networking and security tools...${NC}"
+
+    # Check if UFW is already installed
+    if ! pacman -Qs ufw > /dev/null; then
+        echo -e "${CYAN}Installing ufw...${NC}"
+        sudo pacman -S --needed --noconfirm ufw
+        echo -e "${CYAN}Enabling ufw...${NC}"
+        sudo ufw enable
+    else
+        echo -e "${YELLOW}ufw is already installed, skipping installation and enabling.${NC}"
+    fi
+
+    # Install other networking and security tools
     sudo pacman -S --needed --noconfirm \
         wireguard-tools \
         wireplumber \
         openssh \
-        ufw \
         systemd-resolvconf \
         bridge-utils \
         qemu-guest-agent \
@@ -155,12 +177,16 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         pipewire-pulse \
         bluez
 
-    # Firewall configuration for Moonlight
-    echo -e "${CYAN}Configuring firewall rules for Moonlight...${NC}"
-    sudo ufw allow 48010/tcp
-    sudo ufw allow 48000/udp
-    sudo ufw allow 48010/udp
-    echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
+    # Check if Moonlight is installed, then configure firewall
+    if pacman -Qs moonlight-qt > /dev/null; then
+        echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
+        sudo ufw allow 48010/tcp
+        sudo ufw allow 48000/udp
+        sudo ufw allow 48010/udp
+        echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
+    else
+        echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
+    fi
 
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
