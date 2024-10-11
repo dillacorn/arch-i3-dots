@@ -44,6 +44,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         i3status \
         i3lock \
         feh \
+        nitrogen \
         rofi \
         slop \
         arandr \

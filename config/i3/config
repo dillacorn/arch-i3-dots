@@ -60,6 +60,9 @@ bindsym Mod1+shift+p exec rofi -show run
 bindsym --release Mod4+shift+s exec scrot -s "$HOME/Pictures/%Y-%m-%d_%H:%M:%S.jpg"
 bindsym Mod4+ctrl+shift+s exec flameshot gui
 
+# select wallpapers
+bindsym Mod4+shift+w exec nitrogen
+
 # capture gif
 bindsym Mod4+shift+g exec --no-startup-id ~/.config/i3/scripts/gif.sh
 

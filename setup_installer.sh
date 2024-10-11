@@ -389,6 +389,75 @@ create_directory "$HOME_DIR/Pictures/wallpapers"
 echo -e "\033[1;94mCopying wallpaper...\033[0m"
 cp "$HOME_DIR/arch-i3-dots/arch_geology.png" "$HOME_DIR/Pictures/wallpapers/" || { echo -e "\033[1;31mFailed to copy wallpaper. Exiting.\033[0m"; exit 1; }
 
+# Check if Nitrogen is installed
+if command -v nitrogen &> /dev/null; then
+    echo -e "\033[1;32mNitrogen is installed. Configuring wallpaper directory...\033[0m"
+
+    # Set the wallpaper directory
+    WALLPAPER_DIR="$HOME_DIR/Pictures/wallpapers"
+
+    # Ensure the directory exists
+    create_directory "$WALLPAPER_DIR" || { echo -e "\033[1;31mFailed to ensure wallpaper directory. Exiting.\033[0m"; exit 1; }
+
+    # Configuration file path
+    CONFIG_FILE="$HOME_DIR/.config/nitrogen/nitrogen.cfg"
+    
+    # Create the configuration directory if it doesn't exist
+    mkdir -p "$(dirname "$CONFIG_FILE")" || { echo -e "\033[1;31mFailed to create configuration directory. Exiting.\033[0m"; exit 1; }
+    
+    # Check if the configuration file already exists
+    if [ -f "$CONFIG_FILE" ]; then
+        echo -e "\033[1;33mnitrogen.cfg already exists. Updating configuration...\033[0m"
+        
+        # Update or add geometry settings
+        if grep -q "\[geometry\]" "$CONFIG_FILE"; then
+            sed -i "/\[geometry\]/,/^\[/ {s/posx=.*/posx=562/; s/posy=.*/posy=377/; s/sizex=.*/sizex=600/; s/sizey=.*/sizey=401/;}" "$CONFIG_FILE"
+        else
+            {
+                echo "[geometry]"
+                echo "posx=562"
+                echo "posy=377"
+                echo "sizex=600"
+                echo "sizey=401"
+            } >> "$CONFIG_FILE"
+        fi
+        
+        # Update or add nitrogen settings
+        if grep -q "\[nitrogen\]" "$CONFIG_FILE"; then
+            sed -i "/\[nitrogen\]/,/^\[/ {s/view=.*/view=icon/; s/recurse=.*/recurse=true/; s/sort=.*/sort=alpha/; s/icon_caps=.*/icon_caps=false/;}" "$CONFIG_FILE"
+        else
+            {
+                echo "[nitrogen]"
+                echo "view=icon"
+                echo "recurse=true"
+                echo "sort=alpha"
+                echo "icon_caps=false"
+                echo "dirs=$WALLPAPER_DIR;"
+            } >> "$CONFIG_FILE"
+        fi
+    else
+        # Write default configuration to nitrogen.cfg if it doesn't exist
+        {
+            echo "[geometry]"
+            echo "posx=562"
+            echo "posy=377"
+            echo "sizex=600"
+            echo "sizey=401"
+            echo
+            echo "[nitrogen]"
+            echo "view=icon"
+            echo "recurse=true"
+            echo "sort=alpha"
+            echo "icon_caps=false"
+            echo "dirs=$WALLPAPER_DIR;"
+        } > "$CONFIG_FILE"
+        
+        echo -e "\033[1;32mCreated nitrogen.cfg with settings for $WALLPAPER_DIR.\033[0m"
+    fi
+else
+    echo -e "\033[1;33mNitrogen is not installed. Skipping configuration...\033[0m"
+fi
+
 # Set the cursor theme in /usr/share/icons/default/index.theme
 echo -e "\033[1;34mSetting cursor theme to ComixCursor-White...\033[0m"
 sudo bash -c 'cat > /usr/share/icons/default/index.theme <<EOF
