@@ -114,6 +114,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         zsh \
         bash \
         inetutils \
+        ufw \
         openssh \
         systemd-resolvconf \
         bridge-utils \
