@@ -35,22 +35,43 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "${CYAN}Updating package list...${NC}"
     sudo pacman -Syu --noconfirm
 
-    # Install the applications using pacman (list format)
+    # ----------------------------
+    # Window Management Tools
+    # ----------------------------
+    echo -e "${CYAN}Installing window management tools...${NC}"
     sudo pacman -S --needed --noconfirm \
         i3-wm \
+        i3status \
+        i3lock \
+        feh \
+        rofi \
+        slop \
+        arandr \
+        xorg-server \
+        xorg-xinit \
+        xf86-input-libinput \
+        xautolock \
+        xclip \
+        xsel \
+        playerctl \
+        xorg-xinput
+
+    # ----------------------------
+    # Fonts
+    # ----------------------------
+    echo -e "${CYAN}Installing fonts...${NC}"
+    sudo pacman -S --needed --noconfirm \
         ttf-font-awesome \
         ttf-hack \
         ttf-dejavu \
         ttf-liberation \
-        noto-fonts \
-        i3status \
-        i3lock \
-        sed \
-        feh \
-        rofi \
-        rofimoji \
-        scrot \
-        slop \
+        noto-fonts
+
+    # ----------------------------
+    # Utilities
+    # ----------------------------
+    echo -e "${CYAN}Installing general utilities...${NC}"
+    sudo pacman -S --needed --noconfirm \
         dunst \
         lxsession \
         lxappearance \
@@ -62,73 +83,84 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         network-manager-applet \
         solaar \
         blueman \
-        arandr \
         pavucontrol \
         pcmanfm \
         gvfs \
         gvfs-smb \
         gvfs-mtp \
         gvfs-afc \
+        filelight \
+        timeshift \
+        btop \
+        htop \
+        flameshot \
+        curl \
+        wget \
+        git \
+        alacritty \
+        gcolor3 \
+        papirus-icon-theme \
+        materia-gtk-theme \
+        xcursor-comix
+
+    # ----------------------------
+    # Multimedia Tools
+    # ----------------------------
+    echo -e "${CYAN}Installing multimedia tools...${NC}"
+    sudo pacman -S --needed --noconfirm \
         ffmpeg \
         mpv \
         cheese \
         exiv2 \
-        flameshot \
-        htop \
-        btop \
-        curl \
-        wget \
-        git \
-        octave \
-        okular \
-        tigervnc \
-        filelight \
-        timeshift \
-        virt-manager \
-        wireguard-tools \
-        wireplumber \
-        gamemode \
-        alacritty \
-        gcolor3 \
         audacity \
         obs-studio \
         krita \
         shotcut \
-        bleachbit \
-        ncspot \
         telegram-desktop \
-        filezilla \
-        papirus-icon-theme \
-        materia-gtk-theme \
-        xcursor-comix \
-        xorg-server \
-        xorg-xinit \
-        xf86-input-libinput \
-        xautolock \
-        xclip \
-        xsel \
-        playerctl \
-        xorg-xinput \
-        pipewire-pulse \
-        bluez \
-        zsh \
-        bash \
-        inetutils \
-        ufw \
-        openssh \
-        systemd-resolvconf \
-        bridge-utils \
-        qemu-guest-agent \
-        xdg-desktop-portal \
-        xdg-desktop-portal-gtk \
-        lib32-mesa \
-        steam \
+        ncspot \
+        filezilla
+
+    # ----------------------------
+    # Development Tools
+    # ----------------------------
+    echo -e "${CYAN}Installing development tools...${NC}"
+    sudo pacman -S --needed --noconfirm \
         base-devel \
         clang \
         ninja \
         go \
         rust \
-        gn
+        octave \
+        okular \
+        tigervnc \
+        steam \
+        lib32-mesa \
+        bleachbit \
+        virt-manager \
+        gamemode
+
+    # ----------------------------
+    # Networking and Security
+    # ----------------------------
+    echo -e "${CYAN}Installing networking and security tools...${NC}"
+    sudo pacman -S --needed --noconfirm \
+        wireguard-tools \
+        wireplumber \
+        openssh \
+        ufw \
+        systemd-resolvconf \
+        bridge-utils \
+        qemu-guest-agent \
+        inetutils \
+        pipewire-pulse \
+        bluez
+
+    # Firewall configuration for Moonlight
+    echo -e "${CYAN}Configuring firewall rules for Moonlight...${NC}"
+    sudo ufw allow 48010/tcp
+    sudo ufw allow 48000/udp
+    sudo ufw allow 48010/udp
+    echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
 
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
