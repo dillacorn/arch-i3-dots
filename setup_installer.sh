@@ -409,50 +409,52 @@ if command -v nitrogen &> /dev/null; then
     if [ -f "$CONFIG_FILE" ]; then
         echo -e "\033[1;33mnitrogen.cfg already exists. Updating configuration...\033[0m"
         
-        # Update or add geometry settings
+        # Update or add geometry settings using sed
         if grep -q "\[geometry\]" "$CONFIG_FILE"; then
             sed -i "/\[geometry\]/,/^\[/ {s/posx=.*/posx=562/; s/posy=.*/posy=377/; s/sizex=.*/sizex=600/; s/sizey=.*/sizey=401/;}" "$CONFIG_FILE"
         else
-            {
-                echo "[geometry]"
-                echo "posx=562"
-                echo "posy=377"
-                echo "sizex=600"
-                echo "sizey=401"
-            } >> "$CONFIG_FILE"
+            sed -i '$a [geometry]\nposx=562\nposy=377\nsizex=600\nsizey=401' "$CONFIG_FILE"
         fi
         
-        # Update or add nitrogen settings
+        # Update or add nitrogen settings using sed
         if grep -q "\[nitrogen\]" "$CONFIG_FILE"; then
             sed -i "/\[nitrogen\]/,/^\[/ {s/view=.*/view=icon/; s/recurse=.*/recurse=true/; s/sort=.*/sort=alpha/; s/icon_caps=.*/icon_caps=false/;}" "$CONFIG_FILE"
+
+            # If dirs line exists, make sure the wallpaper directory is added
+            if grep -q "^dirs=" "$CONFIG_FILE"; then
+                if ! grep -q "$WALLPAPER_DIR" "$CONFIG_FILE"; then
+                    sed -i "/^dirs=/ s|$|$WALLPAPER_DIR;|" "$CONFIG_FILE"
+                fi
+            else
+                sed -i "$a dirs=$WALLPAPER_DIR;" "$CONFIG_FILE"
+            fi
         else
-            {
-                echo "[nitrogen]"
-                echo "view=icon"
-                echo "recurse=true"
-                echo "sort=alpha"
-                echo "icon_caps=false"
-                echo "dirs=$WALLPAPER_DIR;"
-            } >> "$CONFIG_FILE"
+            sed -i '$a [nitrogen]\nview=icon\nrecurse=true\nsort=alpha\nicon_caps=false\ndirs='$WALLPAPER_DIR';' "$CONFIG_FILE"
+        fi
+
+        # Ensure mode=zoom is at the end of the file using sed
+        if ! grep -q "^mode=zoom$" "$CONFIG_FILE"; then
+            sed -i '$a mode=zoom' "$CONFIG_FILE"
         fi
     else
         # Write default configuration to nitrogen.cfg if it doesn't exist
-        {
-            echo "[geometry]"
-            echo "posx=562"
-            echo "posy=377"
-            echo "sizex=600"
-            echo "sizey=401"
-            echo
-            echo "[nitrogen]"
-            echo "view=icon"
-            echo "recurse=true"
-            echo "sort=alpha"
-            echo "icon_caps=false"
-            echo "dirs=$WALLPAPER_DIR;"
-        } > "$CONFIG_FILE"
+        cat <<EOL > "$CONFIG_FILE"
+[geometry]
+posx=562
+posy=377
+sizex=600
+sizey=401
+
+[nitrogen]
+view=icon
+recurse=true
+sort=alpha
+icon_caps=false
+dirs=$WALLPAPER_DIR;
+mode=zoom
+EOL
         
-        echo -e "\033[1;32mCreated nitrogen.cfg with settings for $WALLPAPER_DIR.\033[0m"
+        echo -e "\033[1;32mCreated nitrogen.cfg with settings for $WALLPAPER_DIR and mode=zoom.\033[0m"
     fi
 else
     echo -e "\033[1;33mNitrogen is not installed. Skipping configuration...\033[0m"
