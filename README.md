@@ -15,6 +15,7 @@ My keybinds (see [i3 config](https://github.com/dillacorn/arch-i3-dots/blob/main
 ## Wallpapers
 - [Gruvbox Wallpapers](https://github.com/AngelJumbo/gruvbox-wallpapers) by [AngelJumbo](https://github.com/AngelJumbo)
 - [Aesthetic Wallpapers](https://github.com/D3Ext/aesthetic-wallpapers) by [D3Ext](https://github.com/D3Ext)
+- [Wallpapers](https://github.com/michaelScopic/Wallpapers) by [michaelScopic](https://github.com/michaelScopic)
 
 ---
 
