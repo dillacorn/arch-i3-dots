@@ -7,8 +7,8 @@ icons = "awesome6"
 [[block]]
 block = "focused_window"
 [block.format]
-full = "$title.str(max_w:55,rot_interval:0.2)|"
-short = "$title.str(max_w:55,rot_interval:0.2)|"
+full = "$title.str(max_w:60,rot_interval:0.2)|"
+short = "$title.str(max_w:60,rot_interval:0.2)|"
 
 [[block]]
 block = "cpu"
