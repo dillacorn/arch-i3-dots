@@ -30,6 +30,7 @@ flatpak_apps=(
   'com.heroicgameslauncher.hgl'
   'com.ultimaker.cura'
   'fr.handbrake.ghb'
+  'com.dec05eba.gpu_screen_recorder'
   'com.github.tchx84.Flatseal'
   'io.github.ungoogled_software.ungoogled_chromium'
 )
