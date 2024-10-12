@@ -64,7 +64,7 @@ bindsym Mod4+ctrl+shift+s exec flameshot gui
 bindsym Mod4+shift+w exec nitrogen
 
 # capture gif
-bindsym Mod4+shift+g exec --no-startup-id ~/.config/i3/scripts/gif.sh
+bindsym Mod4+shift+g exec peek
 
 # terminal
 bindsym Mod1+shift+Return exec alacritty

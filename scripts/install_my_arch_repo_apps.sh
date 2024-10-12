@@ -122,6 +122,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     sudo pacman -S --needed --noconfirm \
         ffmpeg \
         mpv \
+        peek \
         cheese \
         exiv2 \
         audacity \
