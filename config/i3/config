@@ -224,7 +224,7 @@ font pango: Hack 10
 #start of bar section
 bar {
     position top
-    status_command i3status -c ~/.config/i3/i3status.conf
+    status_command i3status-rs ~/.config/i3/i3status-rs.toml
     colors {
         background #282828
         statusline #FFFFFF
