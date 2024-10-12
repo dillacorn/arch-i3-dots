@@ -41,7 +41,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "${CYAN}Installing window management tools...${NC}"
     sudo pacman -S --needed --noconfirm \
         i3-wm \
-        i3status \
+        i3status-rust \
         i3lock \
         feh \
         nitrogen \
