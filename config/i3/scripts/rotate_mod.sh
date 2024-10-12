@@ -16,6 +16,9 @@ if grep -q "bindsym Mod1+p exec rofi -show drun" "$I3_CONFIG"; then
     
     # Kill focused window
     s/bindsym Mod1+shift+c/bindsym Mod4+shift+c/;
+
+    # Floating modifier
+    s/floating_modifier Mod1/floating_modifier Mod4/;
     
     # Focus window navigation (vim-style keys)
     s/bindsym Mod1+j/bindsym Mod4+j/;
@@ -101,7 +104,10 @@ else
     
     # Kill focused window
     s/bindsym Mod4+shift+c/bindsym Mod1+shift+c/;
-    
+
+    # Floating modifier
+    s/floating_modifier Mod4/floating_modifier Mod1/;
+   
     # Focus window navigation (vim-style keys)
     s/bindsym Mod4+j/bindsym Mod1+j/;
     s/bindsym Mod4+h/bindsym Mod1+h/;
