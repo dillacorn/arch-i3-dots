@@ -39,9 +39,7 @@ Here are some of my custom keybinds from the i3 configuration:
   - You can easily add your own theme scripts to `~/.config/i3/themes`
   
 - `Mod4+shift+g` = **Capture a GIF**  
-  - Starts a GIF recording with the script: [gif.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/gif.sh).  
-  - **Repeat the keybind to finish recording!**
-  - `gif_date_time.gif` saved in `~/Videos` directory.
+  - Starts a GIF recording with the "peek".
   
 - `Mod4+shift+s` = **Grim screenshot**  
   - Takes a screenshot using Grim.
