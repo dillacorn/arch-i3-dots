@@ -16,7 +16,7 @@ interval = 1
 
 [[block]]
 block = "temperature"
-format = "$icon {$average$max|}"
+format = "$icon {$average$max}"
 
 [[block]]
 block = "memory"
