@@ -12,18 +12,27 @@ DURATION=60
 
 # Define the location of the PID file
 PIDFILE="/tmp/ffmpeg_recording.pid"
+PALETTE="/tmp/palette.png"
+RAW_OUTPUT="/tmp/raw_output.mkv"
 
-# Check if ffmpeg is already running by checking for the PID file
+# Check if ffmpeg is already running by checking the PID file
 if [ -f "$PIDFILE" ]; then
-    # Read the PID from the file and stop the recording
     FFMPEG_PID=$(cat "$PIDFILE")
-    if [ -n "$FFMPEG_PID" ] && kill -0 "$FFMPEG_PID" 2>/dev/null; then
-        echo "Stopping recording and saving as $OUTPUT_FILE..."
+    if kill -0 "$FFMPEG_PID" 2>/dev/null; then
+        echo "Stopping recording..."
         kill "$FFMPEG_PID"
         rm -f "$PIDFILE"
+
+        echo "Rendering GIF..."
+        # Render the gif using the raw recorded video and the generated palette
+        ffmpeg -y -i "$RAW_OUTPUT" -i "$PALETTE" -lavfi "fps=20,paletteuse" "$OUTPUT_FILE"
+        echo "GIF created: $OUTPUT_FILE"
+        
+        # Cleanup the temporary files
+        rm -f "$RAW_OUTPUT" "$PALETTE"
     else
-        echo "No recording is currently in progress."
-        rm -f "$PIDFILE" # Clean up stale PID file
+        echo "No active recording found. Cleaning up PID file."
+        rm -f "$PIDFILE"
     fi
 else
     # Use slop to select screen area for recording
@@ -40,18 +49,17 @@ else
         echo "Generating palette..."
         ffmpeg -y -f x11grab -video_size "${WIDTH}x${HEIGHT}" \
                -framerate 20 -i "$DISPLAY+$X,$Y" \
-               -t $DURATION -vf "fps=20,palettegen" palette.png
+               -t $DURATION -vf "fps=20,palettegen" "$PALETTE"
 
-        # Start recording and save the PID to the PID file
-        echo "Creating GIF..."
+        # Start recording the raw video
+        echo "Recording raw video..."
         ffmpeg -y -f x11grab -video_size "${WIDTH}x${HEIGHT}" \
                -framerate 20 -i "$DISPLAY+$X,$Y" \
-               -t $DURATION -i palette.png -lavfi "fps=20,paletteuse" "$OUTPUT_FILE" &
-
-        # Save the PID of the ffmpeg process
-        echo $! > "$PIDFILE"
+               -t $DURATION "$RAW_OUTPUT" &
         
-        echo "Recording... Run the script again to stop it."
+        echo $! > "$PIDFILE"  # Save the PID of the background process
+
+        echo "Recording started. Run the script again to stop and render the GIF."
     else
         echo "No area selected, aborting."
     fi
