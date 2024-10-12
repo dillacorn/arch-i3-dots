@@ -11,24 +11,12 @@ full = "$title.str(max_w:55,rot_interval:0.2)|"
 short = "$title.str(max_w:55,rot_interval:0.2)|"
 
 [[block]]
-block = "sound"
-headphones_indicator = true
-show_volume_when_muted = true
-[[block.click]]
-button = "left"
-cmd = "pactl set-sink-mute @DEFAULT_SINK@ toggle"
-
-[[block]]
-block = "sound"
-device_kind = "source"
-format = "$icon"
-[[block.click]]
-button = "left"
-cmd = "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
-
-[[block]]
 block = "cpu"
 interval = 1
+
+[[block]]
+block = "temperature"
+format = "$icon {$average$max|}"
 
 [[block]]
 block = "memory"
@@ -48,10 +36,6 @@ format_alt = "$speed_up.eng(width:0,prefix:K,hide_unit:true) $speed_down.eng(wid
 # missing_format = ""
 
 [[block]]
-block = "notify"
-if_command = "dunstctl is-paused"
-
-[[block]]
 block = "time"
 interval = 1
 format = "  $timestamp.datetime(f:'%V')"
@@ -67,5 +51,21 @@ interval = 5
 format = " $icon $timestamp.datetime(f:'%r')"
 
 [[block]]
-block = "temperature"
-format = "$icon {$average$max|}"
+block = "sound"
+device_kind = "source"
+format = "$icon"
+[[block.click]]
+button = "left"
+cmd = "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
+
+[[block]]
+block = "sound"
+headphones_indicator = true
+show_volume_when_muted = true
+[[block.click]]
+button = "left"
+cmd = "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+
+[[block]]
+block = "notify"
+if_command = "dunstctl is-paused"
