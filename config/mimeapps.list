@@ -13,6 +13,7 @@ model/stl=com.ultimaker.cura.desktop
 image/vnd.microsoft.icon=qimgv.desktop
 video/quicktime=mpv.desktop
 audio/mpeg=mpv.desktop
+image/gif=mpv.desktop
 
 [Added Associations]
 application/octet-stream=micro.desktop;
@@ -22,3 +23,4 @@ image/jpeg=qimgv.desktop;
 image/vnd.microsoft.icon=qimgv.desktop;
 video/quicktime=mpv.desktop;
 audio/mpeg=mpv.desktop;
+image/gif=mpv.desktop;
