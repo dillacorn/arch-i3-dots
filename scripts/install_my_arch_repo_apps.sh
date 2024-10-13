@@ -148,6 +148,17 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         okular \
         tigervnc \
         steam \
+        lib32-mesa-vdpau \
+        lib32-libx11 \
+        lib32-libxrender \
+        lib32-libxi \
+        lib32-libxrandr \
+        lib32-libxtst \
+        lib32-gtk2 \
+        lib32-libgl \
+        lib32-libpulse \
+        lib32-pipewire \
+        lib32-libva \
         lib32-mesa \
         bleachbit \
         virt-manager \
