@@ -21,6 +21,17 @@ if ! sudo -n true 2>/dev/null; then
     exit 1
 fi
 
+# Function to install a package and check if it's already installed
+install_package() {
+    local package="$1"
+    if ! pacman -Qi "$package" &>/dev/null; then
+        echo -e "${CYAN}Installing $package and its dependencies...${NC}"
+        sudo pacman -S --needed --noconfirm "$package"
+    else
+        echo -e "${YELLOW}$package is already installed. Skipping...${NC}"
+    fi
+}
+
 # Prompt for package installation
 echo -e "\n${CYAN}Do you want to install Dillacorn's chosen Arch Repo Linux applications? [y/n]${NC}"
 
@@ -35,13 +46,10 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "${CYAN}Updating package list...${NC}"
     sudo pacman -Syu --noconfirm
 
-    # Install the applications using pacman (list format)
-    sudo pacman -S --needed --noconfirm \
-        lib32-nvidia-utils \
-        steam \
-        nvidia \
-        nvidia-utils \
-        nvidia-settings
+    # Install Nvidia-related packages and dependencies
+    for pkg in lib32-nvidia-utils steam nvidia nvidia-utils nvidia-settings; do
+        install_package "$pkg"
+    done
 
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"

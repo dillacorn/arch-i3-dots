@@ -21,6 +21,17 @@ if ! sudo -n true 2>/dev/null; then
     exit 1
 fi
 
+# Function to install a package and its dependencies if not already installed
+install_package() {
+    local package="$1"
+    if ! pacman -Qi "$package" &>/dev/null; then
+        echo -e "${CYAN}Installing $package and its dependencies...${NC}"
+        sudo pacman -S --needed --noconfirm "$package"
+    else
+        echo -e "${YELLOW}$package is already installed. Skipping...${NC}"
+    fi
+}
+
 # Prompt for package installation
 echo -e "\n${CYAN}Do you want to install Dillacorn's chosen Arch Repo Linux applications? [y/n]${NC}"
 
@@ -39,127 +50,65 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Window Management Tools
     # ----------------------------
     echo -e "${CYAN}Installing window management tools...${NC}"
-    sudo pacman -S --needed --noconfirm \
-        i3-wm \
-        i3status-rust \
-        i3lock \
-        feh \
-        nitrogen \
-        rofi \
-        slop \
-        arandr \
-        xorg-server \
-        xorg-xinit \
-        xf86-input-libinput \
-        xsettingsd \
-        xautolock \
-        xclip \
-        xsel \
-        playerctl \
-        xorg-xinput
+    for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput; do
+        install_package "$pkg"
+    done
 
     # ----------------------------
     # Fonts
     # ----------------------------
     echo -e "${CYAN}Installing fonts...${NC}"
-    sudo pacman -S --needed --noconfirm \
-        ttf-font-awesome \
-        ttf-hack \
-        ttf-dejavu \
-        ttf-liberation \
-        noto-fonts
+    for pkg in ttf-font-awesome ttf-hack ttf-dejavu ttf-liberation noto-fonts; do
+        install_package "$pkg"
+    done
 
     # ----------------------------
     # Themes
     # ----------------------------
     echo -e "${CYAN}Installing themes...${NC}"
-    sudo pacman -S --needed --noconfirm \
-        papirus-icon-theme \
-        materia-gtk-theme \
-        xcursor-comix
+    for pkg in papirus-icon-theme materia-gtk-theme xcursor-comix; do
+        install_package "$pkg"
+    done
 
     # ----------------------------
     # Terminal Applications
     # ----------------------------
     echo -e "${CYAN}Installing terminal applications...${NC}"
-    sudo pacman -S --needed --noconfirm \
-        micro \
-        alacritty \
-        fastfetch \
-        btop \
-        htop \
-        curl \
-        wget \
-        git \
-        dos2unix \
-        brightnessctl
+    for pkg in micro alacritty fastfetch btop htop curl wget git dos2unix brightnessctl; do
+        install_package "$pkg"
+    done
 
     # ----------------------------
     # Utilities
     # ----------------------------
     echo -e "${CYAN}Installing general utilities...${NC}"
-    sudo pacman -S --needed --noconfirm \
-        dunst \
-        lxsession \
-        lxappearance \
-        networkmanager \
-        network-manager-applet \
-        solaar \
-        blueman \
-        pavucontrol \
-        pcmanfm \
-        gvfs \
-        gvfs-smb \
-        gvfs-mtp \
-        gvfs-afc \
-        filelight \
-        timeshift \
-        flameshot
+    for pkg in dunst lxsession lxappearance networkmanager network-manager-applet solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc filelight timeshift flameshot; do
+        install_package "$pkg"
+    done
 
     # ----------------------------
     # Multimedia Tools
     # ----------------------------
     echo -e "${CYAN}Installing multimedia tools...${NC}"
-    sudo pacman -S --needed --noconfirm \
-        ffmpeg \
-        mpv \
-        peek \
-        cheese \
-        exiv2 \
-        audacity \
-        obs-studio \
-        krita \
-        shotcut \
-        telegram-desktop \
-        ncspot \
-        filezilla
+    for pkg in ffmpeg mpv peek cheese exiv2 audacity obs-studio krita shotcut telegram-desktop ncspot filezilla; do
+        install_package "$pkg"
+    done
 
     # ----------------------------
     # Development Tools
     # ----------------------------
     echo -e "${CYAN}Installing development tools...${NC}"
-    sudo pacman -S --needed --noconfirm \
-        base-devel \
-        clang \
-        ninja \
-        go \
-        rust \
-        octave \
-        okular \
-        tigervnc \
-        bleachbit \
-        virt-manager \
-        gamemode
+    for pkg in base-devel clang ninja go rust octave okular tigervnc steam bleachbit virt-manager gamemode; do
+        install_package "$pkg"
+    done
 
     # ----------------------------
     # Networking and Security
     # ----------------------------
     echo -e "${CYAN}Installing networking and security tools...${NC}"
-
-    # Check if UFW is already installed
     if ! pacman -Qs ufw > /dev/null; then
         echo -e "${CYAN}Installing ufw...${NC}"
-        sudo pacman -S --needed --noconfirm ufw
+        install_package "ufw"
         echo -e "${CYAN}Enabling ufw...${NC}"
         sudo ufw enable
     else
@@ -167,16 +116,9 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     fi
 
     # Install other networking and security tools
-    sudo pacman -S --needed --noconfirm \
-        wireguard-tools \
-        wireplumber \
-        openssh \
-        systemd-resolvconf \
-        bridge-utils \
-        qemu-guest-agent \
-        inetutils \
-        pipewire-pulse \
-        bluez
+    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent inetutils pipewire-pulse bluez; do
+        install_package "$pkg"
+    done
 
     # Check if Moonlight is installed, then configure firewall
     if pacman -Qs moonlight-qt > /dev/null; then

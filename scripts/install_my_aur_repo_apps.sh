@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Ensure the script is run with sudo
 if [ -z "$SUDO_USER" ]; then
     echo "This script must be run with sudo!"
@@ -41,13 +43,21 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     
     # Temporarily become the non-root user to run yay for package installation
     sudo -u "$SUDO_USER" bash <<EOF
-        yay -Syu --noconfirm  # Update system and AUR packages
+        # Update system and AUR packages
+        yay -Syu --noconfirm
 
         # Function to install a package and clean up its build directory
         install_package() {
             local package="\$1"
-            yay -S --needed --noconfirm "\$package" 
-            rm -rf /home/$SUDO_USER/.cache/yay/\$package  # Clean up the build directory for this package
+            if yay -Qi "\$package" > /dev/null; then
+                echo -e "${YELLOW}\$package is already installed. Skipping...${NC}"
+            else
+                echo -e "${CYAN}Installing \$package...${NC}"
+                yay -S --needed --noconfirm "\$package"
+                echo -e "${GREEN}\$package installed successfully!${NC}"
+            fi
+            # Clean up the build directory for this package
+            rm -rf /home/$SUDO_USER/.cache/yay/\$package 
         }
 
         # List of AUR packages to install with cleanup
