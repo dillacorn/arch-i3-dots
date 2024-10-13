@@ -14,6 +14,7 @@ image/vnd.microsoft.icon=qimgv.desktop
 video/quicktime=mpv.desktop
 audio/mpeg=mpv.desktop
 image/gif=mpv.desktop
+inode/directory=pcmanfm.desktop
 
 [Added Associations]
 application/octet-stream=micro.desktop;
@@ -24,3 +25,4 @@ image/vnd.microsoft.icon=qimgv.desktop;
 video/quicktime=mpv.desktop;
 audio/mpeg=mpv.desktop;
 image/gif=mpv.desktop;
+inode/directory=pcmanfm.desktop;
