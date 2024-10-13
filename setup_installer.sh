@@ -288,7 +288,7 @@ else
         sudo pacman -S --needed --noconfirm linux-firmware
         
         # Install AMD video decoding libraries (VA-API and VDPAU)
-        sudo pacman -S --needed --noconfirm libva-mesa-driver mesa-vdpau
+        sudo pacman -S --needed --noconfirm libva-mesa-driver mesa-vdpau lib32-mesa-vdpau
 
         # Check if vainfo and vdpauinfo are available, install if missing
         if ! command -v vainfo &> /dev/null; then
