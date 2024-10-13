@@ -257,6 +257,7 @@ client.background       #FFFFFF
 ### autostart ###
 #################
 
+exec --no-startup-id xsettingsd
 exec --no-startup-id lxpolkit
 exec --no-startup-id blueman-applet
 exec --no-startup-id nm-applet

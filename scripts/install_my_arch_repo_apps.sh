@@ -51,6 +51,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         xorg-server \
         xorg-xinit \
         xf86-input-libinput \
+        xsettingsd \
         xautolock \
         xclip \
         xsel \
