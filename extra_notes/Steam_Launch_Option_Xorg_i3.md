@@ -34,4 +34,4 @@ xrandr --output DisplayPort-2 --mode "1344x1005_81.67" --pos 0x0 --output Displa
 xrandr --output DisplayPort-2 --mode "1344x1005_81.67" --pos 0x0 --output DisplayPort-1 --mode 1920x1080 --rate 81.67 --pos 1344x0 ; gamemoderun %command% PROTON_USE_EAC_LINUX=1 DXVK_ASYNC=1 LD_PRELOAD="" ; xrandr --output DisplayPort-2 --off --output DisplayPort-1 --mode 1920x1080 --rate 240 --pos 0x0
 
 ## The Finals ~ stretched 1352x1080 240hz
-xrandr --output DisplayPort-1 --mode "1352x1080_240.00" ; gamemoderun ; %command% PROTON_USE_EAC_LINUX=1 DXVK_ASYNC=1 LD_PRELOAD="" ; xrandr --output DisplayPort-1 --mode 1920x1080 --rate 240
+xrandr --output DisplayPort-1 --mode "1352x1080_240.00" ; gamemoderun %command% PROTON_USE_EAC_LINUX=1 DXVK_ASYNC=1 LD_PRELOAD="" ; xrandr --output DisplayPort-1 --mode 1920x1080 --rate 240
