@@ -47,7 +47,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     sudo pacman -Syu --noconfirm
 
     # Install Nvidia-related packages and dependencies
-    for pkg in lib32-nvidia-utils steam nvidia nvidia-utils nvidia-settings; do
+    for pkg in nvidia nvidia-utils nvidia-settings; do
         install_package "$pkg"
     done
 

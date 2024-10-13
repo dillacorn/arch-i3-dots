@@ -32,6 +32,7 @@ flatpak_apps=(
   'fr.handbrake.ghb'
   'com.dec05eba.gpu_screen_recorder'
   'com.github.tchx84.Flatseal'
+  'com.valvesoftware.Steam'
   'io.github.ungoogled_software.ungoogled_chromium'
 )
 
