@@ -44,9 +44,9 @@ Here are some of my custom keybinds from the i3 configuration:
 - `Mod4+shift+g` = **Capture a GIF**  
   - Starts a GIF recording with the `peek`
   
-- `Mod4+shift+s` = **Grim screenshot**  
-  - Takes a screenshot using Grim.
-  - `date_time.jpg` saved in `~/Pictures` directory.
+- `Mod4+shift+s` = **maim screenshot**  
+  - Takes a screenshot using maim and copies to clipboard.
+  - `date_time.png` saved in `~/Pictures` directory.
 
 - `Mod4+ctrl+shift+s` = **Flameshot screenshot**  
   - Takes a screenshot using Flameshot with more customization options.
