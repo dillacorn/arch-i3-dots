@@ -37,9 +37,12 @@ Here are some of my custom keybinds from the i3 configuration:
 - `Mod4+shift+t` = **i3 Theme Changer**
   - Launches a theme selector using Rofi: [View avaliable theme scripts](https://github.com/dillacorn/arch-i3-dots/tree/main/config/i3/themes).
   - You can easily add your own theme scripts to `~/.config/i3/themes`
+
+- `Mod4+shift+w` = **Wallpaper Selector**
+  - Opens `nitrogen`
   
 - `Mod4+shift+g` = **Capture a GIF**  
-  - Starts a GIF recording with the "peek".
+  - Starts a GIF recording with the `peek`
   
 - `Mod4+shift+s` = **Grim screenshot**  
   - Takes a screenshot using Grim.
