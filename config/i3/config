@@ -56,7 +56,7 @@ mode "[L]OCK       LOG[O]UT       [S]USPEND       [R]EBOOT       
 bindsym Mod1+p exec rofi -show drun
 bindsym Mod1+shift+p exec rofi -show run
 
-# Screenshots
+# screenshots
 bindsym --release Mod4+shift+s exec scrot -s "$HOME/Pictures/%Y-%m-%d_%H:%M:%S.jpg"
 bindsym Mod4+ctrl+shift+s exec flameshot gui
 
@@ -75,8 +75,14 @@ bindsym Mod1+shift+c kill
 # lock screen
 bindsym Mod1+ctrl+shift+l exec i3lock --color 000000
 
-# open file manager
+# file manager
 bindsym Mod4+e exec pcmanfm
+
+# btop
+bindsym Mod4+ctrl+shift+b exec alacritty -e btop
+
+# htop
+bindsym Mod4+ctrl+shift+h exec alacritty -e htop
 
 # floating windows
 floating_modifier Mod1
