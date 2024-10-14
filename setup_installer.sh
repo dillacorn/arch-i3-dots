@@ -235,6 +235,25 @@ echo -e "\033[1;34mCopying mimeapps.list to $HOME_DIR/.config...\033[0m"
 cp "$HOME_DIR/arch-i3-dots/config/mimeapps.list" "$HOME_DIR/.config/" || { echo -e "\033[1;31mFailed to copy mimeapps.list. Exiting.\033[0m"; exit 1; }
 chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/mimeapps.list"
 
+# Check if xsettingsd.conf exists and has been modified
+if [ -f "$HOME_DIR/.config/xsettingsd/xsettingsd.conf" ]; then
+    if ! diff -q "$HOME_DIR/.config/xsettingsd/xsettingsd.conf" "$HOME_DIR/arch-i3-dots/config/xsettingsd/xsettingsd.conf" > /dev/null; then
+        echo -e "\033[1;33mxsettingsd.conf already exists and has been modified. Skipping overwrite.\033[0m"
+    else
+        echo -e "\033[1;34mCopying xsettingsd.conf to $HOME_DIR/.config/xsettingsd...\033[0m"
+        cp "$HOME_DIR/arch-i3-dots/config/xsettingsd/xsettingsd.conf" "$HOME_DIR/.config/xsettingsd/" || { echo -e "\033[1;31mFailed to copy xsettingsd.conf. Exiting.\033[0m"; exit 1; }
+        chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/xsettingsd/xsettingsd.conf"
+        chmod 644 "$HOME_DIR/.config/xsettingsd/xsettingsd.conf"
+    fi
+else
+    # If xsettingsd.conf doesn't exist, copy it
+    echo -e "\033[1;34mCopying xsettingsd.conf to $HOME_DIR/.config/xsettingsd...\033[0m"
+    create_directory "$HOME_DIR/.config/xsettingsd"
+    cp "$HOME_DIR/arch-i3-dots/config/xsettingsd/xsettingsd.conf" "$HOME_DIR/.config/xsettingsd/" || { echo -e "\033[1;31mFailed to copy xsettingsd.conf. Exiting.\033[0m"; exit 1; }
+    chown $SUDO_USER:$SUDO_USER "$HOME_DIR/.config/xsettingsd/xsettingsd.conf"
+    chmod 644 "$HOME_DIR/.config/xsettingsd/xsettingsd.conf"
+fi
+
 # Set permissions for .config
 echo -e "\033[1;34mSetting permissions on configuration files and directories...\033[0m"
 find "$HOME_DIR/.config/" -type d -exec chmod 755 {} +
@@ -248,6 +267,18 @@ find "$HOME_DIR/.config/i3/scripts" -type f -exec chmod +x {} +
 echo -e "\033[1;34mConverting line endings to Unix format for i3 themes and scripts...\033[0m"
 dos2unix $HOME_DIR/.config/i3/themes/./* || { echo -e "\033[1;31mFailed to convert line endings for i3 themes. Exiting.\033[0m"; exit 1; }
 dos2unix $HOME_DIR/.config/i3/scripts/./* || { echo -e "\033[1;31mFailed to convert line endings for i3 scripts. Exiting.\033[0m"; exit 1; }
+
+# Install Alacritty themes
+echo -e "\033[1;34mRunning install_alacritty_themes.sh...\033[0m"
+cd "$HOME_DIR/.config/alacritty" || exit
+if [ -f "./install_alacritty_themes.sh" ]; then
+    chmod +x ./install_alacritty_themes.sh
+    ./install_alacritty_themes.sh || { echo -e "\033[1;31mAlacritty themes installation failed. Exiting.\033[0m"; exit 1; }
+    echo -e "\033[1;32mAlacritty themes installed successfully.\033[0m"
+else
+    echo -e "\033[1;31minstall_alacritty_themes.sh not found. Exiting.\033[0m"
+    exit 1
+fi
 
 # Detect if running in a virtual machine
 if systemd-detect-virt -q; then
@@ -459,6 +490,26 @@ EOL
     fi
 else
     echo -e "\033[1;33mNitrogen is not installed. Skipping configuration...\033[0m"
+fi
+
+# Set the cursor theme in /usr/share/icons/default/index.theme
+echo -e "\033[1;34mSetting cursor theme to ComixCursor-White...\033[0m"
+sudo bash -c 'cat > /usr/share/icons/default/index.theme <<EOF
+[Icon Theme]
+Inherits=ComixCursor-White
+EOF'
+if [ $? -ne 0 ]; then
+    echo -e "\033[1;31mFailed to set cursor theme. Exiting.\033[0m"
+    exit 1
+fi
+# Apply cursor theme to Flatpak applications
+echo -e "\033[1;34mApplying cursor theme to Flatpak applications...\033[0m"
+flatpak override --user --env=GTK_CURSOR_THEME=ComixCursors-White
+if [ $? -eq 0 ]; then
+    echo -e "\033[1;32mCursor theme applied to Flatpak applications successfully.\033[0m"
+else
+    echo -e "\033[1;31mFailed to apply cursor theme to Flatpak applications.\033[0m"
+    exit 1
 fi
 
 # Enable and start NetworkManager
