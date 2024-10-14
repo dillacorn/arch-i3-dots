@@ -202,6 +202,10 @@ create_directory "/etc/X11/xinit"
 echo -e "\033[1;34mCopying X11 config...\033[0m"
 cp "$HOME_DIR/arch-i3-dots/etc/X11/xinit/xinitrc" /etc/X11/xinit/ || { echo -e "\033[1;31mFailed to copy xinitrc. Exiting.\033[0m"; exit 1; }
 
+# Convert xinitrc line endings to Unix format
+echo -e "\033[1;34mConverting xinitrc line endings to Unix format...\033[0m"
+dos2unix /etc/X11/xinit/xinitrc || { echo -e "\033[1;31mFailed to convert xinitrc line endings. Exiting.\033[0m"; exit 1; }
+
 # Edit libinput configuration
 echo -e "\033[1;34mEditing libinput settings in /usr/share/X11/xorg.conf.d/40-libinput.conf...\033[0m"
 if grep -q 'Identifier "libinput pointer catchall"' /usr/share/X11/xorg.conf.d/40-libinput.conf; then
