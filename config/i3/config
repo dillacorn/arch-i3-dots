@@ -79,7 +79,7 @@ bindsym Mod1+ctrl+shift+l exec i3lock --color 000000
 bindsym Mod4+e exec pcmanfm
 
 # btop
-bindsym Mod4+ctrl+shift+b exec alacritty -e btop
+bindsym Mod4+ctrl+shift+b exec alacritty -e btop --tty_on
 
 # htop
 bindsym Mod4+ctrl+shift+h exec alacritty -e htop
