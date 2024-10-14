@@ -57,7 +57,7 @@ bindsym Mod1+p exec rofi -show drun
 bindsym Mod1+shift+p exec rofi -show run
 
 # screenshots
-bindsym --release Mod4+shift+s exec maim -s --format=png /dev/stdout | xclip -selection clipboard -t image/png -i
+bindsym --release Mod4+shift+s exec --no-startup-id maim -s --format=png /dev/stdout | tee "$HOME/Pictures/$(date +'%Y-%m-%d_%H-%M-%S').png" | xclip -selection clipboard -t image/png -i
 bindsym Mod4+ctrl+shift+s exec flameshot gui
 
 # select wallpapers
