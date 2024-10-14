@@ -90,4 +90,13 @@ for app in "${flatpak_apps[@]}"; do
   fi
 done
 
+# Apply Steam Flatpak override to disable GPU acceleration in web views
+if flatpak list --app | grep -q "com.valvesoftware.Steam"; then
+  echo -e "${PURPLE}Applying Flatpak override to disable GPU acceleration in web views for Steam...${RESET}"
+  flatpak override --user com.valvesoftware.Steam --env=STEAM_WEBKIT_DISABLE_HW_ACCEL=1
+  echo -e "${GREEN}Steam Flatpak override applied successfully.${RESET}"
+else
+  echo -e "${RED_B}Steam is not installed. Skipping override...${RESET}"
+fi
+
 echo -e "${PURPLE}Flatpak setup and installation complete.${RESET}"
