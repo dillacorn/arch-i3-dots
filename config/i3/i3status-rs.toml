@@ -28,12 +28,12 @@ block = "net"
 format = "$icon {$signal_strength.bar(width:1)|}$speed_up.eng(width:3,prefix:K,hide_unit:true) $speed_down.eng(width:3,prefix:K,hide_unit:true)"
 format_alt = "$speed_up.eng(width:0,prefix:K,hide_unit:true) $speed_down.eng(width:0,prefix:K,hide_unit:true)"
 
-# [[block]]
-# block = "battery"
-# device = "DisplayDevice"
+[[block]]
+block = "battery"
+device = "DisplayDevice"
 # driver = "upower"
-# full_format = ""
-# missing_format = ""
+full_format = ""
+missing_format = ""
 
 [[block]]
 block = "time"
