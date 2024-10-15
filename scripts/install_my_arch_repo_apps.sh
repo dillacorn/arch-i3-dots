@@ -50,7 +50,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Window Management Tools
     # ----------------------------
     echo -e "${CYAN}Installing window management tools...${NC}"
-    for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput; do
+    for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput xdotool; do
         install_package "$pkg"
     done
 
