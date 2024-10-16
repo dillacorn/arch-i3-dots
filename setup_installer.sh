@@ -582,7 +582,7 @@ if ! grep -q "add_random_fun_message" "$BASH_PROFILE"; then
     # Append the function definition to .bash_profile
     echo -e "\n# Function to generate a random fun message" >> "$BASH_PROFILE"
     echo -e "add_random_fun_message() {" >> "$BASH_PROFILE"
-    echo -e "  fun_messages=(\"run cacafire\" \"run cmatrix\" \"run aafire\" \"run sl\" \"run asciiquarium\" \"figlet 'TTY is cool!'\")" >> "$BASH_PROFILE"
+    echo -e "  fun_messages=(\"run cacafire\" \"run cmatrix\" \"run aafire\" \"run sl\" \"run asciiquarium\" \"figlet TTY is cool\")" >> "$BASH_PROFILE"
     echo -e "  RANDOM_FUN_MESSAGE=\${fun_messages[\$RANDOM % \${#fun_messages[@]}]}" >> "$BASH_PROFILE"
     echo -e "  echo -e \"\\033[1;33mFor some fun, try running \\033[1;31m\$RANDOM_FUN_MESSAGE\\033[1;33m!\\033[0m\"" >> "$BASH_PROFILE"
     echo -e "}" >> "$BASH_PROFILE"
