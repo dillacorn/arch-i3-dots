@@ -526,7 +526,7 @@ done
 
 # Fix permissions for Pictures directory
 if [ -d "$HOME_DIR/Pictures" ]; then
-    chmod 755 "$HOME_DIR/Pictures"
+    chown -R $SUDO_USER:$SUDO_USER $HOME_DIR/Pictures
 fi
 
 # Prompt the user to reboot the system after setup
