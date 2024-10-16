@@ -84,19 +84,6 @@ echo -e "\033[1;32mProceeding with the installation...\033[0m"
 # Set the home directory of the sudo user
 HOME_DIR="/home/$SUDO_USER"
 
-# Function to check and create directories if they don't exist
-create_directory() {
-    if [ ! -d "$1" ]; then
-        echo -e "\033[1;33mCreating missing directory: $1\033[0m"
-        mkdir -p "$1" || { echo -e "\033[1;31mFailed to create directory $1. Exiting.\033[0m"; exit 1; }
-    else
-        echo -e "\033[1;32mDirectory already exists: $1\033[0m"
-    fi
-    # Ensure correct ownership for non-root user ($SUDO_USER)
-    chown $SUDO_USER:$SUDO_USER "$1" || { echo -e "\033[1;31mFailed to set ownership for $1. Exiting.\033[0m"; exit 1; }
-    chmod 755 "$1" || { echo -e "\033[1;31mFailed to set permissions for $1. Exiting.\033[0m"; exit 1; }
-}
-
 # Install git if it's not already installed
 echo -e "\033[1;34mUpdating package list and installing git...\033[0m"
 if ! pacman -Syu --noconfirm; then
@@ -509,6 +496,19 @@ fi
 echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
 sudo systemctl enable --now NetworkManager || { echo -e "\033[1;31mFailed to enable or start NetworkManager. Exiting.\033[0m"; exit 1; }
 
+# Function to check and create directories if they don't exist
+create_directory() {
+    if [ ! -d "$1" ]; then
+        echo -e "\033[1;33mCreating missing directory: $1\033[0m"
+        mkdir -p "$1" || { echo -e "\033[1;31mFailed to create directory $1. Exiting.\033[0m"; exit 1; }
+    else
+        echo -e "\033[1;32mDirectory already exists: $1\033[0m"
+    fi
+    # Ensure correct ownership for non-root user ($SUDO_USER)
+    chown $SUDO_USER:$SUDO_USER "$1" || { echo -e "\033[1;31mFailed to set ownership for $1. Exiting.\033[0m"; exit 1; }
+    chmod 755 "$1" || { echo -e "\033[1;31mFailed to set permissions for $1. Exiting.\033[0m"; exit 1; }
+}
+
 # List of directories to check/create
 required_dirs=(
     "$HOME_DIR/.config"
@@ -523,11 +523,6 @@ required_dirs=(
 for dir in "${required_dirs[@]}"; do
     create_directory "$dir"
 done
-
-# Fix permissions for Pictures directory
-if [ -d "$HOME_DIR/Pictures" ]; then
-    chown -R $SUDO_USER:$SUDO_USER $HOME_DIR/Pictures
-fi
 
 # Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
