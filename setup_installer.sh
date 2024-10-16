@@ -564,11 +564,6 @@ fi
 # Add figlet Welcome message using the default font
 if ! grep -q "figlet" "$BASH_PROFILE"; then
     echo "Adding figlet welcome to $BASH_PROFILE..."
-
-    # Remove any previous echo for welcome
-    sed -i '/echo.*Welcome/d' "$BASH_PROFILE"
-
-    # Add figlet welcome
     echo -e "\nfiglet \"Welcome \$USER!\"" >> "$BASH_PROFILE"
     chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
 fi
@@ -580,16 +575,22 @@ if ! grep -q "To start i3-wm" "$BASH_PROFILE"; then
     chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
 fi
 
-# Random fun message options
-fun_messages=("run cacafire" "run cmatrix" "run aafire" "run sl" "run asciiquarium" "figlet 'TTY is cool!'")
+# Add random fun message generator to .bash_profile
+if ! grep -q "add_random_fun_message" "$BASH_PROFILE"; then
+    echo "Adding random fun message function to $BASH_PROFILE..."
 
-# Select a random fun message
-RANDOM_FUN_MESSAGE=${fun_messages[$RANDOM % ${#fun_messages[@]}]}
+    # Append the function definition to .bash_profile
+    echo -e "\n# Function to generate a random fun message" >> "$BASH_PROFILE"
+    echo -e "add_random_fun_message() {" >> "$BASH_PROFILE"
+    echo -e "  fun_messages=(\"run cacafire\" \"run cmatrix\" \"run aafire\" \"run sl\" \"run asciiquarium\" \"figlet 'TTY is cool!'\")" >> "$BASH_PROFILE"
+    echo -e "  RANDOM_FUN_MESSAGE=\${fun_messages[\$RANDOM % \${#fun_messages[@]}]}" >> "$BASH_PROFILE"
+    echo -e "  echo -e \"\\033[1;33mFor some fun, try running \\033[1;31m\$RANDOM_FUN_MESSAGE\\033[1;33m!\\033[0m\"" >> "$BASH_PROFILE"
+    echo -e "}" >> "$BASH_PROFILE"
 
-# Add the random fun message
-if ! grep -q "For some fun" "$BASH_PROFILE"; then
-    echo "Adding fun message to $BASH_PROFILE..."
-    echo -e "echo -e \"\\033[1;33mFor some fun, try running \\033[1;31m$RANDOM_FUN_MESSAGE\\033[1;33m!\\033[0m\"" >> "$BASH_PROFILE"
+    # Append the function call to .bash_profile so it runs on every login
+    echo -e "\n# Call the random fun message function on login" >> "$BASH_PROFILE"
+    echo -e "add_random_fun_message" >> "$BASH_PROFILE"
+
     chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
 fi
 
