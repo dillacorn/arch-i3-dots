@@ -524,6 +524,11 @@ for dir in "${required_dirs[@]}"; do
     create_directory "$dir"
 done
 
+# Fix permissions for Pictures directory
+if [ -d "$HOME_DIR/Pictures" ]; then
+    chmod 755 "$HOME_DIR/Pictures"
+fi
+
 # Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
 read -n 1 -r reboot_choice
