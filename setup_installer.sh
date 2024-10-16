@@ -544,6 +544,59 @@ if [ -d "$HOME_DIR/Pictures" ]; then
     retry_command chown -R $SUDO_USER:$SUDO_USER $HOME_DIR/Pictures
 fi
 
+# Path to the non-root user's .bash_profile
+BASH_PROFILE="/home/$SUDO_USER/.bash_profile"
+
+# Check if .bash_profile exists, create if it doesn't
+if [ ! -f "$BASH_PROFILE" ]; then
+    echo "Creating $BASH_PROFILE..."
+    touch "$BASH_PROFILE"
+    chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
+fi
+
+# Add fastfetch to .bash_profile if it doesn't exist already
+if ! grep -q "fastfetch" "$BASH_PROFILE"; then
+    echo "Adding fastfetch to $BASH_PROFILE..."
+    echo -e "\nfastfetch" >> "$BASH_PROFILE"
+    chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
+fi
+
+# Add figlet Welcome message in a random style
+if ! grep -q "figlet welcome" "$BASH_PROFILE"; then
+    echo "Adding figlet welcome to $BASH_PROFILE..."
+
+    # Random figlet fonts
+    figlet_fonts=("block" "slant" "banner" "digital" "shadow" "standard" "starwars")
+
+    # Choose a random font
+    RANDOM_FONT=${figlet_fonts[$RANDOM % ${#figlet_fonts[@]}]}
+
+    echo -e "figlet -f $RANDOM_FONT \"Welcome \$USER\"" >> "$BASH_PROFILE"
+    chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
+fi
+
+# Add i3-wm instruction
+if ! grep -q "To start i3-wm" "$BASH_PROFILE"; then
+    echo "Adding i3-wm instruction to $BASH_PROFILE..."
+    echo -e "echo -e \"\\033[1;34mTo start i3-wm, type: \\033[1;31mstartx\\033[0m\"" >> "$BASH_PROFILE"
+    chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
+fi
+
+# Random fun message options
+fun_messages=("run cacafire" "run cmatrix" "run aafire" "run sl" "run asciiquarium" "figlet 'TTY is cool!'")
+
+# Select a random fun message
+RANDOM_FUN_MESSAGE=${fun_messages[$RANDOM % ${#fun_messages[@]}]}
+
+# Add the random fun message
+if ! grep -q "For some fun" "$BASH_PROFILE"; then
+    echo "Adding fun message to $BASH_PROFILE..."
+    echo -e "echo -e \"\\033[1;33mFor some fun, try running \\033[1;31m$RANDOM_FUN_MESSAGE\\033[1;33m!\\033[0m\"" >> "$BASH_PROFILE"
+    chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
+fi
+
+echo "Changes have been applied to $BASH_PROFILE."
+
 # Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
 read -n 1 -r reboot_choice
