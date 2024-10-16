@@ -92,25 +92,10 @@ create_directory() {
     else
         echo -e "\033[1;32mDirectory already exists: $1\033[0m"
     fi
-    # Set ownership and permissions regardless of whether the directory was created or already existed
+    # Ensure correct ownership for non-root user ($SUDO_USER)
     chown $SUDO_USER:$SUDO_USER "$1" || { echo -e "\033[1;31mFailed to set ownership for $1. Exiting.\033[0m"; exit 1; }
     chmod 755 "$1" || { echo -e "\033[1;31mFailed to set permissions for $1. Exiting.\033[0m"; exit 1; }
 }
-
-# List of directories to check/create
-required_dirs=(
-    "$HOME_DIR/.config"
-    "$HOME_DIR/Videos"
-    "$HOME_DIR/Pictures/wallpapers"
-    "$HOME_DIR/Documents"
-    "$HOME_DIR/Downloads"
-    "$HOME_DIR/.local/share/icons"
-)
-
-# Create the required directories
-for dir in "${required_dirs[@]}"; do
-    create_directory "$dir"
-done
 
 # Install git if it's not already installed
 echo -e "\033[1;34mUpdating package list and installing git...\033[0m"
@@ -523,6 +508,20 @@ fi
 # Enable and start NetworkManager
 echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
 sudo systemctl enable --now NetworkManager || { echo -e "\033[1;31mFailed to enable or start NetworkManager. Exiting.\033[0m"; exit 1; }
+
+# List of directories to check/create
+required_dirs=(
+    "$HOME_DIR/.config"
+    "$HOME_DIR/Videos"
+    "$HOME_DIR/Documents"
+    "$HOME_DIR/Downloads"
+    "$HOME_DIR/.local/share/icons"
+)
+
+# Create the required directories
+for dir in "${required_dirs[@]}"; do
+    create_directory "$dir"
+done
 
 # Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
