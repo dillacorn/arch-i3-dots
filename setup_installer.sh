@@ -513,6 +513,7 @@ sudo systemctl enable --now NetworkManager || { echo -e "\033[1;31mFailed to ena
 required_dirs=(
     "$HOME_DIR/.config"
     "$HOME_DIR/Videos"
+    "$HOME_DIR/Pictures/wallpapers"
     "$HOME_DIR/Documents"
     "$HOME_DIR/Downloads"
     "$HOME_DIR/.local/share/icons"
