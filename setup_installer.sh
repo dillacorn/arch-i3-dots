@@ -561,17 +561,15 @@ if ! grep -q "fastfetch" "$BASH_PROFILE"; then
     chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
 fi
 
-# Add figlet Welcome message in a random style
-if ! grep -q "figlet welcome" "$BASH_PROFILE"; then
+# Add figlet Welcome message using the default font
+if ! grep -q "figlet" "$BASH_PROFILE"; then
     echo "Adding figlet welcome to $BASH_PROFILE..."
 
-    # Random figlet fonts
-    figlet_fonts=("block" "slant" "banner" "digital" "shadow" "standard" "starwars")
+    # Remove any previous echo for welcome
+    sed -i '/echo.*Welcome/d' "$BASH_PROFILE"
 
-    # Choose a random font
-    RANDOM_FONT=${figlet_fonts[$RANDOM % ${#figlet_fonts[@]}]}
-
-    echo -e "figlet -f $RANDOM_FONT \"Welcome \$USER\"" >> "$BASH_PROFILE"
+    # Add figlet welcome
+    echo -e "\nfiglet \"Welcome \$USER!\"" >> "$BASH_PROFILE"
     chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
 fi
 
