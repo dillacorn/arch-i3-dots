@@ -6,7 +6,7 @@ Notes From Repo: https://github.com/dillacorn/arch-i3-dots
 sudo micro /etc/default/grub
 ```
 
-### add and/or edit save last boot lines kernel
+### add and/or edit last boot kernel selection (primarily for linux-tkg)
 ```sh
 GRUB_DEFAULT=saved
 GRUB_SAVEDEFAULT=true
