@@ -14,7 +14,8 @@ GRUB_SAVEDEFAULT=true
 
 ### if you have a high refresh rate display
 ```sh
-GRUB_GFXMODE=1920x1080,240
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet amdgpu.dc=1 video=1920x1080@240"
+GRUB_GFXMODE=1920x1080x32
 ```
 
 ### run this command to sync the changes
