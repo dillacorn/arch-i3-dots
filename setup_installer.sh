@@ -555,10 +555,10 @@ if [ ! -f "$BASH_PROFILE" ]; then
     chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
 fi
 
-# Add fastfetch to .bash_profile if it doesn't exist already
+# Add fastfetch to bash_profile if it doesn't exist already
 if ! grep -q "fastfetch" "$BASH_PROFILE"; then
     echo "Adding fastfetch to $BASH_PROFILE..."
-    echo -e "\nfastfetch" >> "$BASH_PROFILE"
+    echo -e "\nfastfetch --config ~/.config/fastfetch/tty_compatible.jsonc" >> "$BASH_PROFILE"
     chown $SUDO_USER:$SUDO_USER "$BASH_PROFILE"
 fi
 
