@@ -70,6 +70,7 @@ echo -e "\033[1;33m
 - ~/.config/rofi
 - ~/.config/dunst
 - ~/.config/flameshot
+- ~/.config/fastfetch
 - ~/.config/xsettingsd
 - ~/.config/gtk-3.0
 - ~/.gtk-2.0
@@ -229,8 +230,8 @@ fi
 echo -e "\033[1;34mCopying .Xresources to $HOME_DIR...\033[0m"
 retry_command cp "$HOME_DIR/arch-i3-dots/Xresources" "$HOME_DIR/.Xresources" || { echo -e "\033[1;31mFailed to copy .Xresources. Exiting.\033[0m"; exit 1; }
 
-# Copy configuration files for alacritty, dunst, i3, rofi, gtk-3.0
-config_dirs=("alacritty" "dunst" "i3" "rofi" "gtk-3.0" "flameshot")
+# Copy configuration files
+config_dirs=("alacritty" "dunst" "i3" "rofi" "gtk-3.0" "flameshot" "fastfetch")
 
 for config in "${config_dirs[@]}"; do
     echo -e "\033[1;32mCopying $config config...\033[0m"
