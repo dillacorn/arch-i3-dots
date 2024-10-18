@@ -1,5 +1,7 @@
 Notes From Repo: https://github.com/dillacorn/arch-i3-dots
 
+### Tip: Use Glorious Egg Roll if you're having trouble with proton experimental (bleeding edge)
+
 ### These are unique launch options depending on the game and use case for [i3wm](https://github.com/i3/i3) and/or other Xorg/X11 sessions
 
 ### before running launch option set a custom resolution see [custom_res.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/custom_res.sh)
