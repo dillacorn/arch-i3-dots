@@ -123,16 +123,16 @@ bindsym Mod1+shift+Right move right
 ###################
 
 # Workspace switching
-bindsym Mod1+1 workspace "1:  "
-bindsym Mod1+2 workspace "2:  "
-bindsym Mod1+3 workspace "3:  "
-bindsym Mod1+4 workspace "4:  "
-bindsym Mod1+5 workspace "5:  "
-bindsym Mod1+6 workspace "6:  "
-bindsym Mod1+7 workspace "7:  "
-bindsym Mod1+8 workspace "8:  "
-bindsym Mod1+9 workspace "9:  "
-bindsym Mod1+0 workspace "10:  "
+bindsym Mod1+1 workspace --no-auto-back-and-forth "1:  "
+bindsym Mod1+2 workspace --no-auto-back-and-forth "2:  "
+bindsym Mod1+3 workspace --no-auto-back-and-forth "3:  "
+bindsym Mod1+4 workspace --no-auto-back-and-forth "4:  "
+bindsym Mod1+5 workspace --no-auto-back-and-forth "5:  "
+bindsym Mod1+6 workspace --no-auto-back-and-forth "6:  "
+bindsym Mod1+7 workspace --no-auto-back-and-forth "7:  "
+bindsym Mod1+8 workspace --no-auto-back-and-forth "8:  "
+bindsym Mod1+9 workspace --no-auto-back-and-forth "9:  "
+bindsym Mod1+0 workspace --no-auto-back-and-forth "10:  "
 
 # default workspaces for common programs
 assign [class="^Moonlight"] "1:  "
