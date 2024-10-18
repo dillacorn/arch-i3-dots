@@ -35,3 +35,6 @@ xrandr --output DisplayPort-2 --mode "1344x1005_81.67" --pos 0x0 --output Displa
 
 ## The Finals ~ stretched 1352x1080 240hz
 xrandr --output DisplayPort-1 --mode "1352x1080_240.00" ; gamemoderun PROTON_USE_EAC_LINUX=1 DXVK_ASYNC=1 %command% ; xrandr --output DisplayPort-1 --mode 1920x1080 --rate 240
+
+## FragPunk ~ stretched 1352x1080 240hz
+xrandr --output DisplayPort-1 --mode "1352x1080_240.00" ; gamemoderun %command% ; xrandr --output DisplayPort-1 --mode 1920x1080 --rate 240
