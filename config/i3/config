@@ -123,7 +123,7 @@ bindsym Mod1+shift+Right move right
 ###################
 
 # Workspace switching
-bindsym Mod1+1 exec --no-startup-id i3-msg workspace "1:  "
+bindsym Mod1+1 workspace --no-auto-back-and-forth "1:  "
 bindsym Mod1+2 exec --no-startup-id i3-msg workspace "2:  "
 bindsym Mod1+3 exec --no-startup-id i3-msg workspace "3:  "
 bindsym Mod1+4 exec --no-startup-id i3-msg workspace "4:  "
