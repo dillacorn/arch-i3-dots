@@ -80,20 +80,19 @@ echo -e "\033[1;31mAre you sure you want to continue? This action CANNOT be undo
 echo -e "\033[1;32mPress 'y' to continue or 'n' to cancel.\033[0m"
 
 # First confirmation
-read -n 1 -r first_confirmation
+read -n 1 -r -p $'\033[1;31mAre you sure you want to continue? This action CANNOT be undone.\nPress "y" to continue or "n" to cancel. Default is "yes" if Enter is pressed:\033[0m ' first_confirmation
 echo
 
-if [[ "$first_confirmation" != "y" && "$first_confirmation" != "Y" ]]; then
+if [[ "$first_confirmation" != "y" && "$first_confirmation" != "Y" && "$first_confirmation" != "" ]]; then
     echo -e "\033[1;31mInstallation canceled by user.\033[0m"
     exit 1
 fi
 
 # Second confirmation
-echo -e "\033[1;31mThis is your last chance! Are you absolutely sure? (y/n)\033[0m"
-read -n 1 -r second_confirmation
+read -n 1 -r -p $'\033[1;31mThis is your last chance! Are you absolutely sure? (y/n) Default is "yes" if Enter is pressed:\033[0m ' second_confirmation
 echo
 
-if [[ "$second_confirmation" != "y" && "$second_confirmation" != "Y" ]]; then
+if [[ "$second_confirmation" != "y" && "$second_confirmation" != "Y" && "$second_confirmation" != "" ]]; then
     echo -e "\033[1;31mInstallation canceled by user.\033[0m"
     exit 1
 fi
