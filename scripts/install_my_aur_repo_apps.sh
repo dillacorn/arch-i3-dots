@@ -66,7 +66,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             cava
             otpclient
             vibrantlinux
-            obs-studio-bin
+            obs-ndi-bin
             protonup-qt-bin
             moonlight-qt-bin
             sunshine-bin
@@ -85,6 +85,17 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 EOF
 
     echo -e "\n${GREEN}Installation complete and disk space optimized!${NC}"
+
+    # Download and run the libndi-get.sh script
+    echo -e "${CYAN}Installing NDI runtime...${NC}"
+    sudo -u "$SUDO_USER" bash <<EOF
+        wget https://github.com/obs-ndi/obs-ndi/raw/master/CI/libndi-get.sh -O /tmp/libndi-get.sh
+        chmod +x /tmp/libndi-get.sh
+        /tmp/libndi-get.sh
+        rm -f /tmp/libndi-get.sh  # Clean up
+EOF
+
+    echo -e "${GREEN}NDI runtime installation complete!${NC}"
 else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch AUR Linux applications.${NC}"
     exit 0
