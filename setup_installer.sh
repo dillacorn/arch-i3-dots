@@ -61,7 +61,7 @@ fi
 
 set -eu -o pipefail # fail on error and report it, debug all lines
 
-# Add a warning message for overwriting directories
+# First confirmation
 echo -e "\033[1;31mWARNING: This script will overwrite the following directories:\033[0m"
 echo -e "\033[1;33m
 - ~/.config/i3
@@ -77,19 +77,20 @@ echo -e "\033[1;33m
 - /etc/X11/xinit/xinitrc
 - ~/.Xresources\033[0m"
 echo -e "\033[1;31mAre you sure you want to continue? This action CANNOT be undone.\033[0m"
-echo -e "\033[1;32mPress 'y' to continue or 'n' to cancel.\033[0m"
+echo -e "\033[1;32mPress 'y' to continue or 'n' to cancel. Default is 'yes' if Enter is pressed:\033[0m"
 
-# First confirmation
-read -n 1 -r -p $'\033[1;31mAre you sure you want to continue? This action CANNOT be undone.\nPress "y" to continue or "n" to cancel. Default is "yes" if Enter is pressed:\033[0m ' first_confirmation
+read -n 1 -r first_confirmation
 echo
 
+# If user presses Enter (no input), default to 'y'
 if [[ "$first_confirmation" != "y" && "$first_confirmation" != "Y" && "$first_confirmation" != "" ]]; then
     echo -e "\033[1;31mInstallation canceled by user.\033[0m"
     exit 1
 fi
 
-# Second confirmation
-read -n 1 -r -p $'\033[1;31mThis is your last chance! Are you absolutely sure? (y/n) Default is "yes" if Enter is pressed:\033[0m ' second_confirmation
+# Second confirmation (Optional, if you want to ask again)
+echo -e "\033[1;31mThis is your last chance! Are you absolutely sure? (y/n)\033[0m"
+read -n 1 -r second_confirmation
 echo
 
 if [[ "$second_confirmation" != "y" && "$second_confirmation" != "Y" && "$second_confirmation" != "" ]]; then
