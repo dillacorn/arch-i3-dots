@@ -106,7 +106,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         echo -e "${CYAN}Installing ufw...${NC}"
         install_package "ufw"
         echo -e "${CYAN}Enabling ufw...${NC}"
-        sudo ufw enable
+        ufw enable
     else
         echo -e "${YELLOW}ufw is already installed, skipping installation and enabling.${NC}"
     fi
