@@ -41,43 +41,64 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     pacman -Syu --noconfirm
 
     # ----------------------------
-    # Install Applications
+    # Window Management Tools
     # ----------------------------
     echo -e "${CYAN}Installing window management tools...${NC}"
     for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput xdotool; do
         install_package "$pkg"
     done
-
+    
+    # ----------------------------
+    # Fonts
+    # ----------------------------
     echo -e "${CYAN}Installing fonts...${NC}"
     for pkg in ttf-font-awesome ttf-hack ttf-dejavu ttf-liberation noto-fonts; do
         install_package "$pkg"
     done
 
+    # ----------------------------
+    # Themes
+    # ----------------------------
     echo -e "${CYAN}Installing themes...${NC}"
     for pkg in papirus-icon-theme materia-gtk-theme xcursor-comix; do
         install_package "$pkg"
     done
 
+    # ----------------------------
+    # Terminal Applications
+    # ----------------------------
     echo -e "${CYAN}Installing terminal applications...${NC}"
     for pkg in micro alacritty fastfetch btop htop curl wget git dos2unix brightnessctl cmatrix sl asciiquarium figlet; do
         install_package "$pkg"
     done
 
+    # ----------------------------
+    # Utilities
+    # ----------------------------
     echo -e "${CYAN}Installing general utilities...${NC}"
     for pkg in dunst lxsession lxappearance networkmanager network-manager-applet solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc qbittorrent filelight timeshift flameshot maim imagemagick; do
         install_package "$pkg"
     done
 
+    # ----------------------------
+    # Multimedia Tools
+    # ----------------------------
     echo -e "${CYAN}Installing multimedia tools...${NC}"
     for pkg in ffmpeg mpv peek cheese exiv2 audacity obs-studio krita shotcut telegram-desktop ncspot filezilla; do
         install_package "$pkg"
     done
 
+    # ----------------------------
+    # Development Tools
+    # ----------------------------
     echo -e "${CYAN}Installing development tools...${NC}"
     for pkg in base-devel clang ninja go rust octave okular tigervnc bleachbit virt-manager gamemode; do
         install_package "$pkg"
     done
 
+    # ----------------------------
+    # Networking and Security
+    # ----------------------------
     echo -e "${CYAN}Installing networking and security tools...${NC}"
     if ! pacman -Qs ufw > /dev/null; then
         echo -e "${CYAN}Installing ufw...${NC}"
@@ -93,6 +114,18 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
+    # Check if Moonlight is installed, then configure firewall
+    if pacman -Qs moonlight-qt > /dev/null; then
+        echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
+        sudo ufw allow 48010/tcp
+        sudo ufw allow 48000/udp
+        sudo ufw allow 48010/udp
+        echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
+    else
+        echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
+    fi
+    
+    # Enable libvirtd if it's installed
     echo -e "${CYAN}Configuring libvirt and networking...${NC}"
     if pacman -Qs libvirt > /dev/null; then
         echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
@@ -146,7 +179,8 @@ EOF
     else
         echo -e "${YELLOW}libvirt is not installed. Skipping libvirtd enablement.${NC}"
     fi
-
+    
+    # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
 else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux applications.${NC}"
