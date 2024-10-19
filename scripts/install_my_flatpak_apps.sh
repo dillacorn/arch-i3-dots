@@ -66,18 +66,27 @@ install_flatpak_app() {
   local app="$1"
   local retries=3
   local count=0
-  until flatpak list --app | grep -q "${app}"; do
+  while ! flatpak list --app | grep -q "${app}"; do
     if [ $count -ge $retries ]; then
       echo -e "${RED_B}Failed to install ${app} after $retries attempts. Skipping...${RESET}"
       return 1
     fi
     echo -e "${GREEN}Installing ${app} (Attempt $((count + 1))/${retries})...${RESET}"
+    
+    # Install the Flatpak app and capture the exit code
     if sudo flatpak install -y "$flatpak_origin" "$app"; then
       echo -e "${GREEN}${app} installed successfully.${RESET}"
+      break
     else
-      echo -e "${RED_B}Failed to install ${app}. Retrying...${RESET}"
-      count=$((count + 1))
-      sleep 2
+      install_status=$?
+      if [ "$install_status" -eq 0 ]; then
+        echo -e "${YELLOW}${app} is already installed. Skipping...${RESET}"
+        break
+      else
+        echo -e "${RED_B}Failed to install ${app}. Retrying...${RESET}"
+        count=$((count + 1))
+        sleep 2
+      fi
     fi
   done
 }
