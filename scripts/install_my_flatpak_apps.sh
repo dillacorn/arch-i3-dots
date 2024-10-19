@@ -110,4 +110,19 @@ else
   echo -e "${RED_B}Steam is not installed. Skipping override...${RESET}"
 fi
 
+# Check if OBS NDI Plugin is installed, then configure firewall
+if flatpak list --app | grep -q "com.obsproject.Studio.Plugin.NDI"; then
+    echo -e "${CYAN}OBS NDI Plugin detected! Configuring firewall rules for NDI...${NC}"
+    
+    # Add firewall rules for NDI (ports 5960-5970 for NDI streams and 5353 for mDNS)
+    sudo ufw allow 5353/udp
+    for port in $(seq 5960 5970); do
+        sudo ufw allow "${port}"/udp
+    done
+    
+    echo -e "${GREEN}Firewall rules for NDI configured successfully.${NC}"
+else
+    echo -e "${YELLOW}OBS NDI Plugin is not installed. Skipping firewall configuration for NDI.${NC}"
+fi
+
 echo -e "${PURPLE}Flatpak setup and installation complete.${RESET}"
