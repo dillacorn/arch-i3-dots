@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ensure the script is run with sudo
+# Ensure the script is run with sudo/root privileges
 if [ -z "$SUDO_USER" ]; then
     echo "This script must be run with sudo!"
     exit 1
@@ -15,18 +15,12 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Check if the user has sudo privileges
-if ! sudo -n true 2>/dev/null; then
-    echo -e "${RED}You should have sudo privileges to run this script.${NC}"
-    exit 1
-fi
-
 # Function to install a package and its dependencies if not already installed
 install_package() {
     local package="$1"
     if ! pacman -Qi "$package" &>/dev/null; then
         echo -e "${CYAN}Installing $package and its dependencies...${NC}"
-        sudo pacman -S --needed --noconfirm "$package"
+        pacman -S --needed --noconfirm "$package"
     else
         echo -e "${YELLOW}$package is already installed. Skipping...${NC}"
     fi
@@ -44,73 +38,52 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     
     # Update the package list
     echo -e "${CYAN}Updating package list...${NC}"
-    sudo pacman -Syu --noconfirm
+    pacman -Syu --noconfirm
 
     # ----------------------------
-    # Window Management Tools
+    # Install Applications
     # ----------------------------
     echo -e "${CYAN}Installing window management tools...${NC}"
     for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput xdotool; do
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Fonts
-    # ----------------------------
     echo -e "${CYAN}Installing fonts...${NC}"
     for pkg in ttf-font-awesome ttf-hack ttf-dejavu ttf-liberation noto-fonts; do
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Themes
-    # ----------------------------
     echo -e "${CYAN}Installing themes...${NC}"
     for pkg in papirus-icon-theme materia-gtk-theme xcursor-comix; do
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Terminal Applications
-    # ----------------------------
     echo -e "${CYAN}Installing terminal applications...${NC}"
     for pkg in micro alacritty fastfetch btop htop curl wget git dos2unix brightnessctl cmatrix sl asciiquarium figlet; do
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Utilities
-    # ----------------------------
     echo -e "${CYAN}Installing general utilities...${NC}"
     for pkg in dunst lxsession lxappearance networkmanager network-manager-applet solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc qbittorrent filelight timeshift flameshot maim imagemagick; do
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Multimedia Tools
-    # ----------------------------
     echo -e "${CYAN}Installing multimedia tools...${NC}"
     for pkg in ffmpeg mpv peek cheese exiv2 audacity obs-studio krita shotcut telegram-desktop ncspot filezilla; do
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Development Tools
-    # ----------------------------
     echo -e "${CYAN}Installing development tools...${NC}"
     for pkg in base-devel clang ninja go rust octave okular tigervnc bleachbit virt-manager gamemode; do
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Networking and Security
-    # ----------------------------
     echo -e "${CYAN}Installing networking and security tools...${NC}"
     if ! pacman -Qs ufw > /dev/null; then
         echo -e "${CYAN}Installing ufw...${NC}"
         install_package "ufw"
         echo -e "${CYAN}Enabling ufw...${NC}"
-        sudo ufw enable
+        ufw enable
     else
         echo -e "${YELLOW}ufw is already installed, skipping installation and enabling.${NC}"
     fi
@@ -120,27 +93,60 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
-    # Check if Moonlight is installed, then configure firewall
-    if pacman -Qs moonlight-qt > /dev/null; then
-        echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
-        sudo ufw allow 48010/tcp
-        sudo ufw allow 48000/udp
-        sudo ufw allow 48010/udp
-        echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
-    else
-        echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
-    fi
-
-    # Enable libvirtd if it's installed
+    echo -e "${CYAN}Configuring libvirt and networking...${NC}"
     if pacman -Qs libvirt > /dev/null; then
         echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
         systemctl enable --now libvirtd
-        echo -e "${GREEN}libvirtd service enabled and started.${NC}"
+
+        # Generate a unique UUID and random MAC address
+        uuid=$(uuidgen)
+        mac=$(printf '52:54:%02X:%02X:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))
+
+        # Detect conflicts with IP ranges and configure network
+        interface=$(ip route | grep '^default' | awk '{print $5}')
+        current_subnet=$(ip -o -4 addr show $interface | awk '{print $4}')
+        
+        default_network_ip="192.168.122.1"
+        default_network_range="192.168.122.0/24"
+
+        if ipcalc -n "$current_subnet" | grep -q "192.168.122.0"; then
+            default_network_ip="10.0.0.1"
+            default_network_range="10.0.0.0/24"
+        elif ipcalc -n "$current_subnet" | grep -q "10.0.0.0"; then
+            default_network_ip="172.16.0.1"
+            default_network_range="172.16.0.0/24"
+        fi
+
+        if ! virsh net-list --all | grep -q 'default'; then
+            echo -e "${CYAN}Creating and starting default network...${NC}"
+            
+            # Create XML for the 'default' network
+            cat <<EOF > /tmp/default.xml
+<network>
+  <name>default</name>
+  <uuid>$uuid</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='$mac'/>
+  <ip address='$default_network_ip' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='${default_network_ip%.1}.2' end='${default_network_ip%.1}.254'/>
+    </dhcp>
+  </ip>
+</network>
+EOF
+
+            virsh net-define /tmp/default.xml
+            virsh net-start default
+            virsh net-autostart default
+            echo -e "${GREEN}Default network created and started.${NC}"
+        else
+            echo -e "${YELLOW}Default network already exists. Skipping creation.${NC}"
+        fi
     else
         echo -e "${YELLOW}libvirt is not installed. Skipping libvirtd enablement.${NC}"
     fi
 
-    # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
 else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux applications.${NC}"
