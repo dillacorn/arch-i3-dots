@@ -31,6 +31,8 @@ flatpak_apps=(
   'com.ultimaker.cura'
   'fr.handbrake.ghb'
   'com.dec05eba.gpu_screen_recorder'
+  'com.obsproject.Studio'
+  'com.obsproject.Studio.Plugin.NDI'
   'com.github.tchx84.Flatseal'
   'com.valvesoftware.Steam'
   'io.github.ungoogled_software.ungoogled_chromium'
