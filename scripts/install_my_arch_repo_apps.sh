@@ -92,7 +92,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Development Tools
     # ----------------------------
     echo -e "${CYAN}Installing development tools...${NC}"
-    for pkg in base-devel clang ninja go rust octave okular tigervnc bleachbit virt-manager qemu gamemode nftables; do
+    for pkg in base-devel clang ninja go rust octave okular tigervnc bleachbit virt-manager qemu dmidecode gamemode nftables; do
         install_package "$pkg"
     done
 
