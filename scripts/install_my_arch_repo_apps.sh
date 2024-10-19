@@ -110,7 +110,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     fi
 
     # Install other networking and security tools
-    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent inetutils pipewire-pulse bluez; do
+    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq inetutils pipewire-pulse bluez; do
         install_package "$pkg"
     done
 
@@ -180,10 +180,9 @@ if pacman -Qs libvirt > /dev/null; then
 </network>
 EOF
 
-        # Define and start the network
-        virsh net-define /tmp/default.xml || { echo -e "${RED}Failed to define the 'default' network.${NC}"; exit 1; }
-        virsh net-start default || { echo -e "${RED}Failed to start the 'default' network.${NC}"; exit 1; }
-        virsh net-autostart default || { echo -e "${RED}Failed to set 'default' network to autostart.${NC}"; exit 1; }
+        virsh net-define /tmp/default.xml
+        virsh net-start default
+        virsh net-autostart default
         echo -e "${GREEN}Default network created and started.${NC}"
     else
         echo -e "${CYAN}Default network already defined and active.${NC}"
