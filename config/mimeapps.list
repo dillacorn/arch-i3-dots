@@ -15,6 +15,7 @@ video/quicktime=mpv.desktop
 audio/mpeg=mpv.desktop
 image/gif=mpv.desktop
 inode/directory=pcmanfm.desktop
+application/x-bittorrent=org.qbittorrent.qBittorrent.desktop
 
 [Added Associations]
 application/octet-stream=micro.desktop;
@@ -26,3 +27,4 @@ video/quicktime=mpv.desktop;
 audio/mpeg=mpv.desktop;
 image/gif=mpv.desktop;
 inode/directory=pcmanfm.desktop;
+application/x-bittorrent=org.qbittorrent.qBittorrent.desktop;
