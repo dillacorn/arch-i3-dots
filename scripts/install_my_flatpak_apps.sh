@@ -116,8 +116,8 @@ if flatpak list --app | grep -q "com.obsproject.Studio.Plugin.NDI"; then
     
     # Add firewall rules for NDI (ports 5960-5970 for NDI streams and 5353 for mDNS)
     ufw allow 5353/udp
-    for port in $(seq 5960 5970); do
-        ufw allow "${port}"/udp
+    for port in {5960..5970}; do
+        ufw allow "${port}/udp"
     done
     
     echo -e "${GREEN}Firewall rules for NDI configured successfully.${NC}"
