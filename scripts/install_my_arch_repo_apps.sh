@@ -96,43 +96,39 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
-# ----------------------------
-# Networking and Security
-# ----------------------------
-echo -e "${CYAN}Installing networking and security tools...${NC}"
+    # ----------------------------
+    # Networking and Security
+    # ----------------------------
+    echo -e "${CYAN}Installing networking and security tools...${NC}"
 
-# Install UFW if not already installed and enable it
-if ! pacman -Qs ufw > /dev/null; then
-    echo -e "${CYAN}Installing ufw...${NC}"
-    install_package "ufw"
+    # Install UFW if not already installed and enable it
+    if ! pacman -Qs ufw > /dev/null; then
+        echo -e "${CYAN}Installing ufw...${NC}"
+        install_package "ufw"
 
-    # Check if UFW is inactive and enable it
-    if [[ $(sudo ufw status | grep -i 'inactive') ]]; then
-        echo -e "${CYAN}Enabling ufw...${NC}"
-        sudo ufw enable
-        echo -e "${GREEN}UFW has been enabled.${NC}"
+        # Enable UFW and set it to start on boot
+        echo -e "${CYAN}Enabling UFW and configuring it to start on boot...${NC}"
+        ufw enable
+        systemctl enable ufw
     else
-        echo -e "${YELLOW}UFW is already active. Skipping enablement.${NC}"
+        echo -e "${YELLOW}UFW is already installed, skipping installation.${NC}"
     fi
-else
-    echo -e "${YELLOW}UFW is already installed, skipping installation.${NC}"
-fi
 
-# Install other networking and security tools
-for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq inetutils pipewire-pulse bluez; do
-    install_package "$pkg"
-done
+    # Install other networking and security tools
+    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq inetutils pipewire-pulse bluez; do
+        install_package "$pkg"
+    done
 
-# Check if Moonlight is installed, then configure firewall
-if pacman -Qs moonlight-qt > /dev/null; then
-    echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
-    ufw allow 48010/tcp
-    ufw allow 48000/udp
-    ufw allow 48010/udp
-    echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
-else
-    echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
-fi
+    # Check if Moonlight is installed, then configure firewall
+    if pacman -Qs moonlight-qt > /dev/null; then
+        echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
+        ufw allow 48010/tcp
+        ufw allow 48000/udp
+        ufw allow 48010/udp
+        echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
+    else
+        echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
+    fi
 
     # Enable libvirtd if it's installed
     echo -e "${CYAN}Configuring libvirt and networking...${NC}"
@@ -181,7 +177,7 @@ fi
   <forward mode='nat'/>
   <bridge name='virbr0' stp='on' delay='0'/>
   <mac address='$mac'/>
-  <ip address='$default_network_ip' netmask='$default_netmask'>
+  <ip address='$default_network_ip' netmask='$default_network_ip'>
     <dhcp>
       <range start='${default_network_ip%.1}.2' end='${default_network_ip%.1}.254'/>
     </dhcp>
