@@ -125,43 +125,48 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
     fi
     
-    # Enable libvirtd if it's installed
-    echo -e "${CYAN}Configuring libvirt and networking...${NC}"
-    if pacman -Qs libvirt > /dev/null; then
-        echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
-        systemctl enable --now libvirtd
+# Enable libvirtd if it's installed
+echo -e "${CYAN}Configuring libvirt and networking...${NC}"
+if pacman -Qs libvirt > /dev/null; then
+    echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
+    systemctl enable --now libvirtd
 
-        # Generate a unique UUID and random MAC address
-        uuid=$(uuidgen)
-        mac=$(printf '52:54:%02X:%02X:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))
+    # Generate a unique UUID and random MAC address
+    uuid=$(uuidgen)
+    mac=$(printf '52:54:%02X:%02X:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))
 
-        # Detect conflicts with IP ranges and configure network
-        interface=$(ip route | grep '^default' | awk '{print $5}')
-        current_subnet=$(ip -o -4 addr show $interface | awk '{print $4}')
+    # Detect the current network interface, IP address, and netmask
+    interface=$(ip route | grep '^default' | awk '{print $5}')
+    ip_info=$(ip -o -4 addr show $interface | awk '{print $4}')
+    current_ip=$(echo "$ip_info" | cut -d/ -f1)
+    current_netmask=$(ipcalc "$ip_info" | grep Netmask | awk '{print $2}')
+    
+    # Define a default network IP and netmask to avoid conflicts
+    default_network_ip="192.168.122.1"
+    default_netmask="255.255.255.0"
+
+    # Adjust if the current network overlaps with the default range
+    if ipcalc -n "$ip_info" | grep -q "192.168.122.0"; then
+        default_network_ip="10.0.0.1"
+        default_netmask="255.255.255.0"
+    elif ipcalc -n "$ip_info" | grep -q "10.0.0.0"; then
+        default_network_ip="172.16.0.1"
+        default_netmask="255.255.255.0"
+    fi
+
+    # Check if the 'default' network exists
+    if ! virsh net-list --all | grep -q 'default'; then
+        echo -e "${YELLOW}Network 'default' not found. Creating and starting the default network...${NC}"
         
-        default_network_ip="192.168.122.1"
-        default_network_range="192.168.122.0/24"
-
-        if ipcalc -n "$current_subnet" | grep -q "192.168.122.0"; then
-            default_network_ip="10.0.0.1"
-            default_network_range="10.0.0.0/24"
-        elif ipcalc -n "$current_subnet" | grep -q "10.0.0.0"; then
-            default_network_ip="172.16.0.1"
-            default_network_range="172.16.0.0/24"
-        fi
-
-        if ! virsh net-list --all | grep -q 'default'; then
-            echo -e "${CYAN}Creating and starting default network...${NC}"
-            
-            # Create XML for the 'default' network
-            cat <<EOF > /tmp/default.xml
+        # Create XML for the 'default' network using dynamic IP and Netmask
+        cat <<EOF > /tmp/default.xml
 <network>
   <name>default</name>
   <uuid>$uuid</uuid>
   <forward mode='nat'/>
   <bridge name='virbr0' stp='on' delay='0'/>
   <mac address='$mac'/>
-  <ip address='$default_network_ip' netmask='255.255.255.0'>
+  <ip address='$default_network_ip' netmask='$default_netmask'>
     <dhcp>
       <range start='${default_network_ip%.1}.2' end='${default_network_ip%.1}.254'/>
     </dhcp>
@@ -169,16 +174,16 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 </network>
 EOF
 
-            virsh net-define /tmp/default.xml
-            virsh net-start default
-            virsh net-autostart default
-            echo -e "${GREEN}Default network created and started.${NC}"
-        else
-            echo -e "${YELLOW}Default network already exists. Skipping creation.${NC}"
-        fi
+        virsh net-define /tmp/default.xml
+        virsh net-start default
+        virsh net-autostart default
+        echo -e "${GREEN}Default network created and started.${NC}"
     else
-        echo -e "${YELLOW}libvirt is not installed. Skipping libvirtd enablement.${NC}"
+        echo -e "${CYAN}Default network already defined and active.${NC}"
     fi
+else
+    echo -e "${YELLOW}libvirt is not installed. Skipping libvirtd enablement.${NC}"
+fi
     
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
