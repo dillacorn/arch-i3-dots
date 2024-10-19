@@ -131,6 +131,12 @@ if pacman -Qs libvirt > /dev/null; then
     echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
     systemctl enable --now libvirtd
 
+    # Verify if libvirtd started successfully
+    if ! systemctl is-active --quiet libvirtd; then
+        echo -e "${RED}libvirtd service failed to start. Please check the service status.${NC}"
+        exit 1
+    fi
+
     # Generate a unique UUID and random MAC address
     uuid=$(uuidgen)
     mac=$(printf '52:54:%02X:%02X:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))
@@ -174,9 +180,10 @@ if pacman -Qs libvirt > /dev/null; then
 </network>
 EOF
 
-        virsh net-define /tmp/default.xml
-        virsh net-start default
-        virsh net-autostart default
+        # Define and start the network
+        virsh net-define /tmp/default.xml || { echo -e "${RED}Failed to define the 'default' network.${NC}"; exit 1; }
+        virsh net-start default || { echo -e "${RED}Failed to start the 'default' network.${NC}"; exit 1; }
+        virsh net-autostart default || { echo -e "${RED}Failed to set 'default' network to autostart.${NC}"; exit 1; }
         echo -e "${GREEN}Default network created and started.${NC}"
     else
         echo -e "${CYAN}Default network already defined and active.${NC}"
