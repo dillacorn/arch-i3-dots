@@ -131,6 +131,15 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
     fi
 
+    # Enable libvirtd if it's installed
+    if pacman -Qs libvirt > /dev/null; then
+        echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
+        systemctl enable --now libvirtd
+        echo -e "${GREEN}libvirtd service enabled and started.${NC}"
+    else
+        echo -e "${YELLOW}libvirt is not installed. Skipping libvirtd enablement.${NC}"
+    fi
+
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
 else
