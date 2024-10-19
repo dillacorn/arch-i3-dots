@@ -88,7 +88,7 @@ if [[ "$first_confirmation" != "y" && "$first_confirmation" != "Y" && "$first_co
     exit 1
 fi
 
-# Second confirmation (Optional, if you want to ask again)
+# Second confirmation
 echo -e "\033[1;31mThis is your last chance! Are you absolutely sure? (y/n)\033[0m"
 read -n 1 -r second_confirmation
 echo
@@ -98,7 +98,9 @@ if [[ "$second_confirmation" != "y" && "$second_confirmation" != "Y" && "$second
     exit 1
 fi
 
+# Adding pause before continuing
 echo -e "\033[1;32mProceeding with the installation...\033[0m"
+read -p "Press Enter to continue..."
 
 # Set the home directory of the sudo user
 HOME_DIR="/home/$SUDO_USER"
@@ -148,9 +150,11 @@ retry_command chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/arch-i3-dots/scripts"
 # Run installation scripts for packages
 echo -e "\033[1;34mRunning install_my_arch_repo_apps.sh...\033[0m"
 retry_command ./install_my_arch_repo_apps.sh || { echo -e "\033[1;31minstall_my_arch_repo_apps.sh failed. Exiting.\033[0m"; exit 1; }
+read -p "Press Enter to run the next script..."
 
 echo -e "\033[1;34mRunning install_my_aur_repo_apps.sh...\033[0m"
 retry_command ./install_my_aur_repo_apps.sh || { echo -e "\033[1;31minstall_my_aur_repo_apps.sh failed. Exiting.\033[0m"; exit 1; }
+read -p "Press Enter to run the next script..."
 
 echo -e "\033[1;34mRunning install_my_flatpak_apps.sh...\033[0m"
 retry_command ./install_my_flatpak_apps.sh || { echo -e "\033[1;31minstall_my_flatpak_apps.sh failed. Exiting.\033[0m"; exit 1; }
@@ -210,6 +214,7 @@ retry_command cp "$HOME_DIR/arch-i3-dots/etc/X11/xinit/xinitrc" /etc/X11/xinit/ 
 # Convert xinitrc line endings to Unix format
 echo -e "\033[1;34mConverting xinitrc line endings to Unix format...\033[0m"
 retry_command dos2unix /etc/X11/xinit/xinitrc || { echo -e "\033[1;31mFailed to convert xinitrc line endings. Exiting.\033[0m"; exit 1; }
+read -p "Press Enter to continue..."
 
 # Edit libinput configuration
 echo -e "\033[1;34mEditing libinput settings in /usr/share/X11/xorg.conf.d/40-libinput.conf...\033[0m"
@@ -288,6 +293,7 @@ else
     echo -e "\033[1;31minstall_alacritty_themes.sh not found. Exiting.\033[0m"
     exit 1
 fi
+read -p "Press Enter to continue..."
 
 # Detect if running in a virtual machine
 if systemd-detect-virt -q; then
@@ -606,4 +612,5 @@ if [[ "$reboot_choice" == "y" || "$reboot_choice" == "Y" ]]; then
     retry_command reboot
 else
     echo -e "\033[1;32mReboot skipped. You can reboot manually later.\033[0m"
+    read -p "Press Enter to finish..."
 fi
