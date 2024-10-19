@@ -47,7 +47,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput xdotool; do
         install_package "$pkg"
     done
-    
+
     # ----------------------------
     # Fonts
     # ----------------------------
@@ -117,9 +117,9 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Check if Moonlight is installed, then configure firewall
     if pacman -Qs moonlight-qt > /dev/null; then
         echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
-        sudo ufw allow 48010/tcp
-        sudo ufw allow 48000/udp
-        sudo ufw allow 48010/udp
+        ufw allow 48010/tcp
+        ufw allow 48000/udp
+        ufw allow 48010/udp
         echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
     else
         echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
