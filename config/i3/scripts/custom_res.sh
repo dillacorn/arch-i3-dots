@@ -25,7 +25,7 @@ xrandr --newmode "1600x1200_68.91"  187.14  1600 1712 1888 2176  1200 1201 1204 
 
 # adding gtf/cvt output as a newmode for xrandr to use
 # [IPS 1080p 240hz ~ ViewSonic XG2431]
-xrandr --newmode "1400x1050_240.00"  570.50  1400 1528 1680 1960  1050 1053 1057 1214 -hsync +vsync
+xrandr --newmode "1400x1050_240.00"  574.30  1400 1528 1688 1976  1050 1051 1054 1211 -hsync +vsync
 xrandr --newmode "1352x1080_240.00"  571.31  1352 1480 1632 1912  1080 1081 1084 1245  -HSync +Vsync
 
 # apply newmode to specific output
