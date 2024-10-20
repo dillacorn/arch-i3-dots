@@ -88,6 +88,11 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
+    # Start and enable Avahi daemon
+    echo -e "${CYAN}Starting and enabling avahi-daemon...${NC}"
+    systemctl enable avahi-daemon
+    systemctl start avahi-daemon
+
     # ----------------------------
     # Development Tools
     # ----------------------------
@@ -118,7 +123,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq inetutils pipewire-pulse bluez; do
         install_package "$pkg"
     done
-
+    
     # Check if Moonlight is installed, then configure firewall
     if pacman -Qs moonlight-qt > /dev/null; then
         echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
