@@ -120,7 +120,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     fi
 
     # Install other networking and security tools
-    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhclient inetutils pipewire-pulse bluez; do
+    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire-pulse bluez; do
         install_package "$pkg"
     done
     
@@ -140,27 +140,49 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     if pacman -Qs libvirt > /dev/null; then
         echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
         systemctl enable --now libvirtd
-
+    
         # Verify if libvirtd started successfully
         if ! systemctl is-active --quiet libvirtd; then
             echo -e "${RED}libvirtd service failed to start. Please check the service status.${NC}"
             exit 1
         fi
-
+    
         # Generate a unique UUID and random MAC address
         uuid=$(uuidgen)
         mac=$(printf '52:54:%02X:%02X:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))
-
+    
         # Detect the current network interface, IP address, and netmask
         interface=$(ip route | grep '^default' | awk '{print $5}')
-        ip_info=$(ip -o -4 addr show $interface | awk '{print $4}')
+    
+        # Check if the interface is valid and up
+        if [[ -n "$interface" ]]; then
+            echo -e "${CYAN}Detected network interface: $interface${NC}"
+    
+            # Check if the interface exists and is up
+            if ip link show "$interface" | grep -q 'UP'; then
+                echo -e "${CYAN}Proceeding with network interface $interface...${NC}"
+            else
+                echo -e "${RED}Error: Interface $interface is down. Bringing it up...${NC}"
+                ip link set "$interface" up
+                if [[ $? -ne 0 ]]; then
+                    echo -e "${RED}Failed to bring up interface $interface.${NC}"
+                    exit 1
+                fi
+            fi
+        else
+            echo -e "${RED}Error: Could not detect a valid network interface. Please ensure you're connected to a network.${NC}"
+            exit 1
+        fi
+    
+        # Detect IP address and netmask
+        ip_info=$(ip -o -4 addr show "$interface" | awk '{print $4}')
         current_ip=$(echo "$ip_info" | cut -d/ -f1)
         current_netmask=$(ipcalc "$ip_info" | grep Netmask | awk '{print $2}')
-
+        
         # Define a default network IP and netmask to avoid conflicts
         default_network_ip="192.168.122.1"
         default_netmask="255.255.255.0"
-
+        
         # Adjust if the current network overlaps with the default range
         if ipcalc -n "$ip_info" | grep -q "192.168.122.0"; then
             default_network_ip="10.0.0.1"
@@ -169,27 +191,27 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             default_network_ip="172.16.0.1"
             default_netmask="255.255.255.0"
         fi
-
+    
         # Check if the 'default' network exists
         if ! virsh net-list --all | grep -q 'default'; then
             echo -e "${YELLOW}Network 'default' not found. Creating and starting the default network...${NC}"
-
+    
             # Create XML for the 'default' network using dynamic IP and Netmask
             cat <<EOF > /tmp/default.xml
-<network>
-  <name>default</name>
-  <uuid>$uuid</uuid>
-  <forward mode='nat'/>
-  <bridge name='virbr0' stp='on' delay='0'/>
-  <mac address='$mac'/>
-  <ip address='$default_network_ip' netmask='$default_netmask'>
-    <dhcp>
-      <range start='${default_network_ip%.1}.2' end='${default_network_ip%.1}.254'/>
-    </dhcp>
-  </ip>
-</network>
-EOF
-
+    <network>
+      <name>default</name>
+      <uuid>$uuid</uuid>
+      <forward mode='nat'/>
+      <bridge name='virbr0' stp='on' delay='0'/>
+      <mac address='$mac'/>
+      <ip address='$default_network_ip' netmask='$default_netmask'>
+        <dhcp>
+          <range start='${default_network_ip%.1}.2' end='${default_network_ip%.1}.254'/>
+        </dhcp>
+      </ip>
+    </network>
+    EOF
+    
             virsh net-define /tmp/default.xml
             virsh net-start default
             virsh net-autostart default
@@ -200,6 +222,10 @@ EOF
     else
         echo -e "${YELLOW}libvirt is not installed. Skipping libvirtd enablement.${NC}"
     fi
+    
+    # Start dhcpcd if needed
+    echo -e "${CYAN}Starting dhcpcd...${NC}"
+    dhcpcd
 
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
