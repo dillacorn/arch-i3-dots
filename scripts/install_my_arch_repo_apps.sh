@@ -125,6 +125,13 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         echo -e "${YELLOW}UFW is already installed, skipping installation.${NC}"
     fi
 
+    # Allow necessary ports for VM (you can modify or add ports as per your need)
+    echo -e "${CYAN}Configuring UFW to allow VM traffic...${NC}"
+    ufw allow in on virbr0 to any port 22
+    ufw allow in on virbr0 to any port 80
+    ufw allow in on virbr0 to any port 443
+    ufw allow in on virbr0
+
     # Install other networking and security tools
     for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire-pulse bluez; do
         install_package "$pkg"
