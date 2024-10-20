@@ -141,6 +141,14 @@ else
     echo -e "\033[1;32march-i3-dots repository already exists in $HOME_DIR\033[0m"
 fi
 
+# Check for ipcalc availability and install if not available
+if ! command -v ipcalc &>/dev/null; then
+    echo -e "${CYAN}ipcalc is not installed. Installing ipcalc...${NC}"
+    pacman -S --needed --noconfirm ipcalc || { echo -e "${RED}Failed to install ipcalc. Exiting.${NC}"; exit 1; }
+else
+    echo -e "${GREEN}ipcalc is already installed. Continuing...${NC}"
+fi
+
 # Make scripts executable
 echo -e "\033[1;34mMaking ~/arch-i3-dots/scripts executable!\033[0m"
 cd "$HOME_DIR/arch-i3-dots/scripts" || exit
