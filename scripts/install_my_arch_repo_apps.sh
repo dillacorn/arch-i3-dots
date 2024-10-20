@@ -2,11 +2,11 @@
 
 # Ensure the script is run with sudo/root privileges
 if [ -z "$SUDO_USER" ]; then
-    echo "This script must be run with sudo!"
+    echo -e "${RED}This script must be run with sudo!${NC}"
     exit 1
 fi
 
-set -eu -o pipefail # fail on error and report it, debug all lines
+set -eu -o pipefail # Fail on error and report it, debug all lines
 
 # Define color codes
 RED='\033[0;31m'
@@ -14,6 +14,12 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
+
+# Check for ipcalc availability
+if ! command -v ipcalc &>/dev/null; then
+    echo -e "${RED}ipcalc is not installed. Please install ipcalc and run the script again.${NC}"
+    exit 1
+fi
 
 # Function to install a package and its dependencies if not already installed
 install_package() {
@@ -151,27 +157,47 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         uuid=$(uuidgen)
         mac=$(printf '52:54:%02X:%02X:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))
     
-        # Detect the current network interface, IP address, and netmask
+        # Detect the current network interface
         interface=$(ip route | grep '^default' | awk '{print $5}')
-    
-        # Check if the interface is valid and up
-        if [[ -n "$interface" ]]; then
-            echo -e "${CYAN}Detected network interface: $interface${NC}"
-    
-            # Check if the interface exists and is up
-            if ip link show "$interface" | grep -q 'UP'; then
-                echo -e "${CYAN}Proceeding with network interface $interface...${NC}"
-            else
-                echo -e "${RED}Error: Interface $interface is down. Bringing it up...${NC}"
-                ip link set "$interface" up
-                if [[ $? -ne 0 ]]; then
-                    echo -e "${RED}Failed to bring up interface $interface.${NC}"
-                    exit 1
+        
+        # If no interface is detected, attempt fallback detection methods
+        if [[ -z "$interface" ]]; then
+            echo -e "${YELLOW}No default network interface detected. Trying fallback interfaces...${NC}"
+            
+            # Try common interface names
+            for fallback_interface in enp3s0 eth0 wlan0 enp16s0; do
+                if ip link show "$fallback_interface" &>/dev/null; then
+                    echo -e "${CYAN}Using fallback interface: $fallback_interface${NC}"
+                    interface="$fallback_interface"
+                    break
                 fi
-            fi
-        else
-            echo -e "${RED}Error: Could not detect a valid network interface. Please ensure you're connected to a network.${NC}"
+            done
+        fi
+        
+        # If we still haven't detected an interface, exit with an error
+        if [[ -z "$interface" ]]; then
+            echo -e "${RED}Error: Could not detect a valid network interface. Please verify your network settings.${NC}"
             exit 1
+        fi
+        
+        # Validate that the detected or fallback interface exists
+        if ! ip link show "$interface" &>/dev/null; then
+            echo -e "${RED}Error: Interface $interface does not exist. Please verify your network settings.${NC}"
+            exit 1
+        fi
+        
+        echo -e "${CYAN}Detected network interface: $interface${NC}"
+        
+        # Check if the interface is active, otherwise try to bring it up
+        if ip link show "$interface" | grep -q 'UP'; then
+            echo -e "${CYAN}Interface $interface is active.${NC}"
+        else
+            echo -e "${YELLOW}Interface $interface is down. Bringing it up...${NC}"
+            ip link set "$interface" up
+            if [[ $? -ne 0 ]]; then
+                echo -e "${RED}Failed to bring up interface $interface.${NC}"
+                exit 1
+            fi
         fi
     
         # Detect IP address and netmask
@@ -195,23 +221,23 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         # Check if the 'default' network exists
         if ! virsh net-list --all | grep -q 'default'; then
             echo -e "${YELLOW}Network 'default' not found. Creating and starting the default network...${NC}"
-    
+        
             # Create XML for the 'default' network using dynamic IP and Netmask
             cat <<EOF > /tmp/default.xml
-    <network>
-      <name>default</name>
-      <uuid>$uuid</uuid>
-      <forward mode='nat'/>
-      <bridge name='virbr0' stp='on' delay='0'/>
-      <mac address='$mac'/>
-      <ip address='$default_network_ip' netmask='$default_netmask'>
-        <dhcp>
-          <range start='${default_network_ip%.1}.2' end='${default_network_ip%.1}.254'/>
-        </dhcp>
-      </ip>
-    </network>
-    EOF
-    
+<network>
+  <name>default</name>
+  <uuid>$uuid</uuid>
+  <forward mode='nat'/>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='$mac'/>
+  <ip address='$default_network_ip' netmask='$default_netmask'>
+    <dhcp>
+      <range start='${default_network_ip%.1}.2' end='${default_network_ip%.1}.254'/>
+    </dhcp>
+  </ip>
+</network>
+EOF
+        
             virsh net-define /tmp/default.xml
             virsh net-start default
             virsh net-autostart default
@@ -219,13 +245,11 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         else
             echo -e "${CYAN}Default network already defined and active.${NC}"
         fi
-    else
-        echo -e "${YELLOW}libvirt is not installed. Skipping libvirtd enablement.${NC}"
     fi
     
     # Start dhcpcd if needed
     echo -e "${CYAN}Starting dhcpcd...${NC}"
-    dhcpcd
+    dhcpcd || echo -e "${RED}Failed to start dhcpcd.${NC}"
 
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
