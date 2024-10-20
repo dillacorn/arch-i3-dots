@@ -157,15 +157,24 @@ retry_command chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/arch-i3-dots/scripts"
 
 # Run installation scripts for packages
 echo -e "\033[1;34mRunning install_my_arch_repo_apps.sh...\033[0m"
-retry_command ./install_my_arch_repo_apps.sh || { echo -e "\033[1;31minstall_my_arch_repo_apps.sh failed. Exiting.\033[0m"; exit 1; }
+if ! retry_command ./install_my_arch_repo_apps.sh; then
+    echo -e "\033[1;31minstall_my_arch_repo_apps.sh failed. Please check for errors in the script.\033[0m"
+    exit 1
+fi
 read -p "Press Enter to run the next script..."
 
 echo -e "\033[1;34mRunning install_my_aur_repo_apps.sh...\033[0m"
-retry_command ./install_my_aur_repo_apps.sh || { echo -e "\033[1;31minstall_my_aur_repo_apps.sh failed. Exiting.\033[0m"; exit 1; }
+if ! retry_command ./install_my_aur_repo_apps.sh; then
+    echo -e "\033[1;31minstall_my_aur_repo_apps.sh failed. Please check for errors in the script.\033[0m"
+    exit 1
+fi
 read -p "Press Enter to run the next script..."
 
 echo -e "\033[1;34mRunning install_my_flatpak_apps.sh...\033[0m"
-retry_command ./install_my_flatpak_apps.sh || { echo -e "\033[1;31minstall_my_flatpak_apps.sh failed. Exiting.\033[0m"; exit 1; }
+if ! retry_command ./install_my_flatpak_apps.sh; then
+    echo -e "\033[1;31minstall_my_flatpak_apps.sh failed. Please check for errors in the script.\033[0m"
+    exit 1
+fi
 
 # Ensure ~/.local/share/applications directory exists
 create_directory "$HOME_DIR/.local/share/applications"
