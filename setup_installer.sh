@@ -197,7 +197,8 @@ if [ ! -d "$HOME_DIR/.local/share/icons/ComixCursors-White" ]; then
     retry_command pacman -S --needed --noconfirm xcursor-comix || { echo -e "\033[1;31mFailed to install Comix Cursors. Exiting.\033[0m"; exit 1; }
     
     echo -e "\033[1;33mCopying Comix Cursors to ~/.local/share/icons...\033[0m"
-    retry_command cp -r /usr/share/icons/ComixCursors-White "$HOME_DIR/.local/share/icons" || { echo -e "\033[1;31mFailed to copy Comix Cursors. Exiting.\033[0m"; exit 1; }
+    mkdir -p "$HOME_DIR/.local/share/icons/ComixCursors-White"  # Ensure directory exists
+    retry_command cp -r /usr/share/icons/ComixCursors-White/* "$HOME_DIR/.local/share/icons/ComixCursors-White" || { echo -e "\033[1;31mFailed to copy Comix Cursors. Exiting.\033[0m"; exit 1; }
     retry_command chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.local/share/icons/ComixCursors-White"
 else
     echo -e "\033[1;32mComix Cursors already exists in ~/.local/share/icons.\033[0m"
