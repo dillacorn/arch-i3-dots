@@ -174,6 +174,11 @@ echo -e "\033[1;32mOwnership and permissions for ~/.local set correctly.\033[0m"
 
 # Check if ComixCursors-White exists in ~/.local/share/icons
 if [ ! -d "$HOME_DIR/.local/share/icons/ComixCursors-White" ]; then
+    echo -e "\033[1;33mComixCursors-White not found in ~/.local/share/icons. Attempting to install... \033[0m"
+    
+    # Attempt to install ComixCursors-White
+    retry_command pacman -S --needed --noconfirm comixcursors || { echo -e "\033[1;31mFailed to install ComixCursors-White. Exiting.\033[0m"; exit 1; }
+    
     echo -e "\033[1;33mCopying ComixCursors-White to ~/.local/share/icons...\033[0m"
     retry_command cp -r /usr/share/icons/ComixCursors-White "$HOME_DIR/.local/share/icons" || { echo -e "\033[1;31mFailed to copy ComixCursors-White. Exiting.\033[0m"; exit 1; }
     retry_command chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/.local/share/icons/ComixCursors-White"
