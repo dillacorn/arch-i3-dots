@@ -15,10 +15,12 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Check for ipcalc availability
+# Check for ipcalc availability and install if not available
 if ! command -v ipcalc &>/dev/null; then
-    echo -e "${RED}ipcalc is not installed. Please install ipcalc and run the script again.${NC}"
-    exit 1
+    echo -e "${CYAN}ipcalc is not installed. Installing ipcalc...${NC}"
+    pacman -S --needed --noconfirm ipcalc || { echo -e "${RED}Failed to install ipcalc. Exiting.${NC}"; exit 1; }
+else
+    echo -e "${GREEN}ipcalc is already installed. Continuing...${NC}"
 fi
 
 # Function to install a package and its dependencies if not already installed
