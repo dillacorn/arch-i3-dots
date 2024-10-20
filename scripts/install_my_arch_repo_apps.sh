@@ -160,13 +160,13 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     
         # Detect the current network interface
         interface=$(ip route | grep '^default' | awk '{print $5}')
-        
+
         # If no interface is detected, attempt fallback detection methods
         if [[ -z "$interface" ]]; then
             echo -e "${YELLOW}No default network interface detected. Trying fallback interfaces...${NC}"
-            
-            # Try common interface names
-            for fallback_interface in enp3s0 eth0 wlan0 enp16s0; do
+
+            # List of common interface names
+            for fallback_interface in enp1s0 enp3s0 eth0 wlan0 enp16s0; do
                 if ip link show "$fallback_interface" &>/dev/null; then
                     echo -e "${CYAN}Using fallback interface: $fallback_interface${NC}"
                     interface="$fallback_interface"
@@ -174,43 +174,42 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
                 fi
             done
         fi
-        
+
         # If we still haven't detected an interface, exit with an error
         if [[ -z "$interface" ]]; then
             echo -e "${RED}Error: Could not detect a valid network interface. Please verify your network settings.${NC}"
             exit 1
         fi
-        
+
         # Validate that the detected or fallback interface exists
         if ! ip link show "$interface" &>/dev/null; then
             echo -e "${RED}Error: Interface $interface does not exist. Please verify your network settings.${NC}"
             exit 1
         fi
-        
+
         echo -e "${CYAN}Detected network interface: $interface${NC}"
-        
+
         # Check if the interface is active, otherwise try to bring it up
         if ip link show "$interface" | grep -q 'UP'; then
             echo -e "${CYAN}Interface $interface is active.${NC}"
         else
             echo -e "${YELLOW}Interface $interface is down. Bringing it up...${NC}"
-            if ip link set "$interface" up; then
-                echo -e "${GREEN}Successfully brought up interface $interface.${NC}"
-            else
+            ip link set "$interface" up
+            if [[ $? -ne 0 ]]; then
                 echo -e "${RED}Failed to bring up interface $interface.${NC}"
                 exit 1
             fi
         fi
-    
+
         # Detect IP address and netmask
         ip_info=$(ip -o -4 addr show "$interface" | awk '{print $4}')
         current_ip=$(echo "$ip_info" | cut -d/ -f1)
         current_netmask=$(ipcalc "$ip_info" | grep Netmask | awk '{print $2}')
-        
+
         # Define a default network IP and netmask to avoid conflicts
         default_network_ip="192.168.122.1"
         default_netmask="255.255.255.0"
-        
+
         # Adjust if the current network overlaps with the default range
         if ipcalc -n "$ip_info" | grep -q "192.168.122.0"; then
             default_network_ip="10.0.0.1"
@@ -219,11 +218,11 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             default_network_ip="172.16.0.1"
             default_netmask="255.255.255.0"
         fi
-    
+
         # Check if the 'default' network exists
         if ! virsh net-list --all | grep -q 'default'; then
             echo -e "${YELLOW}Network 'default' not found. Creating and starting the default network...${NC}"
-        
+
             # Create XML for the 'default' network using dynamic IP and Netmask
             cat <<EOF > /tmp/default.xml
 <network>
@@ -239,7 +238,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
   </ip>
 </network>
 EOF
-        
+
             virsh net-define /tmp/default.xml
             virsh net-start default
             virsh net-autostart default
@@ -248,7 +247,7 @@ EOF
             echo -e "${CYAN}Default network already defined and active.${NC}"
         fi
     fi
-    
+
     # Start dhcpcd if needed
     echo -e "${CYAN}Starting dhcpcd...${NC}"
     if ! dhcpcd; then
