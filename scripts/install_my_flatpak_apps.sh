@@ -110,24 +110,20 @@ else
   echo -e "${RED_B}Steam is not installed. Skipping override...${RESET}"
 fi
 
-# Check if OBS NDI Plugin is installed, then configure firewall
-if flatpak list --app | grep -q "com.obsproject.Studio.Plugin.NDI"; then
-    echo -e "${CYAN}OBS NDI Plugin detected! Configuring firewall rules for NDI...${NC}"
+# Configure firewall rules for NDI
+echo -e "${CYAN}Configuring firewall rules for NDI...${NC}"
 
-    # Add firewall rules for NDI (ports 5959-5969, 6960-6970, 7960-7970 for TCP and UDP, and 5353 for mDNS)
-    echo -e "${CYAN}Adding firewall rules...${NC}"
-    ufw allow 5353/udp
-    ufw allow 5959:5969/tcp
-    ufw allow 5959:5969/udp
-    ufw allow 6960:6970/tcp
-    ufw allow 6960:6970/udp
-    ufw allow 7960:7970/tcp
-    ufw allow 7960:7970/udp
-    ufw allow 5960/tcp
+# Add firewall rules for NDI (ports 5959-5969, 6960-6970, 7960-7970 for TCP and UDP, and 5353 for mDNS)
+echo -e "${CYAN}Adding firewall rules...${NC}"
+ufw allow 5353/udp
+ufw allow 5959:5969/tcp
+ufw allow 5959:5969/udp
+ufw allow 6960:6970/tcp
+ufw allow 6960:6970/udp
+ufw allow 7960:7970/tcp
+ufw allow 7960:7970/udp
+ufw allow 5960/tcp
 
-    echo -e "${GREEN}Firewall rules for NDI configured successfully.${NC}"
-else
-    echo -e "${YELLOW}OBS NDI Plugin is not installed. Skipping firewall configuration for NDI.${NC}"
-fi
+echo -e "${GREEN}Firewall rules for NDI configured successfully.${NC}"
 
 echo -e "${PURPLE}Flatpak setup and installation complete.${RESET}"
