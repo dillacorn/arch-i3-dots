@@ -28,15 +28,15 @@ if [ -z "$SUDO_USER" ]; then
     exit 1
 fi
 
-# Retry function: retries a command up to 3 times before failing
 retry_command() {
     local retries=3
     local count=0
     until "$@"; do
         exit_code=$?
         count=$((count + 1))
+        echo -e "\033[1;31mAttempt $count/$retries failed for command: $@\033[0m"  # Add this line
         if [ $count -lt $retries ]; then
-            echo -e "\033[1;31mAttempt $count/$retries failed. Retrying...\033[0m"
+            echo -e "\033[1;31mRetrying...\033[0m"
             sleep 1
         else
             echo -e "\033[1;31mCommand failed after $retries attempts. Exiting.\033[0m"
