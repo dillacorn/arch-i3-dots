@@ -132,6 +132,14 @@ fi
 
 retry_command pacman -S --needed --noconfirm git || { echo -e "\033[1;31mFailed to install git. Exiting.\033[0m"; exit 1; }
 
+# Check for ipcalc availability and install if not available
+if ! command -v ipcalc &>/dev/null; then
+    echo -e "\033[1;34mipcalc is not installed. Installing ipcalc...\033[0m"
+    retry_command pacman -S --needed --noconfirm ipcalc || { echo -e "\033[1;31mFailed to install ipcalc. Exiting.\033[0m"; exit 1; }
+else
+    echo -e "\033[1;32mipcalc is already installed. Continuing...\033[0m"
+fi
+
 # Clone the arch-i3-dots repository
 if [ ! -d "$HOME_DIR/arch-i3-dots" ]; then
     echo -e "\033[1;34mCloning arch-i3-dots repository...\033[0m"
@@ -139,14 +147,6 @@ if [ ! -d "$HOME_DIR/arch-i3-dots" ]; then
     retry_command chown -R $SUDO_USER:$SUDO_USER "$HOME_DIR/arch-i3-dots"
 else
     echo -e "\033[1;32march-i3-dots repository already exists in $HOME_DIR\033[0m"
-fi
-
-# Check for ipcalc availability and install if not available
-if ! command -v ipcalc &>/dev/null; then
-    echo -e "${CYAN}ipcalc is not installed. Installing ipcalc...${NC}"
-    pacman -S --needed --noconfirm ipcalc || { echo -e "${RED}Failed to install ipcalc. Exiting.${NC}"; exit 1; }
-else
-    echo -e "${GREEN}ipcalc is already installed. Continuing...${NC}"
 fi
 
 # Make scripts executable
