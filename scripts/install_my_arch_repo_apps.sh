@@ -142,7 +142,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
     fi
 
-    # Enable libvirtd if it's installed
+    # Enable libvirtd if it's installed and configure networking if not running in a VM
 echo -e "${CYAN}Configuring libvirt and networking...${NC}"
 if pacman -Qs libvirt > /dev/null; then
     echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
@@ -154,14 +154,18 @@ if pacman -Qs libvirt > /dev/null; then
         exit 1
     fi
 
-    # Destroy and undefine the existing default network if it exists
-    echo -e "${CYAN}Destroying and undefining existing default network if exists...${NC}"
-    virsh net-destroy default || true
-    virsh net-undefine default || true
+    # Check if the script is running in a virtualized environment
+    if systemd-detect-virt -q; then
+        echo -e "${YELLOW}Running in a virtualized environment. Skipping network configuration.${NC}"
+    else
+        # Destroy and undefine the existing default network if it exists
+        echo -e "${CYAN}Destroying and undefining existing default network if exists...${NC}"
+        virsh net-destroy default || true
+        virsh net-undefine default || true
 
-    # Create XML for the 'default' network using dynamic IP and Netmask
-    echo -e "${CYAN}Defining and starting the new default network...${NC}"
-    cat <<EOF > /tmp/default.xml
+        # Create XML for the 'default' network using dynamic IP and Netmask
+        echo -e "${CYAN}Defining and starting the new default network...${NC}"
+        cat <<EOF > /tmp/default.xml
 <network>
   <name>default</name>
   <uuid>$(uuidgen)</uuid>
@@ -176,20 +180,21 @@ if pacman -Qs libvirt > /dev/null; then
 </network>
 EOF
 
-    # Apply the network configuration
-    virsh net-define /tmp/default.xml
-    virsh net-start default
-    virsh net-autostart default
+        # Apply the network configuration
+        virsh net-define /tmp/default.xml
+        virsh net-start default
+        virsh net-autostart default
+    fi
 fi
 
-    # Start dhcpcd if needed
-    echo -e "${CYAN}Starting dhcpcd...${NC}"
-    if ! dhcpcd; then
-        echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
-    fi
+# Start dhcpcd if needed
+echo -e "${CYAN}Starting dhcpcd...${NC}"
+if ! dhcpcd; then
+    echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
+fi
 
-    # Print success message after installation
-    echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
+# Print success message after installation
+echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
 else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux applications.${NC}"
     exit 0
