@@ -31,6 +31,7 @@ echo -e "\n${CYAN}Do you want to install Dillacorn's chosen Arch Repo Linux appl
 
 # Read a single character without requiring the Enter key
 read -n1 -s choice
+echo # Move to a new line after the choice
 
 # Check user input
 if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
@@ -121,10 +122,9 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 
     # Allow necessary ports for VM (you can modify or add ports as per your need)
     echo -e "${CYAN}Configuring UFW to allow VM traffic...${NC}"
-    ufw allow in on virbr0 to any port 22
-    ufw allow in on virbr0 to any port 80
-    ufw allow in on virbr0 to any port 443
-    ufw allow in on virbr0
+    for port in 22 80 443; do
+        ufw allow in on virbr0 to any port "$port"
+    done
 
     # Install other networking and security tools
     for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire-pulse bluez; do
@@ -194,8 +194,9 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             echo -e "${CYAN}Interface $interface is active.${NC}"
         else
             echo -e "${YELLOW}Interface $interface is down. Bringing it up...${NC}"
-            ip link set "$interface" up
-            if [[ $? -ne 0 ]]; then
+            if ip link set "$interface" up; then
+                echo -e "${GREEN}Successfully brought up interface $interface.${NC}"
+            else
                 echo -e "${RED}Failed to bring up interface $interface.${NC}"
                 exit 1
             fi
@@ -250,7 +251,9 @@ EOF
     
     # Start dhcpcd if needed
     echo -e "${CYAN}Starting dhcpcd...${NC}"
-    dhcpcd || echo -e "${RED}Failed to start dhcpcd.${NC}"
+    if ! dhcpcd; then
+        echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
+    fi
 
     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
