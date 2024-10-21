@@ -28,3 +28,4 @@ audio/mpeg=mpv.desktop;
 image/gif=mpv.desktop;
 inode/directory=pcmanfm.desktop;
 application/x-bittorrent=org.qbittorrent.qBittorrent.desktop;
+x-scheme-handler/file=pcmanfm.desktop;
