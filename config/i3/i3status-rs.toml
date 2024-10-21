@@ -35,7 +35,7 @@ format = " $speed_down.eng(width:3,prefix:K,hide_unit:true) $speed_up.eng(wid
 block = "battery"
 full_format = "$icon %percentage"
 missing_format = ""
-device = "DisplayDevice
+device = "DisplayDevice"
 driver = "upower"
 
 [[block]]
