@@ -25,7 +25,7 @@ format_alt = "$icon_swap $swap_used_percents"
 
 [[block]]
 block = "net"
-format = "$speed_down.eng(width:3,prefix:K,hide_unit:true) $speed_up.eng(width:3,prefix:K,hide_unit:true)"
+format = " $speed_down.eng(width:3,prefix:K,hide_unit:true) $speed_up.eng(width:3,prefix:K,hide_unit:true)"
 
 [[block]]
 block = "battery"
