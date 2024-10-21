@@ -85,6 +85,9 @@ bindsym Mod4+ctrl+shift+b exec alacritty -e btop --tty_on
 # htop
 bindsym Mod4+ctrl+shift+h exec alacritty -e htop
 
+# close dunst notification
+bindsym Mod4+space exec dunstctl close 
+
 # floating windows
 floating_modifier Mod1
 
