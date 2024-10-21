@@ -29,10 +29,10 @@ format = "$icon {$signal_strength.bar(width:1)} $speed_up.eng(width:3,prefix:K,h
 
 [[block]]
 block = "battery"
-device = "BAT0"
-driver = "sysfs"
-full_format = "{status}{capacity}%"
+full_format = "$icon %percentage"
 missing_format = ""
+device = "DisplayDevice
+driver = "upower"
 
 [[block]]
 block = "time"
