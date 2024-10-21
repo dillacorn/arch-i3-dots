@@ -171,7 +171,7 @@ if pacman -Qs libvirt > /dev/null; then
   <uuid>$(uuidgen)</uuid>
   <forward mode='nat'/>
   <bridge name='virbr0' stp='on' delay='0'/>
-  <mac address='52:54:00:$(printf '%02X:%02X:%02X:%02X' $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)) $((RANDOM%256)))'/>
+  <mac address='52:54:00:12:34:56'/>
   <ip address='192.168.122.1' netmask='255.255.255.0'>
     <dhcp>
       <range start='192.168.122.2' end='192.168.122.254'/>
