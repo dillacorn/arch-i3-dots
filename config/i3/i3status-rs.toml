@@ -13,6 +13,10 @@ short = "$title.str(max_w:60,rot_interval:0.2)|"
 [[block]]
 block = "cpu"
 interval = 1
+format = " $utilization"
+info_cpu = 20
+warning_cpu = 50
+critical_cpu = 90
 
 [[block]]
 block = "temperature"
@@ -20,7 +24,7 @@ format = "$icon {$average$max}"
 
 [[block]]
 block = "memory"
-format = "$icon $mem_used_percents"
+format = " $mem_used_percents"
 format_alt = "$icon_swap $swap_used_percents"
 
 [[block]]
