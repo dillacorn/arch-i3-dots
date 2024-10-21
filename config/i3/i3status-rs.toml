@@ -25,14 +25,13 @@ format_alt = "$icon_swap $swap_used_percents"
 
 [[block]]
 block = "net"
-format = "$icon {$signal_strength.bar(width:1)|}$speed_up.eng(width:3,prefix:K,hide_unit:true) $speed_down.eng(width:3,prefix:K,hide_unit:true)"
-format_alt = "$speed_up.eng(width:0,prefix:K,hide_unit:true) $speed_down.eng(width:0,prefix:K,hide_unit:true)"
+format = "$icon {$signal_strength.bar(width:1)} $speed_up.eng(width:3,prefix:K,hide_unit:true) $speed_down.eng(width:3,prefix:K,hide_unit:true)"
 
 [[block]]
 block = "battery"
-device = "DisplayDevice"
-# driver = "upower"
-full_format = ""
+device = "BAT0"
+driver = "sysfs"
+full_format = "{status}{capacity}%"
 missing_format = ""
 
 [[block]]
