@@ -84,13 +84,23 @@ https://browserleaks.com/webrtc
 
 # custom dns server ~ optional
 
-navigate to:
-`Privacy and security` in settings
+navigate to `Privacy and security` in settings
 
-turn on:
-`Use secure DNS`
+turn on `Use secure DNS`
 
 add custom configured dns server from personal provider ~ I pay for nextdns ($2 a month)
 ### example dns server address
 
-DNS-over-HTTPS: `https://dns.nextdns.io\xxxxxxx` 
+DNS-over-HTTPS: `https://dns.nextdns.io\xxxxxxx`
+
+# personal settings
+
+navigate to `appearance`
+
+enable `classic` theme
+
+choose mode `Dark`
+
+enable `Show home button` and add my personal `flame` domain running on my personal OpenMediaVault NAS.
+
+disable `Show bookmarks bar`
