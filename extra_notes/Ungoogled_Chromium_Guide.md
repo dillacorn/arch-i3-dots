@@ -89,7 +89,7 @@ add custom configured dns server from personal provider ~ I pay for nextdns ($2 
 
 DNS-over-HTTPS: `https://dns.nextdns.io\xxxxxxx`
 
-# Test Browser Security
+# test browser security
 https://browserleaks.com/webrtc
 
 # personal settings
