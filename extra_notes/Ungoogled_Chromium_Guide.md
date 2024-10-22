@@ -1,7 +1,6 @@
-Notes From Repo: https://github.com/dillacorn/arch-i3-dots
+notes from repo: https://github.com/dillacorn/arch-i3-dots
 
-For when FireFox isn't capable of the task.. or for just normal browsing with Manifest V3.. lame
-FireFox is still better.. Using Librewolf as my main browser
+For when FireFox/Librewolf isn't capable of the task.. or for compatibility reasons..
 
 # start here
 ```sh
@@ -25,19 +24,19 @@ change these flags:
 
 # chrome web store fix
 
-Make chrome web store work:
+make chrome web store work:
 
-Open Extensions Page: `chrome://extensions/`
+open Extensions Page: `chrome://extensions/`
 
-Enable `Developer mode` in the top right corner
+enable `Developer mode` in the top right corner
 
-Reboot Ungoogled Chromium
+reboot Ungoogled Chromium
 
-Navigate to : [`https://github.com/NeverDecaf/chromium-web-store`](https://github.com/NeverDecaf/chromium-web-store)
+navigate to : [`https://github.com/NeverDecaf/chromium-web-store`](https://github.com/NeverDecaf/chromium-web-store)
 
-Go to release page and click on `Chromium.Web.Store.crx` to install it
+go to release page and click on `Chromium.Web.Store.crx` to install it
 
-Go install your extensions! -> [`https://chromewebstore.google.com/`](https://chromewebstore.google.com/)
+go install your extensions! -> [`https://chromewebstore.google.com/`](https://chromewebstore.google.com/)
 
 # extensions
 
@@ -86,7 +85,7 @@ https://browserleaks.com/webrtc
 
 navigate to `Privacy and security` in settings
 
-turn on `Use secure DNS`
+enable `Use secure DNS`
 
 add custom configured dns server from personal provider ~ I pay for nextdns ($2 a month)
 ### example dns server address
