@@ -63,7 +63,7 @@ Go install your extensions! -> [`https://chromewebstore.google.com/`](https://ch
 
 # search engine
 
-**search engine**: `(option #1)` - normally slower than startpage
+**search engine**: `(option #1)` - normally slower than brave
 
 Name:
 `disroot`
@@ -81,3 +81,16 @@ URL with %s in place of query
 
 # Test Browser Security
 https://browserleaks.com/webrtc
+
+# custom dns server ~ optional
+
+navigate to:
+`Privacy and security` in settings
+
+turn on:
+`Use secure DNS`
+
+add custom configured dns server from personal provider ~ I pay for nextdns ($2 a month)
+### example dns server address
+
+DNS-over-HTTPS: `https://dns.nextdns.io\xxxxxxx` 
