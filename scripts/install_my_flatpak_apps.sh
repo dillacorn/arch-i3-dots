@@ -34,7 +34,6 @@ flatpak_apps=(
   'com.obsproject.Studio'
   'com.obsproject.Studio.Plugin.NDI'
   'com.github.tchx84.Flatseal'
-  'com.valvesoftware.Steam'
   'io.github.ungoogled_software.ungoogled_chromium'
 )
 

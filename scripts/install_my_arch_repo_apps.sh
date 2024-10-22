@@ -77,7 +77,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Utilities
     # ----------------------------
     echo -e "${CYAN}Installing general utilities...${NC}"
-    for pkg in dunst lxsession lxappearance networkmanager network-manager-applet bluez bluez-utils solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc qbittorrent filelight timeshift flameshot maim imagemagick; do
+    for pkg in steam dunst lxsession lxappearance networkmanager network-manager-applet bluez bluez-utils solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc qbittorrent filelight timeshift flameshot maim imagemagick; do
         install_package "$pkg"
     done
 

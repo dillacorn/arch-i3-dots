@@ -332,24 +332,29 @@ else
         exit 0
     fi
 
+    # Install required GPU dependencies
+    echo -e "\033[1;34mInstalling GPU-specific dependencies...\033[0m"
+    sudo pacman -Syu --noconfirm
+    sudo pacman -S --noconfirm lib32-mesa lib32-vulkan-icd-loader lib32-libglvnd
+
     if echo "$GPU_VENDOR" | grep -iq "Radeon"; then
         echo -e "\033[1;32mAMD GPU detected. Applying AMD-specific settings...\033[0m"
         
         # Ensure the linux-firmware package is installed for AMD GPUs
-        retry_command sudo pacman -S --needed --noconfirm linux-firmware
-        
-        # Install AMD video decoding libraries (VA-API and VDPAU)
-        retry_command sudo pacman -S --needed --noconfirm libva-mesa-driver mesa-vdpau lib32-mesa-vdpau
+        sudo pacman -S --needed --noconfirm linux-firmware
 
-        # Check if vainfo and vdpauinfo are available, install if missing
+        # Install AMD video decoding libraries (VA-API and VDPAU)
+        sudo pacman -S --needed --noconfirm libva-mesa-driver mesa-vdpau lib32-mesa-vdpau
+
+        # Check if VA-API and VDPAU tools are available, install if missing
         if ! command -v vainfo &> /dev/null; then
             echo -e "\033[1;34mInstalling libva-utils for VA-API support...\033[0m"
-            retry_command sudo pacman -S --needed --noconfirm libva-utils
+            sudo pacman -S --needed --noconfirm libva-utils
         fi
 
         if ! command -v vdpauinfo &> /dev/null; then
             echo -e "\033[1;34mInstalling vdpauinfo for VDPAU support...\033[0m"
-            retry_command sudo pacman -S --needed --noconfirm vdpauinfo
+            sudo pacman -S --needed --noconfirm vdpauinfo
         fi
 
         # Validate VA-API and VDPAU support
@@ -357,16 +362,10 @@ else
         vainfo || echo -e "\033[1;31mVA-API not working properly.\033[0m"
         vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
         
-        # Set the TTY console font to lat9w-16 in /etc/vconsole.conf
-        echo -e "\033[1;34mSetting console font to lat9w-16 for AMD users in /etc/vconsole.conf...\033[0m"
-        if ! grep -q "^FONT=lat9w-16" /etc/vconsole.conf; then
-            echo 'FONT=lat9w-16' | sudo tee -a /etc/vconsole.conf
-        fi
-
         # Optionally add any AMD-specific kernel parameters to GRUB (such as amdgpu.dc=1)
         if ! grep -q "amdgpu.dc=1" /etc/default/grub; then
-            retry_command sudo sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ amdgpu.dc=1"/' /etc/default/grub
-            retry_command sudo grub-mkconfig -o /boot/grub/grub.cfg
+            sudo sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ amdgpu.dc=1"/' /etc/default/grub
+            sudo grub-mkconfig -o /boot/grub/grub.cfg
         fi
 
     elif echo "$GPU_VENDOR" | grep -iq "NVIDIA"; then
@@ -380,10 +379,10 @@ else
         if [[ "$install_nvidia" == "y" || "$install_nvidia" == "Y" ]]; then
             if ! pacman -Q | grep -q "nvidia"; then
                 echo -e "\033[1;34mInstalling NVIDIA proprietary drivers...\033[0m"
-                retry_command sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
+                sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
                 
                 # Install video decoding libraries for NVIDIA
-                retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo
+                sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo
                 
                 # Validate VDPAU support
                 echo -e "\033[1;34mValidating VDPAU hardware acceleration...\033[0m"
@@ -411,7 +410,7 @@ else
         if [[ "$install_intel" == "y" || "$install_intel" == "Y" ]]; then
             if ! pacman -Q | grep -q "xf86-video-intel"; then
                 echo -e "\033[1;34mInstalling Intel GPU driver...\033[0m"
-                retry_command sudo pacman -S --noconfirm xf86-video-intel
+                sudo pacman -S --noconfirm xf86-video-intel
                 if [ $? -ne 0 ]; then
                     echo -e "\033[1;31mFailed to install Intel driver. Exiting.\033[0m"
                     exit 1
