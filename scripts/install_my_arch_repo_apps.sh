@@ -77,7 +77,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Utilities
     # ----------------------------
     echo -e "${CYAN}Installing general utilities...${NC}"
-    for pkg in dunst lxsession lxappearance networkmanager network-manager-applet solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc qbittorrent filelight timeshift flameshot maim imagemagick; do
+    for pkg in dunst lxsession lxappearance networkmanager network-manager-applet bluez bluez-utils solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc qbittorrent filelight timeshift flameshot maim imagemagick; do
         install_package "$pkg"
     done
 
@@ -191,6 +191,26 @@ fi
 echo -e "${CYAN}Starting dhcpcd...${NC}"
 if ! dhcpcd; then
     echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
+fi
+
+# ----------------------------
+# Bluetooth Services
+# ----------------------------
+echo -e "${CYAN}Enabling and starting Bluetooth service...${NC}"
+
+# Check if bluez and bluez-utils are installed, then enable and start the Bluetooth service
+if pacman -Qi bluez &>/dev/null && pacman -Qi bluez-utils &>/dev/null; then
+    systemctl enable bluetooth.service
+    systemctl start bluetooth.service
+    
+    # Verify if the Bluetooth service started successfully
+    if systemctl is-active --quiet bluetooth.service; then
+        echo -e "${GREEN}Bluetooth service started successfully.${NC}"
+    else
+        echo -e "${RED}Bluetooth service failed to start. Please check the service status.${NC}"
+    fi
+else
+    echo -e "${RED}Bluetooth service could not be enabled because bluez or bluez-utils is not installed.${NC}"
 fi
 
 # Print success message after installation
