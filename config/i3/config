@@ -91,6 +91,9 @@ bindsym Mod4+space exec dunstctl close
 # floating windows
 floating_modifier Mod1
 
+# typing listener ai toggle
+bindsym Mod4+shift+v exec --no-startup-id ~/.config/i3/scripts/python/type_listen_ai.py
+
 # reload i3 config
 bindsym Mod4+shift+q restart
 
