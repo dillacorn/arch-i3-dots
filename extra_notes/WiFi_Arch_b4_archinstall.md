@@ -14,7 +14,7 @@ device wlan0 set-property Powered off
 
 device wlan0 set-property Powered on
 
-then
+### then
 
 station wlan0 scan (again)
 
