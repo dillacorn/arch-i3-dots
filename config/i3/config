@@ -66,6 +66,9 @@ bindsym Mod4+shift+w exec nitrogen
 # capture gif
 bindsym Mod4+shift+g exec peek
 
+# camera popup with mpv
+bindsym Mod4+ctrl+shift+c exec --no-startup-id mpv av://v4l1:/dev/video0 --profile=low-latency --untimed
+
 # terminal
 bindsym Mod1+shift+Return exec alacritty
 
