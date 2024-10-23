@@ -116,7 +116,7 @@ bindsym Mod1+shift+h move left
 bindsym Mod1+shift+j move down
 bindsym Mod1+shift+k move up
 bindsym Mod1+shift+l move right
-# or use Mod1+[up|down|left|right]
+# alternative with arrow keys
 bindsym Mod1+shift+Left move left
 bindsym Mod1+shift+Down move down
 bindsym Mod1+shift+Up move up
