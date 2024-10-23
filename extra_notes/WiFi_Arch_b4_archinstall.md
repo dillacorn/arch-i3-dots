@@ -1,4 +1,4 @@
-Once arch .ISO is loaded
+# once arch .ISO is loaded
 
 iwctl
 
