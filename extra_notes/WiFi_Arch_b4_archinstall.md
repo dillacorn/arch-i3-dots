@@ -2,7 +2,7 @@
 
 iwctl
 
-list devices
+devices list
 
 station wlan0 scan
 
