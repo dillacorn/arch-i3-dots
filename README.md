@@ -1,6 +1,7 @@
 # `arch dilla.i3.files`
 - **Preview Images**: [View Here](https://github.com/dillacorn/arch-i3-dots/tree/main/preview_images/preview_page.md)
 - **Distro**: [Arch](https://archlinux.org/)
+- **Installation Method**: [archinstall](https://github.com/archlinux/archinstall)
 - **File System**: [BTRFS](https://github.com/btrfs/linux)
 - **Bootloader**: [GRUB](https://github.com/rhboot/grub2)
 - **X11**: [i3-wm](https://github.com/i3/i3)
