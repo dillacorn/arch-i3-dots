@@ -14,13 +14,14 @@ open "Ungoogled Chromium"
 navigate to: `chrome://flags/`
 
 change these flags:
-* Handling of extension MIME type requests: `Always prompt for install` <- allows for **chrome-web-store** to be installed
-* Disable search engine collection: `Enabled`
-* Enable get*ClientRects() fingerprint deception: `Enabled`
-* Enable Canvas::measureText() fingerprint deception: `Enabled`
-* Enable Canvas image data fingerprint deception: `Enabled`
-* Anonymize local IPs exposed by WebRTC: `Enabled`
-* Preferred Ozone platform: `Wayland` <- If you're using **Wayland** session - **(Sway for example)**
+* [Handling of extension MIME type requests](chrome://flags/#extension-mime-request-handling): `Always prompt for install` <- allows for **chrome-web-store** to be installed
+* [Disable search engine collection](chrome://flags/#disable-search-engine-collection): `Enabled`
+* [Enable get*ClientRects() fingerprint deception](chrome://flags/#fingerprinting-client-rects-noise): `Enabled`
+* [Enable Canvas::measureText() fingerprint deception](chrome://flags/#fingerprinting-canvas-measuretext-noise): `Enabled`
+* [Enable Canvas image data fingerprint deception](chrome://flags/#fingerprinting-canvas-image-data-noise): `Enabled`
+* [Anonymize local IPs exposed by WebRTC](chrome://flags/#enable-webrtc-hide-local-ips-with-mdns): `Enabled`
+* [enable-webrtc-allow-input-volume-adjustment](chrome://flags/#enable-webrtc-allow-input-volume-adjustment): `Disabled` <- Browser adjusting mic volume randomly is so annoying
+* [Preferred Ozone platform](chrome://flags/#ozone-platform-hint): `X11`
 
 # chrome web store fix
 
