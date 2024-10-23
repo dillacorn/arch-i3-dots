@@ -69,7 +69,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Terminal Applications
     # ----------------------------
     echo -e "${CYAN}Installing terminal applications...${NC}"
-    for pkg in micro alacritty fastfetch btop htop curl wget git dos2unix brightnessctl ipcalc cmatrix sl asciiquarium figlet python-openai-whisper python-pyaudio portaudio; do
+    for pkg in micro alacritty fastfetch btop htop curl wget git dos2unix brightnessctl ipcalc cmatrix sl asciiquarium figlet; do
         install_package "$pkg"
     done
 
