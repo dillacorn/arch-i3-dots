@@ -1,6 +1,7 @@
 # `arch dilla.i3.files`
 - **Preview Images**: [View Here](https://github.com/dillacorn/arch-i3-dots/tree/main/preview_images/preview_page.md)
 - **Distro**: [Arch](https://archlinux.org/)
+- **File_System**: [BTRFS](https://github.com/btrfs/linux)
 - **X11**: [i3-wm](https://github.com/i3/i3)
 - **Kernel**: [linux-tkg](https://github.com/Frogging-Family/linux-tkg)
   - [Install linux-tkg on Arch](https://github.com/Frogging-Family/linux-tkg?tab=readme-ov-file#arch--derivatives)
