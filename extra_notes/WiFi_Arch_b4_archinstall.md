@@ -8,7 +8,7 @@ station wlan0 scan
 
 station wlan0 get-networks
 
-if get-networks shows no networks troubleshoot...
+### if get-networks shows no networks troubleshoot...
 
 device wlan0 set-property Powered off
 
