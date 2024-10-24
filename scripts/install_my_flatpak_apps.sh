@@ -35,6 +35,7 @@ flatpak_apps=(
   'com.obsproject.Studio.Plugin.NDI'
   'com.github.tchx84.Flatseal'
   'io.github.ungoogled_software.ungoogled_chromium'
+  'com.moonlight_stream.Moonlight'
 )
 
 # Check if Flatpak is installed; if not, install it via Pacman
@@ -101,10 +102,9 @@ for app in "${flatpak_apps[@]}"; do
 done
 
 # Configure firewall rules for NDI
-echo -e "${CYAN}Configuring firewall rules for NDI...${NC}"
+echo -e "${CYAN}Configuring firewall rules for NDI...${RESET}"
 
 # Add firewall rules for NDI (ports 5959-5969, 6960-6970, 7960-7970 for TCP and UDP, and 5353 for mDNS)
-echo -e "${CYAN}Adding firewall rules...${NC}"
 ufw allow 5353/udp
 ufw allow 5959:5969/tcp
 ufw allow 5959:5969/udp
@@ -114,6 +114,17 @@ ufw allow 7960:7970/tcp
 ufw allow 7960:7970/udp
 ufw allow 5960/tcp
 
-echo -e "${GREEN}Firewall rules for NDI configured successfully.${NC}"
+echo -e "${GREEN}Firewall rules for NDI configured successfully.${RESET}"
+
+# Check if Moonlight is installed via Flatpak
+if flatpak list | grep -q "com.moonlight_stream.Moonlight"; then
+    echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${RESET}"
+    ufw allow 48010/tcp
+    ufw allow 48000/udp
+    ufw allow 48010/udp
+    echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${RESET}"
+else
+    echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${RESET}"
+fi
 
 echo -e "${PURPLE}Flatpak setup and installation complete.${RESET}"
