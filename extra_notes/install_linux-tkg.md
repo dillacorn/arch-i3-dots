@@ -26,7 +26,7 @@ cd /boot/loader/entries
 ls
 ```
 
-copy current `<date>`_`<time>`_`linux.conf` in folder
+copy current `<date>_<time>_linux.conf` in folder
 
 ```sh
 sudo cp <date>_<time>_linux.conf linux-tkg-bore-<version_#>.conf
