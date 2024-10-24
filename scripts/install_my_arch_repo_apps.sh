@@ -130,17 +130,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa pipewire-jack bluez; do
         install_package "$pkg"
     done
-    
-    # Check if Moonlight is installed, then configure firewall
-    if pacman -Qs moonlight-qt > /dev/null; then
-        echo -e "${CYAN}Moonlight detected! Configuring firewall rules for Moonlight...${NC}"
-        ufw allow 48010/tcp
-        ufw allow 48000/udp
-        ufw allow 48010/udp
-        echo -e "${GREEN}Firewall rules for Moonlight configured successfully.${NC}"
-    else
-        echo -e "${YELLOW}Moonlight is not installed. Skipping firewall configuration for Moonlight.${NC}"
-    fi
 
     # Enable libvirtd if it's installed and configure networking if not running in a VM
 echo -e "${CYAN}Configuring libvirt and networking...${NC}"
