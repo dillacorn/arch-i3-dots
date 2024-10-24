@@ -34,19 +34,23 @@ copy current `<date>`_`<time>`_`linux.conf` in folder
 
 will look something like this
 
-#### Created by: archinstall
-#### Created on: 2024-10-24_16-00-57
+```
+# Created by: archinstall
+# Created on: 2024-10-24_16-00-57
 title   Arch Linux (linux)
 linux   /vmlinuz-linux
 initrd  /initramfs-linux.img
 options root=PARTUUID=6c524b73-40d8-454e-9fac-6952dc4f4ade zswap.enabled=0 rootflags=subvol=@ rw rootfstype=btrfs
+```
 
 edit the .conf (remove Created lines)
 
+```
 title   Arch Linux TKG `<version_#>`
 linux   /vmlinuz-linux`<version_#>`-tkg-bore
 initrd  /initramfs-linux`<version_#>`-tkg-bore.img
 options root=PARTUUID=6c524b73-40d8-454e-9fac-6952dc4f4ade zswap.enabled=0 rootflags=subvol=@ rw rootfstype=btrfs
+```
 
 save and close
 
