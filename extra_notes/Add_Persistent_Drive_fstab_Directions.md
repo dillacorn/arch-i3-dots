@@ -16,7 +16,7 @@ Create a new line at the end starting with "#" - add description for auto-mounti
 ***example:***
 `# secondary M.2 drive /dev/nvme1n1p1`
 
-`UUID=e9d89909-b5b1-49e5-90b1-279004892fz21    /mnt/M2   btrfs   defaults   0   2`
+`UUID=e9d89909-b5b1-49e5-90b1-279004892fz21    /mnt/M2   ext4   defaults   0   2`
 
 save and reboot.
 
