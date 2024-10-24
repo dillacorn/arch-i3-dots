@@ -339,7 +339,7 @@ else
 
     if echo "$GPU_VENDOR" | grep -iq "Radeon"; then
         echo -e "\033[1;32mAMD GPU detected. Applying AMD-specific settings...\033[0m"
-        
+
         # Ensure the linux-firmware package is installed for AMD GPUs
         retry_command sudo pacman -S --needed --noconfirm linux-firmware
 
@@ -361,17 +361,44 @@ else
         echo -e "\033[1;34mValidating hardware acceleration (VA-API and VDPAU)...\033[0m"
         vainfo || echo -e "\033[1;31mVA-API not working properly.\033[0m"
         vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
-        
-        # Optionally add any AMD-specific kernel parameters to GRUB (such as amdgpu.dc=1)
-        if ! grep -q "amdgpu.dc=1" /etc/default/grub; then
-            retry_command sudo sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ amdgpu.dc=1"/' /etc/default/grub
-            retry_command sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+        # Detect bootloader type
+        BOOTLOADER=""
+        if [ -d /boot/efi/loader ]; then
+            BOOTLOADER="systemd-boot"
+        elif [ -f /etc/default/grub ]; then
+            BOOTLOADER="grub"
+        else
+            echo -e "\033[1;31mCould not detect bootloader (GRUB or systemd-boot). Exiting.\033[0m"
+            exit 1
+        fi
+
+        # Apply AMD GPU kernel parameter depending on the bootloader
+        if [ "$BOOTLOADER" == "grub" ]; then
+            echo -e "\033[1;34mGRUB detected. Applying AMD-specific kernel parameter...\033[0m"
+            if ! grep -q "amdgpu.dc=1" /etc/default/grub; then
+                retry_command sudo sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT=/ s/"$/ amdgpu.dc=1"/' /etc/default/grub
+                retry_command sudo grub-mkconfig -o /boot/grub/grub.cfg
+                echo -e "\033[1;32mAMD-specific kernel parameter added to GRUB configuration.\033[0m"
+            else
+                echo -e "\033[1;33mAMD-specific kernel parameter already exists in GRUB configuration.\033[0m"
+            fi
+
+        elif [ "$BOOTLOADER" == "systemd-boot" ]; then
+            echo -e "\033[1;34msystemd-boot detected. Applying AMD-specific kernel parameter...\033[0m"
+            if ! grep -q "amdgpu.dc=1" /boot/efi/loader/entries/*.conf; then
+                retry_command sudo sed -i '/^options / s/$/ amdgpu.dc=1/' /boot/efi/loader/entries/*.conf
+                retry_command sudo bootctl update
+                echo -e "\033[1;32mAMD-specific kernel parameter added to systemd-boot configuration.\033[0m"
+            else
+                echo -e "\033[1;33mAMD-specific kernel parameter already exists in systemd-boot configuration.\033[0m"
+            fi
         fi
 
     elif echo "$GPU_VENDOR" | grep -iq "NVIDIA"; then
         echo -e "\033[1;33mNVIDIA GPU detected. Applying NVIDIA-specific settings...\033[0m"
-        
-        # Ask user if they want to install the NVIDIA proprietary drivers
+
+        # Optionally install proprietary NVIDIA drivers and video decoding libraries (VDPAU)
         echo -e "\033[1;34mDo you want to install the recommended NVIDIA proprietary drivers? (y/n)\033[0m"
         read -n 1 -s install_nvidia
         echo
@@ -380,18 +407,13 @@ else
             if ! pacman -Q | grep -q "nvidia"; then
                 echo -e "\033[1;34mInstalling NVIDIA proprietary drivers...\033[0m"
                 retry_command sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
-                
+
                 # Install video decoding libraries for NVIDIA
                 retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo
-                
+
                 # Validate VDPAU support
                 echo -e "\033[1;34mValidating VDPAU hardware acceleration...\033[0m"
                 vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
-                
-                if [ $? -ne 0 ]; then
-                    echo -e "\033[1;31mFailed to install NVIDIA proprietary drivers. Exiting.\033[0m"
-                    exit 1
-                fi
             else
                 echo -e "\033[1;32mNVIDIA proprietary drivers already installed.\033[0m"
             fi
@@ -401,8 +423,8 @@ else
 
     elif echo "$GPU_VENDOR" | grep -iq "Intel"; then
         echo -e "\033[1;33mIntel GPU detected. Applying Intel-specific settings...\033[0m"
-        
-        # Ask user if they want to install the Intel driver
+
+        # Optionally install Intel drivers
         echo -e "\033[1;34mDo you want to install the recommended Intel driver? (y/n)\033[0m"
         read -n 1 -s install_intel
         echo
@@ -423,7 +445,7 @@ else
         fi
 
     else
-        echo -e "\033[1;31mNo AMD, NVIDIA, or Intel GPU detected. Skipping GPU-specific configuration.\033[0m"
+        echo -e "\033[1;31mNo supported GPU vendor (AMD, NVIDIA, Intel) detected. Skipping GPU-specific configuration.\033[0m"
     fi
 fi
 
