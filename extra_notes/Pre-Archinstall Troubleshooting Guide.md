@@ -13,7 +13,7 @@ If the drive already contains data or partitions, you may encounter errors durin
 
 - If there are partitions listed on the target drive, you will need to either delete them or format the drive.
 
-# 2. Deleting Partitions (Using gdisk or fdisk)
+# 2. Deleting Partitions (Using `gdisk` or `fdisk`)
 
 To delete existing partitions and create a clean environment, follow these steps:
 
@@ -26,19 +26,19 @@ To delete existing partitions and create a clean environment, follow these steps
 
 2. Delete existing partitions:
 
-- Type d and hit Enter.
+- Type `d` and hit Enter.
 
-- When prompted, enter the partition number to delete (e.g., 1, 2, etc.). Repeat this step until all partitions are deleted.
+- When prompted, enter the partition number to delete (e.g., `1`, `2`, etc.). Repeat this step until all partitions are deleted.
 
 3. Confirm there are no partitions:
 
-- Type i to verify there are no partitions remaining.
+- Type `i` to verify there are no partitions remaining.
 
 4. Confirm Changes:
 
 After deleting all partitions, write the changes to the disk:
 
-- Type w and press Enter to write the partition table to the disk.
+- Type `w` and press Enter to write the partition table to the disk.
 
 This will confirm the changes, and the disk will now be clean and ready for partitioning.
 
