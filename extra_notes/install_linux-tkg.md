@@ -34,8 +34,8 @@ copy current `<date>`_`<time>`_`linux.conf` in folder
 
 will look something like this
 
-# Created by: archinstall
-# Created on: 2024-10-24_16-00-57
+#### Created by: archinstall
+#### Created on: 2024-10-24_16-00-57
 title   Arch Linux (linux)
 linux   /vmlinuz-linux
 initrd  /initramfs-linux.img
