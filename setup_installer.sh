@@ -404,23 +404,28 @@ else
         echo
 
         if [[ "$install_nvidia" == "y" || "$install_nvidia" == "Y" ]]; then
-            if ! pacman -Q | grep -q "nvidia"; then
-                echo -e "\033[1;34mInstalling NVIDIA proprietary drivers...\033[0m"
-                retry_command sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
+    if ! pacman -Q | grep -q "nvidia"; then
+        echo -e "\033[1;34mInstalling NVIDIA proprietary drivers...\033[0m"
+        retry_command sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
 
-                # Install video decoding libraries for NVIDIA
-                retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo
+        # Install video decoding libraries for NVIDIA
+        retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo
 
-                # Validate VDPAU support
-                echo -e "\033[1;34mValidating VDPAU hardware acceleration...\033[0m"
-                vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
-            else
-                echo -e "\033[1;32mNVIDIA proprietary drivers already installed.\033[0m"
-            fi
-        else
-            echo -e "\033[1;33mSkipping NVIDIA driver installation as per user choice.\033[0m"
+        # Validate VDPAU support
+        echo -e "\033[1;34mValidating VDPAU hardware acceleration...\033[0m"
+        vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
+
+        # Check if NVIDIA driver installation was successful
+        if [ $? -ne 0 ]; then
+            echo -e "\033[1;31mFailed to install NVIDIA proprietary drivers. Exiting.\033[0m"
+            exit 1
         fi
-
+    else
+        echo -e "\033[1;32mNVIDIA proprietary drivers already installed.\033[0m"
+    fi
+else
+    echo -e "\033[1;33mSkipping NVIDIA driver installation as per user choice.\033[0m"
+fi
     elif echo "$GPU_VENDOR" | grep -iq "Intel"; then
         echo -e "\033[1;33mIntel GPU detected. Applying Intel-specific settings...\033[0m"
 
