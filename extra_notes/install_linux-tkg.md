@@ -77,7 +77,7 @@ micro /boot/loader/loader.conf
 my loader.conf with `default default` added
 
 ```
-default default
+default @saved
 timeout 3
 #console-mode keep
 ```
