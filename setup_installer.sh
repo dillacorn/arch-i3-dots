@@ -625,6 +625,10 @@ fi
 
 echo "Changes have been applied to $BASH_PROFILE."
 
+# add grub directory for editing and updating with command:
+# sudo grub-mkconfig -o /boot/grub/grub.cfg
+mkdir -p /boot/grub
+
 # Prompt the user to reboot the system after setup
 echo -e "\033[1;34mSetup complete! Do you want to reboot now? (y/n)\033[0m"
 read -n 1 -r reboot_choice
