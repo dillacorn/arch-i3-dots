@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Terminal=false
-Exec=alacritty -e ncspot
-Name=ncspot
-Icon=utilities-terminal
