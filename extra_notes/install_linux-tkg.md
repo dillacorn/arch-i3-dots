@@ -28,9 +28,13 @@ ls
 
 copy current `<date>`_`<time>`_`linux.conf` in folder
 
-`sudo cp `<date>`_`<time>`_`linux.conf` linux-tkg-bore-`<version_#>`.conf`
+```sh
+sudo cp <date>_<time>_linux.conf linux-tkg-bore-<version_#>.conf
+```
 
-`sudo micro linux-tkg-bore-`<version_#>`.conf`
+```sh
+sudo micro linux-tkg-bore-<version_#>.conf
+```
 
 will look something like this
 
