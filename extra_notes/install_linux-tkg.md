@@ -67,3 +67,25 @@ sudo bootctl update
 reboot
 
 "Arch Linux TKG `<version_#>`" should be in the list to choose now.
+
+additionally you can make systemd-boot choose last chosen kernal by adding these lines to loader.conf
+
+```sh
+micro /boot/loader/loader.conf
+```
+
+my loader.conf with `default default` added
+
+```
+default default
+timeout 3
+#console-mode keep
+```
+
+update bootloader
+
+```sh
+sudo bootctl update
+```
+
+now last chosen kernal will be the next to be shosen automatically
