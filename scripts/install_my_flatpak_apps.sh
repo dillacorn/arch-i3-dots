@@ -53,7 +53,7 @@ fi
 
 # Add Flathub repository for user-level installations
 echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
-sudo -u "$SUDO_USER" flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # Update currently installed Flatpak apps (system-wide)
 echo -e "${GREEN}Updating installed Flatpak apps...${RESET}"
@@ -72,7 +72,7 @@ install_flatpak_app() {
     echo -e "${GREEN}Installing ${app} (Attempt $((count + 1))/${retries})...${RESET}"
     
     # Install the Flatpak app as the user
-    if sudo -u "$SUDO_USER" flatpak --user install -y "$flatpak_origin" "$app"; then
+    if flatpak --user install -y "$flatpak_origin" "$app"; then
       echo -e "${GREEN}${app} installed successfully.${RESET}"
       break
     else
