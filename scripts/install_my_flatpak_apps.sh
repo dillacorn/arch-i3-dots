@@ -55,6 +55,10 @@ fi
 echo -e "${GREEN}Adding Flathub repository...${RESET}"
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
+# Set up Flatpak to use ~/.local/share/flatpak for user installations
+echo -e "${GREEN}Configuring Flatpak to use the home directory for installations...${RESET}"
+flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
 # Update currently installed Flatpak apps
 echo -e "${GREEN}Updating installed Flatpak apps...${RESET}"
 sudo flatpak update -y
