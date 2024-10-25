@@ -51,7 +51,12 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-# Add Flathub repository for user-level installations (as the non-root user)
+# Set the Flatpak installation directory to $SUDO_USER/.local/share/flatpak
+# We use sudo -u to run the command as the original user
+echo -e "${GREEN}Setting Flatpak installation directory to /home/$SUDO_USER/.local/share/flatpak...${RESET}"
+sudo -u "$SUDO_USER" flatpak --user config --set installation-path "/home/$SUDO_USER/.local/share/flatpak"
+
+# Add Flathub repository for user-level installations
 echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
 sudo -u "$SUDO_USER" flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
