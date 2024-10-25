@@ -26,12 +26,25 @@ install_package() {
     fi
 }
 
+# Function to reinstall packages after jack2 removal
+reinstall_packages() {
+    echo -e "${CYAN}Reinstalling packages that depended on jack2...${NC}"
+    for pkg in audacity ffmpeg mpv fluidsynth mplayer portaudio; do
+        install_package "$pkg"
+    done
+}
+
 # Check for jack2 and replace it with pipewire-jack if found
 if pacman -Qi jack2 &>/dev/null; then
     echo -e "${YELLOW}jack2 is installed, which conflicts with pipewire-jack.${NC}"
-    echo -e "${CYAN}Removing jack2 and installing pipewire-jack...${NC}"
+    echo -e "${CYAN}Removing jack2 and related dependencies...${NC}"
     pacman -Rns --noconfirm jack2
+
+    echo -e "${CYAN}Installing pipewire-jack...${NC}"
     install_package "pipewire-jack"
+
+    # Reinstall packages that were removed along with jack2
+    reinstall_packages
 else
     echo -e "${GREEN}jack2 is not installed. Proceeding with pipewire-jack installation.${NC}"
     install_package "pipewire-jack"
