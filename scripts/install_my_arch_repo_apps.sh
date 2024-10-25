@@ -15,25 +15,11 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Function to check and enable multilib repo if it's not already enabled
-check_and_enable_multilib() {
-    if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
-        echo -e "${YELLOW}Multilib repository is not enabled. Enabling it now...${NC}"
-        
-        # Uncomment the multilib repository in pacman.conf
-        sudo sed -i '/#\[multilib\]/s/^#//g' /etc/pacman.conf
-        sudo sed -i '/#Include = \/etc\/pacman.d\/mirrorlist/s/^#//g' /etc/pacman.conf
-        
-        # Perform a full system update with multilib enabled
-        echo -e "${CYAN}Synchronizing package database and performing full system update...${NC}"
-        sudo pacman -Syu --noconfirm
-    else
-        echo -e "${GREEN}Multilib repository is already enabled.${NC}"
-    fi
-}
-
-# Check and enable multilib repository
-check_and_enable_multilib
+# Inform the user to enable the multilib repository
+echo -e "${YELLOW}IMPORTANT: Ensure the multilib repository is enabled in /etc/pacman.conf before running this script.${NC}"
+echo -e "${YELLOW}To enable it, uncomment the following lines in your /etc/pacman.conf file:${NC}"
+echo -e "${CYAN}  [multilib]\n  Include = /etc/pacman.d/mirrorlist${NC}"
+echo -e "${YELLOW}Then, run 'sudo pacman -Syu' to update the package list.${NC}"
 
 # Function to install a package and its dependencies if not already installed
 install_package() {
