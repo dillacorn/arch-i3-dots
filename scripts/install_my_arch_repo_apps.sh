@@ -26,16 +26,14 @@ install_package() {
     fi
 }
 
-# Check for jack2 and replace it with pipewire-jack if found
+# Forcefully remove jack2 and its dependencies, then install pipewire-jack
 if pacman -Qi jack2 &>/dev/null; then
     echo -e "${YELLOW}jack2 is installed, which conflicts with pipewire-jack.${NC}"
-    echo -e "${CYAN}Removing jack2 and related dependencies...${NC}"
-    pacman -Rns --noconfirm jack2
+    echo -e "${CYAN}Forcefully removing jack2 and related dependencies...${NC}"
+    pacman -Rdd --noconfirm jack2
 
-    echo -e "${CYAN}Installing pipewire-jack and assuming jack2 dependencies...${NC}"
-    pacman -S --noconfirm pipewire-jack
-    sudo pacman --asdeps --needed --assume-installed pipewire-jack --noconfirm audacity ffmpeg fluidsynth mpv portaudio
-    
+    echo -e "${CYAN}Installing pipewire-jack...${NC}"
+    install_package "pipewire-jack"
 else
     echo -e "${GREEN}jack2 is not installed. Proceeding with pipewire-jack installation.${NC}"
     install_package "pipewire-jack"
