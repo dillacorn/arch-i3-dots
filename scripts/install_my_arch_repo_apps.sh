@@ -195,11 +195,16 @@ EOF
         fi
     fi
 
-    # Start dhcpcd if needed
+# Start dhcpcd only if NetworkManager is not active
+echo -e "${CYAN}Checking if dhcpcd needs to be started...${NC}"
+if systemctl is-active --quiet NetworkManager; then
+    echo -e "${YELLOW}NetworkManager is managing network interfaces, skipping dhcpcd.${NC}"
+else
     echo -e "${CYAN}Starting dhcpcd...${NC}"
     if ! dhcpcd; then
         echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
     fi
+fi
 
     # ----------------------------
     # Bluetooth Services
