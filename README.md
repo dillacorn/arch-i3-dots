@@ -3,6 +3,7 @@
 - **Distro**: [Arch](https://archlinux.org/)
 - **Installation Method**: [archinstall](https://github.com/archlinux/archinstall)
 - **File System**: ext4
+- **Repositories**: [core](https://archlinux.org/packages/?sort=&arch=any&repo=Core&q=&maintainer=&flagged=), [extra](https://archlinux.org/packages/?sort=&arch=any&repo=Extra&q=&maintainer=&flagged=), [multilib](https://archlinux.org/packages/?sort=&repo=Multilib&q=&maintainer=&flagged=) & [AUR](https://aur.archlinux.org/packages)
 - **Bootloader**: [systemd-boot](https://github.com/ivandavidov/systemd-boot)
 - **X11**: [i3-wm](https://github.com/i3/i3)
 - **Kernel**: [linux-tkg](https://github.com/Frogging-Family/linux-tkg)
