@@ -15,6 +15,24 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
+# Function to check and enable multilib repo if it's not already enabled
+check_and_enable_multilib() {
+    if ! grep -q "\[multilib\]" /etc/pacman.conf; then
+        echo -e "${YELLOW}Multilib repository is not enabled. Enabling it now...${NC}"
+        
+        # Append the multilib repository to pacman.conf
+        echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
+        
+        # Synchronize the package database
+        pacman -Sy
+    else
+        echo -e "${GREEN}Multilib repository is already enabled.${NC}"
+    fi
+}
+
+# Check and enable multilib repository
+check_and_enable_multilib
+
 # Function to install a package and its dependencies if not already installed
 install_package() {
     local package="$1"
