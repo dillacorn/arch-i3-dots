@@ -23,9 +23,9 @@ check_and_enable_multilib() {
         # Append the multilib repository to pacman.conf
         echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
         
-        # Synchronize the package database and perform a full system update
-        echo -e "${CYAN}Synchronizing package database and performing full system update...${NC}"
-        pacman -Syu --noconfirm
+        # Perform full system update with multilib enabled
+        echo -e "${CYAN}Updating system with multilib enabled...${NC}"
+        sudo pacman -Syu --noconfirm
     else
         echo -e "${GREEN}Multilib repository is already enabled.${NC}"
     fi
@@ -39,7 +39,7 @@ install_package() {
     local package="$1"
     if ! pacman -Qi "$package" &>/dev/null; then
         echo -e "${CYAN}Installing $package and its dependencies...${NC}"
-        pacman -S --needed --noconfirm "$package"
+        sudo pacman -S --needed --noconfirm "$package"
     else
         echo -e "${YELLOW}$package is already installed. Skipping...${NC}"
     fi
