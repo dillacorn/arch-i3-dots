@@ -39,7 +39,7 @@ flatpak_apps=(
 # Check if Flatpak is installed; if not, install it via Pacman
 if ! command -v flatpak &> /dev/null; then
   echo -e "${PURPLE}Flatpak is not installed. Installing Flatpak...${RESET}"
-  sudo pacman -S --needed --noconfirm flatpak
+  pacman -S --needed --noconfirm flatpak
 fi
 
 # Prompt the user to proceed with installation
@@ -51,28 +51,28 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-# Add Flathub repository for user-level installations
+# Add Flathub repository for user-level installations (as the non-root user)
 echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
-flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+sudo -u "$SUDO_USER" flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# Update currently installed Flatpak apps (system-wide)
+# Update currently installed Flatpak apps (as the non-root user)
 echo -e "${GREEN}Updating installed Flatpak apps...${RESET}"
-flatpak update -y
+sudo -u "$SUDO_USER" flatpak --user update -y
 
 # Retry logic for Flatpak installation
 install_flatpak_app() {
   local app="$1"
   local retries=3
   local count=0
-  while ! flatpak list --app | grep -q "${app}"; do
+  while ! sudo -u "$SUDO_USER" flatpak --user list --app | grep -q "${app}"; do
     if [ $count -ge $retries ]; then
       echo -e "${RED_B}Failed to install ${app} after $retries attempts. Skipping...${RESET}"
       return 1
     fi
     echo -e "${GREEN}Installing ${app} (Attempt $((count + 1))/${retries})...${RESET}"
     
-    # Install the Flatpak app as the user
-    if flatpak --user install -y "$flatpak_origin" "$app"; then
+    # Install the Flatpak app as the non-root user
+    if sudo -u "$SUDO_USER" flatpak --user install -y "$flatpak_origin" "$app"; then
       echo -e "${GREEN}${app} installed successfully.${RESET}"
       break
     else
@@ -89,17 +89,17 @@ install_flatpak_app() {
   done
 }
 
-# Install apps from the list
+# Install apps from the list (as the non-root user)
 echo -e "${GREEN}Installing selected Flatpak apps...${RESET}"
 for app in "${flatpak_apps[@]}"; do
-  if ! flatpak list --app | grep -q "${app}"; then
+  if ! sudo -u "$SUDO_USER" flatpak --user list --app | grep -q "${app}"; then
     install_flatpak_app "${app}"
   else
     echo -e "${YELLOW}${app} is already installed. Skipping...${RESET}"
   fi
 done
 
-# Configure firewall rules for NDI
+# Configure firewall rules for NDI (as root, since this requires system-level changes)
 echo -e "${CYAN}Configuring firewall rules for NDI...${RESET}"
 
 # Add firewall rules for NDI (ports 5959-5969, 6960-6970, 7960-7970 for TCP and UDP, and 5353 for mDNS)
