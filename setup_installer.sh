@@ -513,15 +513,6 @@ if [ $? -ne 0 ]; then
     echo -e "\033[1;31mFailed to set cursor theme. Exiting.\033[0m"
     exit 1
 fi
-# Apply cursor theme to Flatpak applications
-echo -e "\033[1;34mApplying cursor theme to Flatpak applications...\033[0m"
-retry_command flatpak override --user --env=GTK_CURSOR_THEME=ComixCursors-White
-if [ $? -eq 0 ]; then
-    echo -e "\033[1;32mCursor theme applied to Flatpak applications successfully.\033[0m"
-else
-    echo -e "\033[1;31mFailed to apply cursor theme to Flatpak applications.\033[0m"
-    exit 1
-fi
 
 # Enable and start NetworkManager
 echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
