@@ -51,17 +51,13 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-# Add Flathub repository if not already present
-echo -e "${GREEN}Adding Flathub repository...${RESET}"
-sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+# Add Flathub repository for user-level installations
+echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
+sudo -u "$SUDO_USER" flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-# Set up Flatpak to use ~/.local/share/flatpak for user installations
-echo -e "${GREEN}Configuring Flatpak to use the home directory for installations...${RESET}"
-flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-# Update currently installed Flatpak apps
+# Update currently installed Flatpak apps (system-wide)
 echo -e "${GREEN}Updating installed Flatpak apps...${RESET}"
-sudo flatpak update -y
+flatpak update -y
 
 # Retry logic for Flatpak installation
 install_flatpak_app() {
@@ -75,8 +71,8 @@ install_flatpak_app() {
     fi
     echo -e "${GREEN}Installing ${app} (Attempt $((count + 1))/${retries})...${RESET}"
     
-    # Install the Flatpak app and capture the exit code
-    if sudo flatpak install -y "$flatpak_origin" "$app"; then
+    # Install the Flatpak app as the user
+    if sudo -u "$SUDO_USER" flatpak --user install -y "$flatpak_origin" "$app"; then
       echo -e "${GREEN}${app} installed successfully.${RESET}"
       break
     else
@@ -104,10 +100,10 @@ for app in "${flatpak_apps[@]}"; do
 done
 
 # Configure firewall rules for NDI
-echo -e "${CYAN}Configuring firewall rules for NDI...${NC}"
+echo -e "${CYAN}Configuring firewall rules for NDI...${RESET}"
 
 # Add firewall rules for NDI (ports 5959-5969, 6960-6970, 7960-7970 for TCP and UDP, and 5353 for mDNS)
-echo -e "${CYAN}Adding firewall rules...${NC}"
+echo -e "${CYAN}Adding firewall rules...${RESET}"
 ufw allow 5353/udp
 ufw allow 5959:5969/tcp
 ufw allow 5959:5969/udp
@@ -117,6 +113,6 @@ ufw allow 7960:7970/tcp
 ufw allow 7960:7970/udp
 ufw allow 5960/tcp
 
-echo -e "${GREEN}Firewall rules for NDI configured successfully.${NC}"
+echo -e "${GREEN}Firewall rules for NDI configured successfully.${RESET}"
 
 echo -e "${PURPLE}Flatpak setup and installation complete.${RESET}"
