@@ -17,11 +17,12 @@ NC='\033[0m' # No Color
 
 # Function to check and enable multilib repo if it's not already enabled
 check_and_enable_multilib() {
-    if ! grep -q "\[multilib\]" /etc/pacman.conf; then
+    if ! grep -q "^\[multilib\]" /etc/pacman.conf; then
         echo -e "${YELLOW}Multilib repository is not enabled. Enabling it now...${NC}"
         
-        # Append the multilib repository to pacman.conf
-        echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
+        # Uncomment the multilib repository in pacman.conf
+        sudo sed -i '/#\[multilib\]/s/^#//g' /etc/pacman.conf
+        sudo sed -i '/#Include = \/etc\/pacman.d\/mirrorlist/s/^#//g' /etc/pacman.conf
         
         # Perform a full system update with multilib enabled
         echo -e "${CYAN}Synchronizing package database and performing full system update...${NC}"
