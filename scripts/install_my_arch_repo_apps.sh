@@ -23,7 +23,7 @@ check_and_enable_multilib() {
         # Append the multilib repository to pacman.conf
         echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
         
-        # Perform full system update with multilib enabled
+        # Perform a full system update with multilib enabled
         echo -e "${CYAN}Synchronizing package database and performing full system update...${NC}"
         sudo pacman -Syu --noconfirm
     else
