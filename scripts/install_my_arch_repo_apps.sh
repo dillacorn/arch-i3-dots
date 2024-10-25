@@ -138,7 +138,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     done
 
     # Install other networking and security tools
-    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa; do
+    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa bluez; do
         install_package "$pkg"
     done
 
