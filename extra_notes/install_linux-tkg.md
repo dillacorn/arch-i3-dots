@@ -82,6 +82,12 @@ timeout 3
 #console-mode keep
 ```
 
+generate initramfs
+
+```sh
+sudo mkinitcpio -P
+```
+
 update bootloader
 
 ```sh
