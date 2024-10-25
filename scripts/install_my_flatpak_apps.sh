@@ -25,6 +25,7 @@ flatpak_origin='flathub'
 
 # List of desktop apps to be installed (specified by app ID)
 flatpak_apps=(
+  'com.valvesoftware.Steam'
   'com.github.IsmaelMartinez.teams_for_linux'
   'dev.vencord.Vesktop'
   'org.telegram.desktop'
@@ -39,6 +40,16 @@ flatpak_apps=(
   'com.github.tchx84.Flatseal'
   'io.github.ungoogled_software.ungoogled_chromium'
 )
+
+# Detect file system type of the root partition
+root_fs_type=$(df -T / | awk 'NR==2 {print $2}')
+
+# Determine whether to use the --user flag
+if [[ "$root_fs_type" == "btrfs" ]]; then
+  flatpak_user_flag=""
+else
+  flatpak_user_flag="--user"
+fi
 
 # Check if Flatpak is installed; if not, install it via Pacman
 if ! command -v flatpak &> /dev/null; then
@@ -55,20 +66,22 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-# Add Flathub repository for user-level installations
-echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
-runuser -u "$target_user" -- flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+# Add Flathub repository for user-level installations if --user flag is being used
+if [[ -n "$flatpak_user_flag" ]]; then
+  echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
+  runuser -u "$target_user" -- flatpak $flatpak_user_flag remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+fi
 
 # Update currently installed Flatpak apps (as the non-root user)
 echo -e "${GREEN}Updating installed Flatpak apps...${RESET}"
-runuser -u "$target_user" -- flatpak --user update -y
+runuser -u "$target_user" -- flatpak $flatpak_user_flag update -y
 
 # Retry logic for Flatpak installation
 install_flatpak_app() {
   local app="$1"
   local retries=3
   local count=0
-  while ! runuser -u "$target_user" -- flatpak --user list --app | grep -q "${app}"; do
+  while ! runuser -u "$target_user" -- flatpak $flatpak_user_flag list --app | grep -q "${app}"; do
     if [ $count -ge $retries ]; then
       echo -e "${RED_B}Failed to install ${app} after $retries attempts. Skipping...${RESET}"
       return 1
@@ -76,7 +89,7 @@ install_flatpak_app() {
     echo -e "${GREEN}Installing ${app} (Attempt $((count + 1))/${retries})...${RESET}"
     
     # Install the Flatpak app as the non-root user
-    if runuser -u "$target_user" -- flatpak --user install -y "$flatpak_origin" "$app"; then
+    if runuser -u "$target_user" -- flatpak $flatpak_user_flag install -y "$flatpak_origin" "$app"; then
       echo -e "${GREEN}${app} installed successfully.${RESET}"
       break
     else
@@ -96,7 +109,7 @@ install_flatpak_app() {
 # Install apps from the list (as the non-root user)
 echo -e "${GREEN}Installing selected Flatpak apps...${RESET}"
 for app in "${flatpak_apps[@]}"; do
-  if ! runuser -u "$target_user" -- flatpak --user list --app | grep -q "${app}"; then
+  if ! runuser -u "$target_user" -- flatpak $flatpak_user_flag list --app | grep -q "${app}"; then
     install_flatpak_app "${app}"
   else
     echo -e "${YELLOW}${app} is already installed. Skipping...${RESET}"
