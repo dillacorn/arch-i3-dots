@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
-# Ensure the script is run with sudo
-if [ -z "$SUDO_USER" ]; then
-    echo "This script must be run with sudo!"
+# Ensure the script is run as root
+if [ "$EUID" -ne 0 ]; then
+    echo "This script must be run as root!"
     exit 1
 fi
+
+# Set the target user (who invoked the script with sudo)
+target_user="${SUDO_USER:-$(logname)}"
+target_home="/home/$target_user"
 
 # Flatpak installation and setup script
 
@@ -51,25 +55,25 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-# Set the Flatpak installation directory to $SUDO_USER/.local/share/flatpak
-# We use sudo -u to run the command as the original user
-echo -e "${GREEN}Setting Flatpak installation directory to /home/$SUDO_USER/.local/share/flatpak...${RESET}"
-sudo -u "$SUDO_USER" flatpak --user config --set installation-path "/home/$SUDO_USER/.local/share/flatpak"
+# Set the Flatpak installation directory to $target_user/.local/share/flatpak
+# This ensures all Flatpaks are installed in the home directory of the non-root user
+echo -e "${GREEN}Setting Flatpak installation directory to /home/$target_user/.local/share/flatpak...${RESET}"
+runuser -u "$target_user" -- flatpak --user config --set installation-path "/home/$target_user/.local/share/flatpak"
 
 # Add Flathub repository for user-level installations
 echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
-sudo -u "$SUDO_USER" flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+runuser -u "$target_user" -- flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 # Update currently installed Flatpak apps (as the non-root user)
 echo -e "${GREEN}Updating installed Flatpak apps...${RESET}"
-sudo -u "$SUDO_USER" flatpak --user update -y
+runuser -u "$target_user" -- flatpak --user update -y
 
 # Retry logic for Flatpak installation
 install_flatpak_app() {
   local app="$1"
   local retries=3
   local count=0
-  while ! sudo -u "$SUDO_USER" flatpak --user list --app | grep -q "${app}"; do
+  while ! runuser -u "$target_user" -- flatpak --user list --app | grep -q "${app}"; do
     if [ $count -ge $retries ]; then
       echo -e "${RED_B}Failed to install ${app} after $retries attempts. Skipping...${RESET}"
       return 1
@@ -77,7 +81,7 @@ install_flatpak_app() {
     echo -e "${GREEN}Installing ${app} (Attempt $((count + 1))/${retries})...${RESET}"
     
     # Install the Flatpak app as the non-root user
-    if sudo -u "$SUDO_USER" flatpak --user install -y "$flatpak_origin" "$app"; then
+    if runuser -u "$target_user" -- flatpak --user install -y "$flatpak_origin" "$app"; then
       echo -e "${GREEN}${app} installed successfully.${RESET}"
       break
     else
@@ -97,7 +101,7 @@ install_flatpak_app() {
 # Install apps from the list (as the non-root user)
 echo -e "${GREEN}Installing selected Flatpak apps...${RESET}"
 for app in "${flatpak_apps[@]}"; do
-  if ! sudo -u "$SUDO_USER" flatpak --user list --app | grep -q "${app}"; then
+  if ! runuser -u "$target_user" -- flatpak --user list --app | grep -q "${app}"; then
     install_flatpak_app "${app}"
   else
     echo -e "${YELLOW}${app} is already installed. Skipping...${RESET}"
