@@ -55,11 +55,6 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   exit 0
 fi
 
-# Set the Flatpak installation directory to $target_user/.local/share/flatpak
-# This ensures all Flatpaks are installed in the home directory of the non-root user
-echo -e "${GREEN}Setting Flatpak installation directory to /home/$target_user/.local/share/flatpak...${RESET}"
-runuser -u "$target_user" -- flatpak --user config --set installation-path "/home/$target_user/.local/share/flatpak"
-
 # Add Flathub repository for user-level installations
 echo -e "${GREEN}Adding Flathub repository for user-level installations...${RESET}"
 runuser -u "$target_user" -- flatpak --user remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
