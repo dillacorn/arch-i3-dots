@@ -2,7 +2,7 @@
 - **Preview Images**: [View Here](https://github.com/dillacorn/arch-i3-dots/tree/main/preview_images/preview_page.md)
 - **Distro**: [Arch](https://archlinux.org/)
 - **Installation Method**: [archinstall](https://github.com/archlinux/archinstall)
-- **File System**: [Btrfs](https://github.com/btrfs/linux)
+- **File System**: ext4
 - **Bootloader**: [systemd-boot](https://github.com/ivandavidov/systemd-boot)
 - **X11**: [i3-wm](https://github.com/i3/i3)
 - **Kernel**: [linux-tkg](https://github.com/Frogging-Family/linux-tkg)
