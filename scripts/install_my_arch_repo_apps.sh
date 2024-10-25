@@ -26,6 +26,17 @@ install_package() {
     fi
 }
 
+# Check for jack2 and replace it with pipewire-jack if found
+if pacman -Qi jack2 &>/dev/null; then
+    echo -e "${YELLOW}jack2 is installed, which conflicts with pipewire-jack.${NC}"
+    echo -e "${CYAN}Removing jack2 and installing pipewire-jack...${NC}"
+    pacman -Rns --noconfirm jack2
+    install_package "pipewire-jack"
+else
+    echo -e "${GREEN}jack2 is not installed. Proceeding with pipewire-jack installation.${NC}"
+    install_package "pipewire-jack"
+fi
+
 # Prompt for package installation
 echo -e "\n${CYAN}Do you want to install Dillacorn's chosen Arch Repo Linux applications? [y/n]${NC}"
 
@@ -127,34 +138,34 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     done
 
     # Install other networking and security tools
-    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa pipewire-jack bluez; do
+    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa; do
         install_package "$pkg"
     done
 
     # Enable libvirtd if it's installed and configure networking if not running in a VM
-echo -e "${CYAN}Configuring libvirt and networking...${NC}"
-if pacman -Qs libvirt > /dev/null; then
-    echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
-    systemctl enable --now libvirtd
+    echo -e "${CYAN}Configuring libvirt and networking...${NC}"
+    if pacman -Qs libvirt > /dev/null; then
+        echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
+        systemctl enable --now libvirtd
 
-    # Verify if libvirtd started successfully
-    if ! systemctl is-active --quiet libvirtd; then
-        echo -e "${RED}libvirtd service failed to start. Please check the service status.${NC}"
-        exit 1
-    fi
+        # Verify if libvirtd started successfully
+        if ! systemctl is-active --quiet libvirtd; then
+            echo -e "${RED}libvirtd service failed to start. Please check the service status.${NC}"
+            exit 1
+        fi
 
-    # Check if the script is running in a virtualized environment
-    if systemd-detect-virt -q; then
-        echo -e "${YELLOW}Running in a virtualized environment. Skipping network configuration.${NC}"
-    else
-        # Destroy and undefine the existing default network if it exists
-        echo -e "${CYAN}Destroying and undefining existing default network if exists...${NC}"
-        virsh net-destroy default || true
-        virsh net-undefine default || true
+        # Check if the script is running in a virtualized environment
+        if systemd-detect-virt -q; then
+            echo -e "${YELLOW}Running in a virtualized environment. Skipping network configuration.${NC}"
+        else
+            # Destroy and undefine the existing default network if it exists
+            echo -e "${CYAN}Destroying and undefining existing default network if exists...${NC}"
+            virsh net-destroy default || true
+            virsh net-undefine default || true
 
-        # Create XML for the 'default' network using dynamic IP and Netmask
-        echo -e "${CYAN}Defining and starting the new default network...${NC}"
-        cat <<EOF > /tmp/default.xml
+            # Create XML for the 'default' network using dynamic IP and Netmask
+            echo -e "${CYAN}Defining and starting the new default network...${NC}"
+            cat <<EOF > /tmp/default.xml
 <network>
   <name>default</name>
   <uuid>$(uuidgen)</uuid>
@@ -169,41 +180,41 @@ if pacman -Qs libvirt > /dev/null; then
 </network>
 EOF
 
-        # Apply the network configuration
-        virsh net-define /tmp/default.xml
-        virsh net-start default
-        virsh net-autostart default
+            # Apply the network configuration
+            virsh net-define /tmp/default.xml
+            virsh net-start default
+            virsh net-autostart default
+        fi
     fi
-fi
 
-# Start dhcpcd if needed
-echo -e "${CYAN}Starting dhcpcd...${NC}"
-if ! dhcpcd; then
-    echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
-fi
+    # Start dhcpcd if needed
+    echo -e "${CYAN}Starting dhcpcd...${NC}"
+    if ! dhcpcd; then
+        echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
+    fi
 
-# ----------------------------
-# Bluetooth Services
-# ----------------------------
-echo -e "${CYAN}Enabling and starting Bluetooth service...${NC}"
+    # ----------------------------
+    # Bluetooth Services
+    # ----------------------------
+    echo -e "${CYAN}Enabling and starting Bluetooth service...${NC}"
 
-# Check if bluez and bluez-utils are installed, then enable and start the Bluetooth service
-if pacman -Qi bluez &>/dev/null && pacman -Qi bluez-utils &>/dev/null; then
-    systemctl enable bluetooth.service
-    systemctl start bluetooth.service
-    
-    # Verify if the Bluetooth service started successfully
-    if systemctl is-active --quiet bluetooth.service; then
-        echo -e "${GREEN}Bluetooth service started successfully.${NC}"
+    # Check if bluez and bluez-utils are installed, then enable and start the Bluetooth service
+    if pacman -Qi bluez &>/dev/null && pacman -Qi bluez-utils &>/dev/null; then
+        systemctl enable bluetooth.service
+        systemctl start bluetooth.service
+        
+        # Verify if the Bluetooth service started successfully
+        if systemctl is-active --quiet bluetooth.service; then
+            echo -e "${GREEN}Bluetooth service started successfully.${NC}"
+        else
+            echo -e "${RED}Bluetooth service failed to start. Please check the service status.${NC}"
+        fi
     else
-        echo -e "${RED}Bluetooth service failed to start. Please check the service status.${NC}"
+        echo -e "${RED}Bluetooth service could not be enabled because bluez or bluez-utils is not installed.${NC}"
     fi
-else
-    echo -e "${RED}Bluetooth service could not be enabled because bluez or bluez-utils is not installed.${NC}"
-fi
 
-# Print success message after installation
-echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
+    # Print success message after installation
+    echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
 else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux applications.${NC}"
     exit 0
