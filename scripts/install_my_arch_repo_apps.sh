@@ -134,16 +134,28 @@ systemctl mask systemd-resolved || true
 rm -f /etc/resolv.conf
 echo "nameserver 8.8.8.8" | tee /etc/resolv.conf
 
-# Install UFW if not already installed and allow virbr0 traffic
+# Install UFW if not already installed and configure rules for VM network
 if ! pacman -Qs ufw > /dev/null; then
     echo -e "${CYAN}Installing ufw...${NC}"
     install_package "ufw"
-    ufw enable
     systemctl enable ufw
 fi
-echo -e "${CYAN}Allowing all traffic through virbr0 interface...${NC}"
+
+echo -e "${CYAN}Configuring UFW rules for VM networking...${NC}"
+# Allow all traffic on virbr0 interface
 ufw allow in on virbr0
 ufw allow out on virbr0
+# Allow essential DNS, HTTP, and HTTPS traffic
+ufw allow out to any port 53  # DNS
+ufw allow out to any port 80  # HTTP
+ufw allow out to any port 443 # HTTPS
+# Enable routed traffic for virtual machines
+ufw default allow routed
+# Reload UFW to apply changes
+ufw reload
+
+# Enable UFW if not already enabled
+ufw enable
 
 # Install required networking and security tools
 for pkg in wireguard-tools wireplumber openssh iptables systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils openbsd-netcat pipewire pipewire-pulse pipewire-alsa bluez; do
