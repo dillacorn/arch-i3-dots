@@ -150,6 +150,20 @@ for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils q
     install_package "$pkg"
 done
 
+# Configure dnsmasq to bind only to virbr0 to prevent conflicts
+echo -e "${CYAN}Configuring dnsmasq to bind only to virbr0...${NC}"
+cat <<EOF | sudo tee /etc/dnsmasq.d/virbr0.conf
+interface=virbr0
+bind-interfaces
+EOF
+
+# Reload dnsmasq configuration
+sudo systemctl restart dnsmasq
+if ! systemctl is-active --quiet dnsmasq; then
+    echo -e "${RED}Failed to start dnsmasq. Please check the service status.${NC}"
+    exit 1
+fi
+
 # Configure and start libvirt networking
 echo -e "${CYAN}Configuring libvirt and networking...${NC}"
 if pacman -Qs libvirt > /dev/null; then
