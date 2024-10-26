@@ -4,7 +4,7 @@
 - **Installation Method**: [archinstall](https://github.com/archlinux/archinstall)
 - **File System**: ext4 (seperate root and home partition)
 - **Repositories**: [core](https://archlinux.org/packages/?sort=&arch=any&repo=Core&q=&maintainer=&flagged=), [extra](https://archlinux.org/packages/?sort=&arch=any&repo=Extra&q=&maintainer=&flagged=), [multilib](https://archlinux.org/packages/?sort=&repo=Multilib&q=&maintainer=&flagged=) & [AUR](https://aur.archlinux.org/packages)
-- **Bootloader**: [systemd-boot](https://github.com/ivandavidov/systemd-boot)
+- **Bootloader**: [systemd-boot](https://github.com/ivandavidov/systemd-boot) ~ edited loader.conf to selected last selected kernal (for linux-tkg)
 - **X11**: [i3-wm](https://github.com/i3/i3)
 - **Kernel**: [linux-tkg](https://github.com/Frogging-Family/linux-tkg) ~ BORE CPU Schedular + Full Tickless!
   - [Install linux-tkg on Arch](https://github.com/Frogging-Family/linux-tkg?tab=readme-ov-file#arch--derivatives)
