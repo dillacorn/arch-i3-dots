@@ -141,53 +141,41 @@ fi
 
 # Configure UFW to allow essential VM network traffic
 echo -e "${CYAN}Configuring UFW to allow VM traffic...${NC}"
-for port in 22 80 443 67 53; do
+for port in 22 80 443 67 5353; do
     ufw allow in on virbr0 to any port "$port" proto udp
 done
 
-# Install additional networking and security tools
+# Install additional networking and security tools, including dnsmasq
 for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa bluez; do
     install_package "$pkg"
 done
 
-# Configure dnsmasq to bind only to virbr0 to prevent conflicts
-echo -e "${CYAN}Configuring dnsmasq to bind only to virbr0...${NC}"
+# Ensure dnsmasq is stopped to release any existing bindings
+echo -e "${CYAN}Stopping dnsmasq to release any bindings...${NC}"
+systemctl stop dnsmasq
+
+# Configure dnsmasq to bind only to virbr0 on a custom port to avoid conflicts
+echo -e "${CYAN}Configuring dnsmasq to bind only to virbr0 on port 5353...${NC}"
+sudo mkdir -p /etc/dnsmasq.d  # Ensure the directory exists
 cat <<EOF | sudo tee /etc/dnsmasq.d/virbr0.conf
 interface=virbr0
 bind-interfaces
+listen-address=192.168.122.1
+port=5353
 EOF
 
-# Reload dnsmasq configuration
-sudo systemctl restart dnsmasq
-if ! systemctl is-active --quiet dnsmasq; then
-    echo -e "${RED}Failed to start dnsmasq. Please check the service status.${NC}"
-    exit 1
-fi
+# Set correct permissions for dnsmasq configuration
+sudo chown root:root /etc/dnsmasq.d/virbr0.conf
+sudo chmod 644 /etc/dnsmasq.d/virbr0.conf
 
-# Configure and start libvirt networking
-echo -e "${CYAN}Configuring libvirt and networking...${NC}"
-if pacman -Qs libvirt > /dev/null; then
-    echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
-    systemctl enable --now libvirtd
+# Destroy and undefine the existing default network in libvirt, if any
+echo -e "${CYAN}Destroying and undefining existing default network in libvirt...${NC}"
+virsh net-destroy default || true
+virsh net-undefine default || true
 
-    # Verify if libvirtd started successfully
-    if ! systemctl is-active --quiet libvirtd; then
-        echo -e "${RED}libvirtd service failed to start. Please check the service status.${NC}"
-        exit 1
-    fi
-
-    # Check if running in a virtualized environment to skip host network config
-    if systemd-detect-virt -q; then
-        echo -e "${YELLOW}Running in a virtualized environment. Skipping network configuration.${NC}"
-    else
-        # Destroy and undefine the existing default network if it exists
-        echo -e "${CYAN}Destroying and undefining existing default network if exists...${NC}"
-        virsh net-destroy default || true
-        virsh net-undefine default || true
-
-        # Create and apply XML configuration for the default network
-        echo -e "${CYAN}Defining and starting the new default network...${NC}"
-        cat <<EOF > /tmp/default.xml
+# Recreate and apply XML configuration for the default network
+echo -e "${CYAN}Defining and starting the new default network...${NC}"
+cat <<EOF > /tmp/default.xml
 <network>
   <name>default</name>
   <uuid>$(uuidgen)</uuid>
@@ -201,12 +189,19 @@ if pacman -Qs libvirt > /dev/null; then
   </ip>
 </network>
 EOF
-        # Apply the network configuration
-        virsh net-define /tmp/default.xml
-        sleep 1
-        virsh net-start default
-        virsh net-autostart default
-    fi
+
+# Apply the network configuration
+virsh net-define /tmp/default.xml
+sleep 1
+virsh net-start default
+virsh net-autostart default
+
+# Restart dnsmasq and check its status
+echo -e "${CYAN}Starting dnsmasq...${NC}"
+sudo systemctl restart dnsmasq
+if ! systemctl is-active --quiet dnsmasq; then
+    echo -e "${RED}Failed to start dnsmasq. Please check the service status.${NC}"
+    exit 1
 fi
 
 # Configure dhcpcd only if NetworkManager is not active
@@ -239,6 +234,9 @@ else
     echo -e "${RED}Error: Default network is not active. Check network configuration.${NC}"
     exit 1
 fi
+
+# Final success message
+echo -e "\n${GREEN}Network and security configuration completed successfully!${NC}"
 
     # ----------------------------
     # Bluetooth Services
