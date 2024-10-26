@@ -50,9 +50,9 @@ options root=PARTUUID=6c524b73-40d8-454e-9fac-6952dc4f4ade zswap.enabled=0 rootf
 edit the .conf (remove Created lines)
 
 ```
-title   Arch Linux TKG `<version_#>`
-linux   /vmlinuz-linux`<version_#>`-tkg-bore
-initrd  /initramfs-linux`<version_#>`-tkg-bore.img
+title   Arch Linux TKG <version_#>
+linux   /vmlinuz-linux<version_#>-tkg-bore
+initrd  /initramfs-linux<version_#>-tkg-bore.img
 options root=PARTUUID=6c524b73-40d8-454e-9fac-6952dc4f4ade zswap.enabled=0 rootflags=subvol=@ rw rootfstype=btrfs
 ```
 
