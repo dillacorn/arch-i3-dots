@@ -121,59 +121,59 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
-    # ----------------------------
-    # Networking and Security
-    # ----------------------------
-    echo -e "${CYAN}Installing networking and security tools...${NC}"
+# ----------------------------
+# Networking and Security
+# ----------------------------
+echo -e "${CYAN}Installing networking and security tools...${NC}"
 
-    # Install UFW if not already installed and enable it
-    if ! pacman -Qs ufw > /dev/null; then
-        echo -e "${CYAN}Installing ufw...${NC}"
-        install_package "ufw"
+# Install UFW if not already installed and enable it
+if ! pacman -Qs ufw > /dev/null; then
+    echo -e "${CYAN}Installing ufw...${NC}"
+    install_package "ufw"
 
-        # Enable UFW and set it to start on boot
-        echo -e "${CYAN}Enabling UFW and configuring it to start on boot...${NC}"
-        ufw enable
-        systemctl enable ufw
-    else
-        echo -e "${YELLOW}UFW is already installed, skipping installation.${NC}"
+    # Enable UFW and set it to start on boot
+    echo -e "${CYAN}Enabling UFW and configuring it to start on boot...${NC}"
+    ufw enable
+    systemctl enable ufw
+else
+    echo -e "${YELLOW}UFW is already installed, skipping installation.${NC}"
+fi
+
+# Configure UFW to allow essential VM network traffic
+echo -e "${CYAN}Configuring UFW to allow VM traffic...${NC}"
+for port in 22 80 443 67 53; do
+    ufw allow in on virbr0 to any port "$port" proto udp
+done
+
+# Install additional networking and security tools
+for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa bluez; do
+    install_package "$pkg"
+done
+
+# Configure and start libvirt networking
+echo -e "${CYAN}Configuring libvirt and networking...${NC}"
+if pacman -Qs libvirt > /dev/null; then
+    echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
+    systemctl enable --now libvirtd
+
+    # Verify if libvirtd started successfully
+    if ! systemctl is-active --quiet libvirtd; then
+        echo -e "${RED}libvirtd service failed to start. Please check the service status.${NC}"
+        exit 1
     fi
 
-    # Allow necessary ports for VM (you can modify or add ports as per your need)
-    echo -e "${CYAN}Configuring UFW to allow VM traffic...${NC}"
-    for port in 22 80 443; do
-        ufw allow in on virbr0 to any port "$port"
-    done
+    # Check if running in a virtualized environment to skip host network config
+    if systemd-detect-virt -q; then
+        echo -e "${YELLOW}Running in a virtualized environment. Skipping network configuration.${NC}"
+    else
+        # Destroy and undefine the existing default network if it exists
+        echo -e "${CYAN}Destroying and undefining existing default network if exists...${NC}"
+        virsh net-destroy default || true
+        virsh net-undefine default || true
 
-    # Install other networking and security tools
-    for pkg in wireguard-tools wireplumber openssh systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils pipewire pipewire-pulse pipewire-alsa bluez; do
-        install_package "$pkg"
-    done
-
-    # Enable libvirtd if it's installed and configure networking if not running in a VM
-    echo -e "${CYAN}Configuring libvirt and networking...${NC}"
-    if pacman -Qs libvirt > /dev/null; then
-        echo -e "${CYAN}libvirt is installed. Enabling and starting libvirtd...${NC}"
-        systemctl enable --now libvirtd
-
-        # Verify if libvirtd started successfully
-        if ! systemctl is-active --quiet libvirtd; then
-            echo -e "${RED}libvirtd service failed to start. Please check the service status.${NC}"
-            exit 1
-        fi
-
-        # Check if the script is running in a virtualized environment
-        if systemd-detect-virt -q; then
-            echo -e "${YELLOW}Running in a virtualized environment. Skipping network configuration.${NC}"
-        else
-            # Destroy and undefine the existing default network if it exists
-            echo -e "${CYAN}Destroying and undefining existing default network if exists...${NC}"
-            virsh net-destroy default || true
-            virsh net-undefine default || true
-
-            # Create XML for the 'default' network using dynamic IP and Netmask
-            echo -e "${CYAN}Defining and starting the new default network...${NC}"
-            cat <<EOF > /tmp/default.xml
+        # Create and apply XML configuration for the default network
+        echo -e "${CYAN}Defining and starting the new default network...${NC}"
+        cat <<EOF > /tmp/default.xml
 <network>
   <name>default</name>
   <uuid>$(uuidgen)</uuid>
@@ -187,23 +187,43 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
   </ip>
 </network>
 EOF
-
-            # Apply the network configuration
-            virsh net-define /tmp/default.xml
-            virsh net-start default
-            virsh net-autostart default
-        fi
+        # Apply the network configuration
+        virsh net-define /tmp/default.xml
+        sleep 1
+        virsh net-start default
+        virsh net-autostart default
     fi
+fi
 
-# Start dhcpcd only if NetworkManager is not active
+# Configure dhcpcd only if NetworkManager is not active
 echo -e "${CYAN}Checking if dhcpcd needs to be started...${NC}"
 if systemctl is-active --quiet NetworkManager; then
     echo -e "${YELLOW}NetworkManager is managing network interfaces, skipping dhcpcd.${NC}"
 else
+    echo -e "${CYAN}Configuring dhcpcd to ignore virbr0...${NC}"
+    echo "denyinterfaces virbr0" | sudo tee -a /etc/dhcpcd.conf
+
     echo -e "${CYAN}Starting dhcpcd...${NC}"
-    if ! dhcpcd; then
+    if ! systemctl start dhcpcd; then
         echo -e "${RED}Failed to start dhcpcd. Please check the service status.${NC}"
     fi
+fi
+
+# Final verification of services and network setup
+echo -e "${CYAN}Verifying that libvirt and dnsmasq are active...${NC}"
+if systemctl is-active --quiet libvirtd && systemctl is-active --quiet dnsmasq; then
+    echo -e "${GREEN}libvirt and dnsmasq services are running.${NC}"
+else
+    echo -e "${RED}Error: libvirt or dnsmasq service is not active. Check services.${NC}"
+    exit 1
+fi
+
+# Verify that the default network is active
+if virsh net-info default | grep -q "Active: yes"; then
+    echo -e "${GREEN}Default network is active.${NC}"
+else
+    echo -e "${RED}Error: Default network is not active. Check network configuration.${NC}"
+    exit 1
 fi
 
     # ----------------------------
