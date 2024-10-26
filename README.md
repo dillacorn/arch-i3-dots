@@ -2,7 +2,7 @@
 - **Preview Images**: [View Here](https://github.com/dillacorn/arch-i3-dots/tree/main/preview_images/preview_page.md)
 - **Distro**: [Arch](https://archlinux.org/)
 - **Installation Method**: [archinstall](https://github.com/archlinux/archinstall)
-- **File System**: ext4 (seperate root and home parititon)
+- **File System**: ext4 (seperate root and home partition)
 - **Repositories**: [core](https://archlinux.org/packages/?sort=&arch=any&repo=Core&q=&maintainer=&flagged=), [extra](https://archlinux.org/packages/?sort=&arch=any&repo=Extra&q=&maintainer=&flagged=), [multilib](https://archlinux.org/packages/?sort=&repo=Multilib&q=&maintainer=&flagged=) & [AUR](https://aur.archlinux.org/packages)
 - **Bootloader**: [systemd-boot](https://github.com/ivandavidov/systemd-boot)
 - **X11**: [i3-wm](https://github.com/i3/i3)
