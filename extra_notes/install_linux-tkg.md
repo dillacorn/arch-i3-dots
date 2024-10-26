@@ -58,6 +58,12 @@ options root=PARTUUID=6c524b73-40d8-454e-9fac-6952dc4f4ade zswap.enabled=0 rootf
 
 save and close
 
+generate initramfs
+
+```sh
+sudo mkinitcpio -P
+```
+
 update bootloader
 
 ```sh
