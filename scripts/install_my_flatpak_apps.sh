@@ -29,6 +29,7 @@ flatpak_apps=(
   'com.github.IsmaelMartinez.teams_for_linux'
   'dev.vencord.Vesktop'
   'org.telegram.desktop'
+  'com.spotify.Client'
   'chat.simplex.simplex'
   'io.itch.itch'
   'com.heroicgameslauncher.hgl'
