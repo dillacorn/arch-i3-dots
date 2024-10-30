@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Define color codes at the top
+# Define color codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -17,7 +17,6 @@ set -eu -o pipefail # Fail on error and report it, debug all lines
 
 # Check if the multilib repository is enabled in /etc/pacman.conf
 if ! grep -q "^\[multilib\]" /etc/pacman.conf || ! grep -q "^Include = /etc/pacman.d/mirrorlist" /etc/pacman.conf; then
-    # Inform the user to enable the multilib repository if not found
     echo -e "${YELLOW}IMPORTANT: Ensure the multilib repository is enabled in /etc/pacman.conf before running this script.${NC}"
     echo -e "${YELLOW}To enable it, uncomment the following lines in your /etc/pacman.conf file:${NC}"
     echo -e "${CYAN}  [multilib]\n  Include = /etc/pacman.d/mirrorlist${NC}"
@@ -34,6 +33,15 @@ install_package() {
         echo -e "${YELLOW}$package is already installed. Skipping...${NC}"
     fi
 }
+
+# Check if the script is running in a virtual machine
+if systemd-detect-virt --quiet; then
+    IS_VM=true
+    echo -e "${CYAN}Running in a virtual machine. Skipping hardware checks and thermald installation.${NC}"
+else
+    IS_VM=false
+    echo -e "${CYAN}Running on a physical machine.${NC}"
+fi
 
 # Forcefully remove jack2 and install pipewire-jack
 if pacman -Qi jack2 &>/dev/null; then
@@ -82,7 +90,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 
     # Install Utilities
     echo -e "${CYAN}Installing general utilities...${NC}"
-    for pkg in steam thermald lxsession lxappearance networkmanager network-manager-applet bluez bluez-utils \
+    for pkg in steam lxsession lxappearance networkmanager network-manager-applet bluez bluez-utils \
                solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc xdg-desktop-portal \
                xdg-desktop-portal-gtk qbittorrent filelight timeshift flameshot maim imagemagick pipewire pipewire-pulse pipewire-alsa; do
         install_package "$pkg"
@@ -104,7 +112,38 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
                qemu virt-viewer vde2 libguestfs dmidecode gamemode nftables; do
         install_package "$pkg"
     done
+    
+    # Only proceed with hardware checks if not in a virtual machine
+    if [ "$IS_VM" = false ]; then
+        # Ask if the system is a desktop or a laptop
+        echo -e "\n${CYAN}Is this system a desktop or laptop? [d/l]${NC}"
+        read -n1 -s system_type
+        echo
 
+        if [[ "$system_type" != "d" && "$system_type" != "l" ]]; then
+            echo -e "${RED}Invalid input. Please enter 'd' for desktop or 'l' for laptop.${NC}"
+            exit 1
+        fi
+
+        # Check if CPU is Intel to decide whether to install thermald
+        if grep -q "Intel" /proc/cpuinfo; then
+            IS_INTEL=true
+            echo -e "${CYAN}Intel processor detected.${NC}"
+        else
+            IS_INTEL=false
+            echo -e "${CYAN}Non-Intel processor detected. Skipping thermald installation.${NC}"
+        fi
+
+        # Install thermald only if the processor is Intel and user selected "laptop"
+        if [[ "$IS_INTEL" == true && "$system_type" == "l" ]]; then
+            echo -e "${CYAN}Installing and enabling thermald for Intel laptop...${NC}"
+            install_package "thermald"
+            systemctl enable --now thermald
+        else
+            echo -e "${YELLOW}Skipping thermald installation.${NC}"
+        fi
+    fi
+    
     # Disable and stop unbound if it's running
     if systemctl is-active --quiet unbound; then
         echo -e "${CYAN}Disabling and stopping unbound service...${NC}"
@@ -144,9 +183,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 
     echo -e "${CYAN}Enabling and starting libvirtd and dnsmasq...${NC}"
     systemctl enable --now libvirtd dnsmasq
-
-    echo -e "${CYAN}Enabling and starting thermald...${NC}"
-    systemctl enable --now thermald
 
     # Enable and start Bluetooth service
     if pacman -Qi bluez &>/dev/null && pacman -Qi bluez-utils &>/dev/null; then
