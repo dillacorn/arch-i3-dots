@@ -13,7 +13,7 @@ sudo bash -c "echo '$SUDO_USER ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/temp_s
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
+CYAN='\033[1;96m'
 NC='\033[0m' # No Color
 
 # Check if yay is installed, if not, install it as the normal user
