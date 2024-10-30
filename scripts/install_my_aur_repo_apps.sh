@@ -31,6 +31,20 @@ if ! command -v yay &> /dev/null; then
 EOF
 fi
 
+# Check if the system is running in a virtual machine
+IS_VM=false
+if systemd-detect-virt --quiet; then
+    IS_VM=true
+    echo -e "${CYAN}Running in a virtual machine. Skipping TLP and tlpui installation.${NC}"
+fi
+
+# Determine if the system is a laptop
+IS_LAPTOP=false
+if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
+    IS_LAPTOP=true
+    echo -e "${CYAN}Laptop detected.${NC}"
+fi
+
 # Prompt for package installation
 echo -e "\n${CYAN}Do you want to install Dillacorn's chosen Arch AUR Linux applications? [y/n]${NC}"
 
@@ -79,6 +93,13 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             install_package "\$package"
         done
 
+        # Conditionally install tlpui if on a laptop and not in a VM
+        if [ "$IS_LAPTOP" = true ] && [ "$IS_VM" = false ]; then
+            echo -e "${CYAN}Installing tlpui for laptop power management...${NC}"
+            install_package "tlpui"
+            systemctl enable --now tlp
+        fi
+
         # Clean the package cache to free up space
         yay -Sc --noconfirm
 EOF
@@ -103,3 +124,9 @@ fi
 
 # Remove the temporary passwordless sudo entry
 sudo rm -f /etc/sudoers.d/temp_sudo_nopasswd
+
+     # Print success message after installation
+    echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux AUR chosen applications!${NC}"
+else
+    echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux AUR applications.${NC}"
+fi
