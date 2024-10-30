@@ -307,7 +307,7 @@ retry_command dos2unix $HOME_DIR/.config/i3/scripts/./* || { echo -e "\033[1;31m
 
 # Install Alacritty themes
 echo -e "\033[1;34mRunning install_alacritty_themes.sh...\033[0m"
-cd "$HOME_DIR/arch-i3-dots/scripts/alacritty" || exit
+cd "$HOME_DIR/arch-i3-dots/scripts" || exit
 if [ -f "./install_alacritty_themes.sh" ]; then
     retry_command chmod +x ./install_alacritty_themes.sh
     retry_command ./install_alacritty_themes.sh || { echo -e "\033[1;31mAlacritty themes installation failed. Exiting.\033[0m"; exit 1; }
