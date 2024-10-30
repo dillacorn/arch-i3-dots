@@ -138,4 +138,8 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     fi
 fi
 
-echo -e "\n${GREEN}Script completed successfully!${NC}"
+    # Print success message after installation
+    echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
+else
+    echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux applications.${NC}"
+    exit 0
