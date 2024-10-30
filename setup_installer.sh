@@ -444,10 +444,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Enable and start NetworkManager
-echo -e "\033[1;34mEnabling and starting NetworkManager...\033[0m"
-retry_command sudo systemctl enable --now NetworkManager || { echo -e "\033[1;31mFailed to enable or start NetworkManager. Exiting.\033[0m"; exit 1; }
-
 # List of directories to check/create
 required_dirs=(
     "$HOME_DIR/.config"
