@@ -9,33 +9,38 @@ else
     TARGET_DIR="/home/$SUDO_USER/.config/alacritty"
 fi
 
-REPO_URL="https://github.com/alacritty/alacritty-theme"
-THEMES_DIR="$TARGET_DIR/themes"
-
-# Check if the themes directory exists and is a valid git repository
-if [ -d "$THEMES_DIR/.git" ]; then
+# Attempt to clone the repo, but prompt the user if the directory already exists
+if [ -d "$TARGET_DIR/themes" ]; then
     echo "The 'themes' directory already exists in $TARGET_DIR. Checking for updates..."
-    cd "$THEMES_DIR" || exit 1
-    
+
+    # Navigate to the themes directory
+    cd "$TARGET_DIR/themes" || exit
+
     # Fetch the latest changes from the remote repository
-    git fetch origin main > /dev/null 2>&1
-    
-    # Compare local and remote commits
+    git fetch origin
+
+    # Determine the default branch name
+    DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+
+    # Get the latest commit hash on the remote default branch
+    REMOTE_COMMIT=$(git rev-parse "origin/$DEFAULT_BRANCH")
     LOCAL_COMMIT=$(git rev-parse HEAD)
-    REMOTE_COMMIT=$(git rev-parse origin/main)
-    
-    if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
-        echo "The 'themes' directory is already up-to-date."
-    else
+
+    if [ "$LOCAL_COMMIT" != "$REMOTE_COMMIT" ]; then
         echo "Updating 'themes' directory to the latest version..."
-        git pull origin main
+        git reset --hard "origin/$DEFAULT_BRANCH"
+    else
+        echo "The 'themes' directory is up-to-date."
     fi
 else
-    # Clone the repository if the themes directory does not exist or is not a git repo
-    echo "Cloning the Alacritty theme repository into $TARGET_DIR..."
-    git clone "$REPO_URL" "$THEMES_DIR"
+    # Clone the alacritty-theme repository if it does not exist
+    git clone https://github.com/alacritty/alacritty-theme "$TARGET_DIR/themes"
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to clone the repository. Exiting."
+        exit 1
+    fi
 fi
 
 # Confirm completion
-echo "Finished running install_alacritty_themes.sh. 'themes' directory is up-to-date in $TARGET_DIR."
-exit 0
+echo "Finished running install_alacritty_themes.sh. 'themes' directory placed in $TARGET_DIR"
+exit 0  # Explicitly return control
