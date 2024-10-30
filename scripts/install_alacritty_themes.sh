@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Define target directory based on whether the script is run with sudo
+# Determine if the script is run with sudo
 if [ -z "$SUDO_USER" ]; then
+    # Not run with sudo
     TARGET_DIR="$HOME/.config/alacritty"
 else
-    TARGET_DIR="$HOME/$SUDO_USER/.config/alacritty"
+    # Run with sudo
+    TARGET_DIR="/home/$SUDO_USER/.config/alacritty"
 fi
 
 # Attempt to clone the repo, but prompt the user if the directory already exists
@@ -42,6 +44,6 @@ fi
 
 mv alacritty-theme "$TARGET_DIR/themes"
 
-# Debug statement to confirm completion
+# Confirm completion
 echo "Finished running install_alacritty_themes.sh. 'themes' directory placed in $TARGET_DIR"
 exit 0  # Explicitly return control
