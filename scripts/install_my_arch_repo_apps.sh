@@ -106,7 +106,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "${CYAN}Installing networking and security tools...${NC}"
     systemctl disable --now unbound systemd-resolved || true
     systemctl mask systemd-resolved || true
-    echo "nameserver 8.8.8.8" | tee /etc/resolv.conf
 
     install_package "ufw"
     systemctl enable --now ufw
@@ -122,9 +121,8 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
+    echo -e "${CYAN}Enabling and starting libvirtd and dnsmasq...${NC}"
     systemctl enable --now libvirtd dnsmasq
-    systemctl restart dnsmasq
-    systemctl enable dnsmasq
 
     echo -e "${CYAN}Enabling and starting thermald...${NC}"
     systemctl enable --now thermald
