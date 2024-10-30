@@ -10,11 +10,11 @@ else
 fi
 
 REPO_URL="https://github.com/alacritty/alacritty-theme"
-LOCAL_REPO="alacritty-theme"
+THEMES_DIR="$TARGET_DIR/themes"
 
-# Function to check if local repository is up to date with the remote
+# Function to check if the existing themes directory is up to date
 check_if_latest_version() {
-    cd "$LOCAL_REPO" || return 1
+    cd "$THEMES_DIR" || return 1
     git fetch origin main > /dev/null 2>&1
     LOCAL_COMMIT=$(git rev-parse HEAD)
     REMOTE_COMMIT=$(git rev-parse origin/main)
@@ -22,35 +22,24 @@ check_if_latest_version() {
     [[ "$LOCAL_COMMIT" == "$REMOTE_COMMIT" ]]
 }
 
-# Clone or update the alacritty-theme repository
-if [ -d "$LOCAL_REPO" ]; then
-    echo "'$LOCAL_REPO' directory already exists."
+# Clone or update the themes directory in the target location
+if [ -d "$THEMES_DIR/.git" ]; then
+    echo "'themes' directory already exists in $TARGET_DIR."
     
     if check_if_latest_version; then
-        echo "The repository is already up-to-date. Skipping cloning."
+        echo "The themes directory is already up-to-date. Skipping cloning."
     else
-        echo "The repository is not up-to-date. Updating..."
-        rm -rf "$LOCAL_REPO"
-        git clone "$REPO_URL"
+        echo "The themes directory is not up-to-date. Updating..."
+        rm -rf "$THEMES_DIR"
+        git clone "$REPO_URL" "$THEMES_DIR"
     fi
 else
-    git clone "$REPO_URL"
+    git clone "$REPO_URL" "$THEMES_DIR"
     if [ $? -ne 0 ]; then
         echo "Error: Failed to clone the repository. Exiting."
         exit 1
     fi
 fi
-
-# Ensure the target directory exists
-mkdir -p "$TARGET_DIR"
-
-# Move 'alacritty-theme' to 'themes' within the target directory
-if [ -d "$TARGET_DIR/themes" ]; then
-    echo "Overwriting existing 'themes' directory in $TARGET_DIR..."
-    rm -rf "$TARGET_DIR/themes"
-fi
-
-mv "$LOCAL_REPO" "$TARGET_DIR/themes"
 
 # Confirm completion
 echo "Finished running install_alacritty_themes.sh. 'themes' directory placed in $TARGET_DIR"
