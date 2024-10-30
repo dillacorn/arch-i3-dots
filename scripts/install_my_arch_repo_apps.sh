@@ -134,10 +134,9 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     else
         echo -e "${RED}Bluetooth service could not be enabled. bluez or bluez-utils is missing.${NC}"
     fi
-fi
 
-    # Print success message after installation
+     # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
 else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux applications.${NC}"
-    exit 0
+fi
