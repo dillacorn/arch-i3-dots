@@ -64,7 +64,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Window Management Tools
     # ----------------------------
     echo -e "${CYAN}Installing window management tools...${NC}"
-    for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput xdotool upower; do
+    for pkg in i3-wm i3status-rust i3lock feh nitrogen rofi dunst slop arandr xorg-server xorg-xinit xf86-input-libinput xsettingsd xautolock xclip xsel playerctl xorg-xinput xdotool upower; do
         install_package "$pkg"
     done
 
@@ -96,7 +96,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Utilities
     # ----------------------------
     echo -e "${CYAN}Installing general utilities...${NC}"
-    for pkg in steam dunst lxsession lxappearance networkmanager network-manager-applet bluez bluez-utils solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc xdg-desktop-portal xdg-desktop-portal-gtk qbittorrent filelight timeshift flameshot maim imagemagick; do
+    for pkg in steam lxsession lxappearance networkmanager network-manager-applet bluez bluez-utils solaar blueman pavucontrol pcmanfm gvfs gvfs-smb gvfs-mtp gvfs-afc xdg-desktop-portal xdg-desktop-portal-gtk qbittorrent filelight timeshift flameshot maim imagemagick pipewire pipewire-pulse pipewire-alsa; do
         install_package "$pkg"
     done
 
@@ -158,7 +158,7 @@ ufw reload
 ufw enable
 
 # Install required networking and security tools
-for pkg in wireguard-tools wireplumber openssh iptables systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils openbsd-netcat pipewire pipewire-pulse pipewire-alsa bluez; do
+for pkg in wireguard-tools wireplumber openssh iptables systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils openbsd-netcat; do
     install_package "$pkg"
 done
 
