@@ -104,9 +104,13 @@ Let me preface `"Mod1"` can equal `"Mod1"` or `"Mod4"` depending on [rotate mod 
 
 ### Installing i3-WM and Related Applications with Scripts
 
-Install Arch Repo applications using [install script](https://github.com/dillacorn/arch-i3-dots/blob/main/scripts/install_my_arch_repo_apps.sh). This script installs essential tools and applications like i3-wm, Rofi, Dunst, and more.
+Install Arch Repo applications using [install script](https://github.com/dillacorn/arch-i3-dots/blob/main/scripts/install_my_arch_repo_apps.sh).
 
-Install Arch AUR applications using [install script](https://github.com/dillacorn/arch-i3-dots/blob/main/scripts/install_my_aur_repo_apps.sh). This script installs essential applications like ungoogled-chromium, spotify, obs, and more.
+Install Arch AUR applications using [install script](https://github.com/dillacorn/arch-i3-dots/blob/main/scripts/install_my_aur_repo_apps.sh).
+
+Install Flatpak applications using [install script](https://github.com/dillacorn/arch-i3-dots/blob/main/scripts/install_my_flatpak_apps.sh).
+
+- Please feel free to modify scripts to remove and/or add applications of your preference for your own repository.
 
 ---
 
