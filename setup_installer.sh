@@ -321,14 +321,25 @@ read -p "Press Enter to continue..."
 # Install GPU dependencies
 echo -e "\033[1;34mRunning install_GPU_dependencies.sh...\033[0m"
 cd "$HOME_DIR/arch-i3-dots/scripts" || exit
+
 if [ -f "./install_GPU_dependencies.sh" ]; then
     retry_command chmod +x ./install_GPU_dependencies.sh
-    retry_command ./install_GPU_dependencies.sh || { echo -e "\033[1;31mGPU dependencies installation failed. Exiting.\033[0m"; exit 1; }
-    echo -e "\033[1;32mGPU dependencies installed successfully.\033[0m"
+
+    if retry_command ./install_GPU_dependencies.sh; then
+        if systemd-detect-virt --quiet; then
+            echo -e "\033[1;33mRunning in a virtual machine. GPU-specific configuration skipped.\033[0m"
+        else
+            echo -e "\033[1;32mGPU dependencies installed successfully.\033[0m"
+        fi
+    else
+        echo -e "\033[1;31mGPU dependencies installation failed. Exiting.\033[0m"
+        exit 1
+    fi
 else
     echo -e "\033[1;31minstall_GPU_dependencies.sh not found. Exiting.\033[0m"
     exit 1
 fi
+
 read -p "Press Enter to continue..."
 
 # Set alternatives for editor
