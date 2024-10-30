@@ -13,11 +13,39 @@ TEMP_DIR1=$(mktemp -d)
 TEMP_DIR2=$(mktemp -d)
 DEST_DIR="/home/$SUDO_USER/.config/micro/colorschemes"
 
-# Clone the first repository
-git clone "$REPO_URL1" "$TEMP_DIR1" || { echo "Failed to clone $REPO_URL1"; exit 1; }
+# Function to check if the local clone of a repository is up-to-date
+check_and_update_repo() {
+    local repo_url=$1
+    local temp_dir=$2
 
-# Clone the second repository
-git clone "$REPO_URL2" "$TEMP_DIR2" || { echo "Failed to clone $REPO_URL2"; exit 1; }
+    echo "Checking repository $repo_url for updates..."
+
+    # Clone to temporary directory if it doesn't exist
+    git clone "$repo_url" "$temp_dir" &>/dev/null || { echo "Failed to clone $repo_url"; exit 1; }
+    cd "$temp_dir" || exit
+
+    # Determine the default branch
+    DEFAULT_BRANCH=$(git remote show origin | awk '/HEAD branch/ {print $NF}')
+    
+    # Fetch the latest commit from the remote default branch
+    git fetch origin "$DEFAULT_BRANCH" &>/dev/null
+    REMOTE_COMMIT=$(git rev-parse "origin/$DEFAULT_BRANCH")
+    LOCAL_COMMIT=$(git rev-parse HEAD)
+
+    # Check if the local commit matches the remote commit
+    if [ "$LOCAL_COMMIT" != "$REMOTE_COMMIT" ]; then
+        echo "New updates found for $repo_url. Pulling latest changes..."
+        git reset --hard "origin/$DEFAULT_BRANCH"
+    else
+        echo "$repo_url is already up-to-date."
+    fi
+}
+
+# Check and update the first repository
+check_and_update_repo "$REPO_URL1" "$TEMP_DIR1"
+
+# Check and update the second repository
+check_and_update_repo "$REPO_URL2" "$TEMP_DIR2"
 
 # Create the destination directory if it does not exist
 mkdir -p "$DEST_DIR"
@@ -36,7 +64,7 @@ rm -rf "$TEMP_DIR2" || { echo "Failed to remove temporary directory $TEMP_DIR2";
 micro &
 MICRO_PID=$!
 
-# Wait
+# Wait briefly
 sleep 1
 
 # Kill micro
