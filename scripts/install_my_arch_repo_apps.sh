@@ -121,6 +121,9 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
+    echo -e "${CYAN}Enabling and starting NetworkManager...${NC}"
+    systemctl enable --now NetworkManager
+
     echo -e "${CYAN}Enabling and starting libvirtd and dnsmasq...${NC}"
     systemctl enable --now libvirtd dnsmasq
 
