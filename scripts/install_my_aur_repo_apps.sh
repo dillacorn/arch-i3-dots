@@ -125,8 +125,5 @@ fi
 # Remove the temporary passwordless sudo entry
 sudo rm -f /etc/sudoers.d/temp_sudo_nopasswd
 
-     # Print success message after installation
-    echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux AUR chosen applications!${NC}"
-else
-    echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux AUR applications.${NC}"
-fi
+# Print success message after installation
+echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux AUR chosen applications!${NC}"
