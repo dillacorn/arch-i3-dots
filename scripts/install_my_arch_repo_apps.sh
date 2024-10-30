@@ -115,14 +115,13 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     
     # Only proceed with hardware checks if not in a virtual machine
     if [ "$IS_VM" = false ]; then
-        # Ask if the system is a desktop or a laptop
-        echo -e "\n${CYAN}Is this system a desktop or laptop? [d/l]${NC}"
-        read -n1 -s system_type
-        echo
-
-        if [[ "$system_type" != "d" && "$system_type" != "l" ]]; then
-            echo -e "${RED}Invalid input. Please enter 'd' for desktop or 'l' for laptop.${NC}"
-            exit 1
+        # Detect if the system is a laptop
+        IS_LAPTOP=false
+        if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
+            IS_LAPTOP=true
+            echo -e "${CYAN}Laptop detected.${NC}"
+        else
+            echo -e "${CYAN}Desktop detected.${NC}"
         fi
 
         # Check if CPU is Intel to decide whether to install thermald
@@ -134,8 +133,8 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             echo -e "${CYAN}Non-Intel processor detected. Skipping thermald installation.${NC}"
         fi
 
-        # Install thermald only if the processor is Intel and user selected "laptop"
-        if [[ "$IS_INTEL" == true && "$system_type" == "l" ]]; then
+        # Install thermald only if the processor is Intel and the system is a laptop
+        if [[ "$IS_INTEL" == true && "$IS_LAPTOP" == true ]]; then
             echo -e "${CYAN}Installing and enabling thermald for Intel laptop...${NC}"
             install_package "thermald"
             systemctl enable --now thermald
@@ -143,8 +142,8 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             echo -e "${YELLOW}Skipping thermald installation.${NC}"
         fi
 
-        # Install TLP for laptops only if not in a virtual machine
-        if [[ "$system_type" == "l" ]]; then
+        # Install TLP for laptops only (both Intel and AMD)
+        if [ "$IS_LAPTOP" = true ]; then
             echo -e "${CYAN}Installing and enabling TLP for power management on laptop...${NC}"
             install_package "tlp"
             systemctl enable --now tlp
