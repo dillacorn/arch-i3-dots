@@ -105,9 +105,24 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
 
-    # Network and Security Configuration
-    echo -e "${CYAN}Installing networking and security tools...${NC}"
-    systemctl disable --now unbound systemd-resolved || true
+    # Disable and stop unbound if it's running
+    if systemctl is-active --quiet unbound; then
+        echo -e "${CYAN}Disabling and stopping unbound service...${NC}"
+        systemctl disable --now unbound
+    else
+        echo -e "${YELLOW}Unbound service is not active. Skipping disable and stop for unbound.${NC}"
+    fi
+
+    # Disable and stop systemd-resolved if it's running
+    if systemctl is-active --quiet systemd-resolved; then
+        echo -e "${CYAN}Disabling and stopping systemd-resolved service...${NC}"
+        systemctl disable --now systemd-resolved
+    else
+        echo -e "${YELLOW}Systemd-resolved service is not active. Skipping disable and stop for systemd-resolved.${NC}"
+    fi
+
+    # Mask systemd-resolved to prevent it from starting in the future
+    echo -e "${CYAN}Masking systemd-resolved service...${NC}"
     systemctl mask systemd-resolved || true
 
     install_package "ufw"
