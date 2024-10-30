@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Ensure the script is run with sudo/root privileges
+if [ -z "$SUDO_USER" ]; then
+    echo -e "${RED}This script must be run with sudo!${NC}"
+    exit 1
+fi
+
 # Detect if running in a virtual machine
 if systemd-detect-virt -q; then
     echo -e "\033[1;33mRunning in a virtual machine. Skipping GPU-specific configuration.\033[0m"
