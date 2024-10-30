@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Define target directory based on whether the script is run with sudo
+if [ -z "$SUDO_USER" ]; then
+    TARGET_DIR="$HOME/.config/alacritty"
+else
+    TARGET_DIR="$HOME/$SUDO_USER/.config/alacritty"
+fi
+
 # Attempt to clone the repo, but prompt the user if the directory already exists
 if [ -d "alacritty-theme" ]; then
     echo "The 'alacritty-theme' directory already exists. Do you want to overwrite it? (y/n)"
@@ -24,14 +31,17 @@ else
     fi
 fi
 
-# Always move 'alacritty-theme' to 'themes' directory without prompt
-if [ -d "themes" ]; then
-    echo "Overwriting 'themes' directory..."
-    rm -rf themes
+# Ensure the target directory exists
+mkdir -p "$TARGET_DIR"
+
+# Move 'alacritty-theme' to 'themes' within the target directory
+if [ -d "$TARGET_DIR/themes" ]; then
+    echo "Overwriting existing 'themes' directory in $TARGET_DIR..."
+    rm -rf "$TARGET_DIR/themes"
 fi
 
-mv alacritty-theme themes
+mv alacritty-theme "$TARGET_DIR/themes"
 
-# Add debug statement to confirm completion of this script
-echo "Finished running install_alacritty_themes.sh"
+# Debug statement to confirm completion
+echo "Finished running install_alacritty_themes.sh. 'themes' directory placed in $TARGET_DIR"
 exit 0  # Explicitly return control
