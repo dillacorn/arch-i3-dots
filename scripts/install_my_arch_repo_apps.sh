@@ -15,11 +15,14 @@ fi
 
 set -eu -o pipefail # Fail on error and report it, debug all lines
 
-# Inform the user to enable the multilib repository
-echo -e "${YELLOW}IMPORTANT: Ensure the multilib repository is enabled in /etc/pacman.conf before running this script.${NC}"
-echo -e "${YELLOW}To enable it, uncomment the following lines in your /etc/pacman.conf file:${NC}"
-echo -e "${CYAN}  [multilib]\n  Include = /etc/pacman.d/mirrorlist${NC}"
-echo -e "${YELLOW}Then, run 'sudo pacman -Syu' to update the package list.${NC}"
+# Check if the multilib repository is enabled in /etc/pacman.conf
+if ! grep -q "^\[multilib\]" /etc/pacman.conf || ! grep -q "^Include = /etc/pacman.d/mirrorlist" /etc/pacman.conf; then
+    # Inform the user to enable the multilib repository if not found
+    echo -e "${YELLOW}IMPORTANT: Ensure the multilib repository is enabled in /etc/pacman.conf before running this script.${NC}"
+    echo -e "${YELLOW}To enable it, uncomment the following lines in your /etc/pacman.conf file:${NC}"
+    echo -e "${CYAN}  [multilib]\n  Include = /etc/pacman.d/mirrorlist${NC}"
+    echo -e "${YELLOW}Then, run 'sudo pacman -Syu' to update the package list.${NC}"
+fi
 
 # Function to install a package if not already installed
 install_package() {
