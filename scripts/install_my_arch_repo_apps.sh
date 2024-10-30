@@ -142,6 +142,16 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         else
             echo -e "${YELLOW}Skipping thermald installation.${NC}"
         fi
+
+        # Install TLP for laptops only if not in a virtual machine
+        if [[ "$system_type" == "l" ]]; then
+            echo -e "${CYAN}Installing and enabling TLP for power management on laptop...${NC}"
+            install_package "tlp"
+            systemctl enable --now tlp
+            echo -e "${GREEN}TLP installed and enabled successfully.${NC}"
+        else
+            echo -e "${YELLOW}Skipping TLP installation as this is a desktop system.${NC}"
+        fi
     fi
     
     # Disable and stop unbound if it's running
@@ -195,5 +205,5 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
      # Print success message after installation
     echo -e "\n${GREEN}Successfully installed all of Dillacorn's Arch Linux chosen applications!${NC}"
 else
-    echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Linux applications.${NC}"
+    echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch Repo Linux applications.${NC}"
 fi
