@@ -35,21 +35,15 @@ else
         # Install AMD video decoding libraries (VA-API and VDPAU)
         retry_command sudo pacman -S --needed --noconfirm libva-mesa-driver mesa-vdpau lib32-mesa-vdpau
 
-        # Check if VA-API and VDPAU tools are available, install if missing
+        # Check if VA-API tools are available, install if missing
         if ! command -v vainfo &> /dev/null; then
             echo -e "\033[1;34mInstalling libva-utils for VA-API support...\033[0m"
             retry_command sudo pacman -S --needed --noconfirm libva-utils
         fi
 
-        if ! command -v vdpauinfo &> /dev/null; then
-            echo -e "\033[1;34mInstalling vdpauinfo for VDPAU support...\033[0m"
-            retry_command sudo pacman -S --needed --noconfirm vdpauinfo
-        fi
-
-        # Validate VA-API and VDPAU support
-        echo -e "\033[1;34mValidating hardware acceleration (VA-API and VDPAU)...\033[0m"
+        # Validate VA-API support
+        echo -e "\033[1;34mValidating hardware acceleration (VA-API)...\033[0m"
         vainfo || echo -e "\033[1;31mVA-API not working properly.\033[0m"
-        vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
 
     # NVIDIA GPU Configuration
     elif echo "$GPU_VENDOR" | grep -iq "NVIDIA"; then
@@ -61,14 +55,10 @@ else
             retry_command sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
 
             # Install video decoding libraries for NVIDIA
-            retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo libvdpau-va-gl
+            retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver libvdpau-va-gl
         else
             echo -e "\033[1;32mNVIDIA proprietary drivers already installed.\033[0m"
         fi
-
-        # Validate VDPAU support
-        echo -e "\033[1;34mValidating VDPAU hardware acceleration...\033[0m"
-        vdpauinfo || echo -e "\033[1;31mVDPAU not working properly.\033[0m"
 
     # Intel GPU Configuration
     elif echo "$GPU_VENDOR" | grep -iq "Intel"; then
