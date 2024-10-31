@@ -115,16 +115,20 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     
 # Only proceed with hardware checks if not in a virtual machine
 if [ "$IS_VM" = false ]; then
-    # Detect if the system is a laptop by checking chassis type or presence of battery
-    IS_LAPTOP=false
-    if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q -i "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
+    # Prompt user to specify if this is a laptop or desktop
+    echo -e "${CYAN}Is this system a laptop or desktop? [l/d]${NC}"
+    read -n1 -s user_choice
+    echo
+
+    if [[ "$user_choice" == "l" || "$user_choice" == "L" ]]; then
         IS_LAPTOP=true
-        echo -e "${CYAN}Laptop detected based on chassis type.${NC}"
-    elif [[ -d /sys/class/power_supply/BAT* ]]; then
-        IS_LAPTOP=true
-        echo -e "${CYAN}Laptop detected based on battery presence.${NC}"
+        echo -e "${CYAN}User specified: Laptop.${NC}"
+    elif [[ "$user_choice" == "d" || "$user_choice" == "D" ]]; then
+        IS_LAPTOP=false
+        echo -e "${CYAN}User specified: Desktop.${NC}"
     else
-        echo -e "${YELLOW}Could not detect laptop using standard methods. Assuming Desktop.${NC}"
+        echo -e "${RED}Invalid input. Please enter 'l' for laptop or 'd' for desktop.${NC}"
+        exit 1
     fi
 
     # Check if CPU is Intel to decide whether to install thermald
