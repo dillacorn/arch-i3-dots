@@ -119,12 +119,12 @@ if [ "$IS_VM" = false ]; then
     IS_LAPTOP=false
     if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q -i "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
         IS_LAPTOP=true
-        echo -e "${CYAN}Laptop detected.${NC}"
+        echo -e "${CYAN}Laptop detected based on chassis type.${NC}"
     elif [[ -d /sys/class/power_supply/BAT* ]]; then
         IS_LAPTOP=true
-        echo -e "${CYAN}Laptop detected (based on battery presence).${NC}"
+        echo -e "${CYAN}Laptop detected based on battery presence.${NC}"
     else
-        echo -e "${CYAN}Desktop detected.${NC}"
+        echo -e "${YELLOW}Could not detect laptop using standard methods. Assuming Desktop.${NC}"
     fi
 
     # Check if CPU is Intel to decide whether to install thermald
