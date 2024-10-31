@@ -197,6 +197,10 @@ fi
     echo -e "${CYAN}Enabling and starting NetworkManager...${NC}"
     systemctl enable --now NetworkManager
 
+    echo -e "${CYAN}Killing any existing instances of libvirtd and dnsmasq...${NC}"
+    pkill libvirtd || true  # Using || true to avoid errors if the process is not running
+    pkill dnsmasq || true
+
     echo -e "${CYAN}Enabling and starting libvirtd and dnsmasq...${NC}"
     systemctl enable --now libvirtd dnsmasq
 
