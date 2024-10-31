@@ -40,9 +40,14 @@ fi
 
 # Determine if the system is a laptop
 IS_LAPTOP=false
-if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
+if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q -i "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
     IS_LAPTOP=true
     echo -e "${CYAN}Laptop detected.${NC}"
+elif [[ -d /sys/class/power_supply/BAT* ]]; then
+    IS_LAPTOP=true
+    echo -e "${CYAN}Laptop detected (based on battery presence).${NC}"
+else
+    echo -e "${CYAN}Desktop detected.${NC}"
 fi
 
 # Prompt for package installation
@@ -97,7 +102,10 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         if [ "$IS_LAPTOP" = true ] && [ "$IS_VM" = false ]; then
             echo -e "${CYAN}Installing tlpui for laptop power management...${NC}"
             install_package "tlpui"
+            # Enable and start TLP service
+            install_package "tlp"
             systemctl enable --now tlp
+            echo -e "${GREEN}TLP installed and enabled successfully.${NC}"
         fi
 
         # Clean the package cache to free up space
