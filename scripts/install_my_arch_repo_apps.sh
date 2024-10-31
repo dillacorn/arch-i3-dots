@@ -109,7 +109,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     # Install Development Tools
     echo -e "${CYAN}Installing development tools...${NC}"
     for pkg in base-devel archlinux-keyring clang ninja go rust octave okular tigervnc bleachbit virt-manager \
-               qemu virt-viewer vde2 libguestfs dmidecode gamemode nftables; do
+               qemu virt-viewer vde2 libguestfs dmidecode gamemode nftables swtpm; do
         install_package "$pkg"
     done
     
