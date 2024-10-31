@@ -37,7 +37,7 @@ flatpak_apps=(
   'fr.handbrake.ghb'
   'com.dec05eba.gpu_screen_recorder'
   'com.obsproject.Studio'
-  'com.obsproject.Studio.Plugin.NDI'
+  'com.obsproject.Studio.Plugin.DistroAV'
   'com.github.tchx84.Flatseal'
   'io.github.ungoogled_software.ungoogled_chromium'
 )
