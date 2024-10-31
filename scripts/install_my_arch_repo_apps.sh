@@ -113,45 +113,48 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         install_package "$pkg"
     done
     
-    # Only proceed with hardware checks if not in a virtual machine
-    if [ "$IS_VM" = false ]; then
-        # Detect if the system is a laptop
-        IS_LAPTOP=false
-        if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
-            IS_LAPTOP=true
-            echo -e "${CYAN}Laptop detected.${NC}"
-        else
-            echo -e "${CYAN}Desktop detected.${NC}"
-        fi
-
-        # Check if CPU is Intel to decide whether to install thermald
-        if grep -q "Intel" /proc/cpuinfo; then
-            IS_INTEL=true
-            echo -e "${CYAN}Intel processor detected.${NC}"
-        else
-            IS_INTEL=false
-            echo -e "${CYAN}Non-Intel processor detected. Skipping thermald installation.${NC}"
-        fi
-
-        # Install thermald only if the processor is Intel and the system is a laptop
-        if [[ "$IS_INTEL" == true && "$IS_LAPTOP" == true ]]; then
-            echo -e "${CYAN}Installing and enabling thermald for Intel laptop...${NC}"
-            install_package "thermald"
-            systemctl enable --now thermald
-        else
-            echo -e "${YELLOW}Skipping thermald installation.${NC}"
-        fi
-
-        # Install TLP for laptops only (both Intel and AMD)
-        if [ "$IS_LAPTOP" = true ]; then
-            echo -e "${CYAN}Installing and enabling TLP for power management on laptop...${NC}"
-            install_package "tlp"
-            systemctl enable --now tlp
-            echo -e "${GREEN}TLP installed and enabled successfully.${NC}"
-        else
-            echo -e "${YELLOW}Skipping TLP installation as this is a desktop system.${NC}"
-        fi
+# Only proceed with hardware checks if not in a virtual machine
+if [ "$IS_VM" = false ]; then
+    # Detect if the system is a laptop by checking chassis type or presence of battery
+    IS_LAPTOP=false
+    if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q -i "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
+        IS_LAPTOP=true
+        echo -e "${CYAN}Laptop detected.${NC}"
+    elif [[ -d /sys/class/power_supply/BAT* ]]; then
+        IS_LAPTOP=true
+        echo -e "${CYAN}Laptop detected (based on battery presence).${NC}"
+    else
+        echo -e "${CYAN}Desktop detected.${NC}"
     fi
+
+    # Check if CPU is Intel to decide whether to install thermald
+    if grep -q "Intel" /proc/cpuinfo; then
+        IS_INTEL=true
+        echo -e "${CYAN}Intel processor detected.${NC}"
+    else
+        IS_INTEL=false
+        echo -e "${CYAN}Non-Intel processor detected. Skipping thermald installation.${NC}"
+    fi
+
+    # Install thermald only if the processor is Intel and the system is a laptop
+    if [[ "$IS_INTEL" == true && "$IS_LAPTOP" == true ]]; then
+        echo -e "${CYAN}Installing and enabling thermald for Intel laptop...${NC}"
+        install_package "thermald"
+        systemctl enable --now thermald
+    else
+        echo -e "${YELLOW}Skipping thermald installation.${NC}"
+    fi
+
+    # Install TLP for laptops only (both Intel and AMD)
+    if [ "$IS_LAPTOP" = true ]; then
+        echo -e "${CYAN}Installing and enabling TLP for power management on laptop...${NC}"
+        install_package "tlp"
+        systemctl enable --now tlp
+        echo -e "${GREEN}TLP installed and enabled successfully.${NC}"
+    else
+        echo -e "${YELLOW}Skipping TLP installation as this is a desktop system.${NC}"
+    fi
+fi
     
     # Disable and stop unbound if it's running
     if systemctl is-active --quiet unbound; then
