@@ -191,7 +191,14 @@ fi
 
     echo -e "${CYAN}Enabling and starting libvirtd...${NC}"
     systemctl enable --now libvirtd
-    sleep 2  # Wait to ensure libvirtd has started
+
+    # Wait until libvirtd is fully active
+    echo -e "${CYAN}Waiting for libvirtd to become active...${NC}"
+    until systemctl is-active --quiet libvirtd; do
+        sleep 1
+    done
+
+    # Proceed with the network setup
     sudo virsh net-destroy default || true
     sudo virsh net-start default
     sudo virsh net-autostart default
