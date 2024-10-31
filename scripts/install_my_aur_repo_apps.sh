@@ -38,19 +38,6 @@ if systemd-detect-virt --quiet; then
     echo -e "${CYAN}Running in a virtual machine. Skipping TLPUI installation.${NC}"
 fi
 
-# Prompt user to specify if the system is a laptop or a desktop
-echo -e "\n${CYAN}Is this system a laptop or a desktop? [l/d]${NC}"
-read -n1 -s system_type
-echo
-
-if [[ "$system_type" == "l" || "$system_type" == "L" ]]; then
-    IS_LAPTOP=true
-    echo -e "${CYAN}User specified this system is a laptop.${NC}"
-else
-    IS_LAPTOP=false
-    echo -e "${CYAN}User specified this system is a desktop.${NC}"
-fi
-
 # Prompt for package installation
 echo -e "\n${CYAN}Do you want to install Dillacorn's chosen Arch AUR Linux applications? [y/n]${NC}"
 read -n1 -s choice
@@ -97,13 +84,6 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             install_package "\$package"
         done
 
-        # Conditionally install tlpui if on a laptop and not in a VM
-        if [ "$IS_LAPTOP" = true ] && [ "$IS_VM" = false ]; then
-            echo -e "${CYAN}Installing tlpui for laptop power management...${NC}"
-            install_package "tlpui"
-            echo -e "${GREEN}TLPUI installed successfully.${NC}"
-        fi
-
         # Clean the package cache to free up space
         yay -Sc --noconfirm
 EOF
@@ -113,6 +93,26 @@ EOF
 else
     echo -e "\n${YELLOW}Skipping installation of Dillacorn's chosen Arch AUR Linux applications.${NC}"
     exit 0
+fi
+
+# Prompt user to specify if the system is a laptop or a desktop
+echo -e "\n${CYAN}Is this system a laptop or a desktop? [l/d]${NC}"
+read -n1 -s system_type
+echo
+
+if [[ "$system_type" == "l" || "$system_type" == "L" ]]; then
+    IS_LAPTOP=true
+    echo -e "${CYAN}User specified this system is a laptop.${NC}"
+else
+    IS_LAPTOP=false
+    echo -e "${CYAN}User specified this system is a desktop.${NC}"
+fi
+
+# Conditionally install tlpui if on a laptop and not in a VM
+if [ "$IS_LAPTOP" = true ] && [ "$IS_VM" = false ]; then
+    echo -e "${CYAN}Installing tlpui for laptop power management...${NC}"
+    sudo -u "$SUDO_USER" yay -S --needed --noconfirm tlpui
+    echo -e "${GREEN}TLPUI installed successfully.${NC}"
 fi
 
 # Check if Moonlight is installed via yay (from AUR)
