@@ -346,7 +346,11 @@ read -p "Press Enter to continue..."
 echo -e "\033[1;94mSetting micro as default editor...\033[0m"
 retry_command echo 'export EDITOR=/usr/bin/micro' >> "$HOME_DIR/.bashrc" || { echo -e "\033[1;31mFailed to set micro as default editor. Exiting.\033[0m"; exit 1; }
 
-# Reload .bashrc after setting the default editor
+# Set GTK_THEME for applications
+echo -e "\033[1;94mSetting GTK_THEME to Materia-dark in .bashrc...\033[0m"
+retry_command echo 'export GTK_THEME=Materia-dark' >> "$HOME_DIR/.bashrc" || { echo -e "\033[1;31mFailed to set GTK_THEME in .bashrc. Exiting.\033[0m"; exit 1; }
+
+# Reload .bashrc after setting variables
 retry_command source "$HOME_DIR/.bashrc" || { echo -e "\033[1;31mFailed to reload .bashrc. Exiting.\033[0m"; exit 1; }
 
 # Set default file manager for directories
