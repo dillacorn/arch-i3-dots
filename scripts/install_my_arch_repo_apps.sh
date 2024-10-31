@@ -168,27 +168,15 @@ fi
         echo -e "${YELLOW}Unbound service is not active. Skipping disable and stop for unbound.${NC}"
     fi
 
-    # Disable and stop systemd-resolved if it's running
-    if systemctl is-active --quiet systemd-resolved; then
-        echo -e "${CYAN}Disabling and stopping systemd-resolved service...${NC}"
-        systemctl disable --now systemd-resolved
-    else
-        echo -e "${YELLOW}Systemd-resolved service is not active. Skipping disable and stop for systemd-resolved.${NC}"
-    fi
+    # Enable systemd-resolved to handle DNS
+    echo -e "${CYAN}Enabling and starting systemd-resolved...${NC}"
+    systemctl enable --now systemd-resolved
 
-    # Mask systemd-resolved to prevent it from starting in the future
-    echo -e "${CYAN}Masking systemd-resolved service...${NC}"
-    systemctl mask systemd-resolved || true
-
-    install_package "ufw"
-    systemctl enable --now ufw
-    ufw allow in on virbr0
-    ufw allow out on virbr0
-    ufw allow out to any port 53
-    ufw allow out to any port 80
-    ufw allow out to any port 443
-    ufw default allow routed
-    ufw reload
+    # Ensure standalone dnsmasq service is not running
+    echo -e "${CYAN}Ensuring standalone dnsmasq service is stopped...${NC}"
+    systemctl stop dnsmasq || true
+    systemctl disable dnsmasq || true
+    pkill dnsmasq || true
 
     for pkg in wireguard-tools wireplumber openssh iptables systemd-resolvconf bridge-utils qemu-guest-agent dnsmasq dhcpcd inetutils openbsd-netcat; do
         install_package "$pkg"
@@ -198,14 +186,30 @@ fi
     systemctl enable --now NetworkManager
 
     echo -e "${CYAN}Killing any existing instances of libvirtd and dnsmasq...${NC}"
-    pkill libvirtd || true  # Using || true to avoid errors if the process is not running
+    pkill libvirtd || true
     pkill dnsmasq || true
 
-    echo -e "${CYAN}Enabling and starting libvirtd and dnsmasq...${NC}"
-    systemctl enable --now libvirtd dnsmasq
+    echo -e "${CYAN}Enabling and starting libvirtd...${NC}"
+    systemctl enable --now libvirtd
+    sleep 2  # Wait to ensure libvirtd has started
+    sudo virsh net-destroy default || true
+    sudo virsh net-start default
+    sudo virsh net-autostart default
+
+    # Apply UFW rules
+    echo -e "${CYAN}Configuring UFW rules for libvirt networking...${NC}"
+    ufw allow in on virbr0
+    ufw allow out on virbr0
+    ufw allow out to any port 53
+    ufw allow out to any port 80
+    ufw allow out to any port 443
+    ufw default allow routed
+    ufw reload
 
     # Enable and start Bluetooth service
     if pacman -Qi bluez &>/dev/null && pacman -Qi bluez-utils &>/dev/null; then
+        install_package "bluez"
+        install_package "bluez-utils"
         systemctl enable --now bluetooth.service
         echo -e "${GREEN}Bluetooth service started successfully.${NC}"
     else
