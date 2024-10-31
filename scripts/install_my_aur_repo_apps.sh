@@ -35,12 +35,12 @@ fi
 IS_VM=false
 if systemd-detect-virt --quiet; then
     IS_VM=true
-    echo -e "${CYAN}Running in a virtual machine. Skipping TLP and tlpui installation.${NC}"
+    echo -e "${CYAN}Running in a virtual machine. Skipping tlpui installation.${NC}"
 fi
 
 # Determine if the system is a laptop
 IS_LAPTOP=false
-if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -q -i "Laptop\|Notebook" /sys/class/dmi/id/chassis_type; then
+if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -qi "laptop\|notebook" /sys/class/dmi/id/chassis_type; then
     IS_LAPTOP=true
     echo -e "${CYAN}Laptop detected based on chassis type.${NC}"
 elif [[ -d /sys/class/power_supply/BAT* ]]; then
@@ -102,10 +102,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         if [ "$IS_LAPTOP" = true ] && [ "$IS_VM" = false ]; then
             echo -e "${CYAN}Installing tlpui for laptop power management...${NC}"
             install_package "tlpui"
-            # Enable and start TLP service
-            install_package "tlp"
-            systemctl enable --now tlp
-            echo -e "${GREEN}TLP installed and enabled successfully.${NC}"
+            echo -e "${GREEN}tlpui installed successfully.${NC}"
         fi
 
         # Clean the package cache to free up space
