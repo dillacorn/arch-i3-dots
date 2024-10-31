@@ -82,6 +82,9 @@ bindsym Mod4+ctrl+shift+l exec i3lock --color 000000
 # file manager
 bindsym Mod4+e exec pcmanfm
 
+# pavucontrol
+bindsym Mod4+v exec pavucontrol
+
 # btop
 bindsym Mod4+ctrl+shift+b exec alacritty -e btop --tty_on
 
