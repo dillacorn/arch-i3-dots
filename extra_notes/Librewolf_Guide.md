@@ -22,7 +22,6 @@ change these flags:
 * privacy.clearOnShutdown.history: `false`
 * privacy.clearOnShutdown.offlineApps: `false`
 * privacy.fingerprintingProtection: `true`
-* privacy.fingerprintingProtection: `true`
 * widget.gtk.global-menu.wayland.enabled `true`
 * widget.wayland.fractional-scale.enabled `true`
 
