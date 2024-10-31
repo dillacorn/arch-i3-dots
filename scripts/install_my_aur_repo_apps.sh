@@ -35,28 +35,27 @@ fi
 IS_VM=false
 if systemd-detect-virt --quiet; then
     IS_VM=true
-    echo -e "${CYAN}Running in a virtual machine. Skipping tlpui installation.${NC}"
+    echo -e "${CYAN}Running in a virtual machine. Skipping TLPUI installation.${NC}"
 fi
 
-# Determine if the system is a laptop
-IS_LAPTOP=false
-if [[ -f /sys/class/dmi/id/chassis_type ]] && grep -qi "laptop\|notebook" /sys/class/dmi/id/chassis_type; then
+# Prompt user to specify if the system is a laptop or a desktop
+echo -e "\n${CYAN}Is this system a laptop or a desktop? [l/d]${NC}"
+read -n1 -s system_type
+echo
+
+if [[ "$system_type" == "l" || "$system_type" == "L" ]]; then
     IS_LAPTOP=true
-    echo -e "${CYAN}Laptop detected based on chassis type.${NC}"
-elif [[ -d /sys/class/power_supply/BAT* ]]; then
-    IS_LAPTOP=true
-    echo -e "${CYAN}Laptop detected based on battery presence.${NC}"
+    echo -e "${CYAN}User specified this system is a laptop.${NC}"
 else
-    echo -e "${CYAN}Desktop detected.${NC}"
+    IS_LAPTOP=false
+    echo -e "${CYAN}User specified this system is a desktop.${NC}"
 fi
 
 # Prompt for package installation
 echo -e "\n${CYAN}Do you want to install Dillacorn's chosen Arch AUR Linux applications? [y/n]${NC}"
-
-# Read a single character without requiring the Enter key
 read -n1 -s choice
+echo
 
-# Check user input
 if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
     echo -e "\n${GREEN}Proceeding with installation of Dillacorn's chosen Arch AUR Linux applications...${NC}"
     
@@ -102,7 +101,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
         if [ "$IS_LAPTOP" = true ] && [ "$IS_VM" = false ]; then
             echo -e "${CYAN}Installing tlpui for laptop power management...${NC}"
             install_package "tlpui"
-            echo -e "${GREEN}tlpui installed successfully.${NC}"
+            echo -e "${GREEN}TLPUI installed successfully.${NC}"
         fi
 
         # Clean the package cache to free up space
