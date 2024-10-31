@@ -61,7 +61,7 @@ else
             retry_command sudo pacman -S --noconfirm lib32-nvidia-utils nvidia nvidia-utils nvidia-settings
 
             # Install video decoding libraries for NVIDIA
-            retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo
+            retry_command sudo pacman -S --needed --noconfirm libva-vdpau-driver vdpauinfo libvdpau-va-gl
         else
             echo -e "\033[1;32mNVIDIA proprietary drivers already installed.\033[0m"
         fi
