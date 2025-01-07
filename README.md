@@ -99,6 +99,9 @@ Let me preface `"Mod1"` can equal `"Mod1"` or `"Mod4"` depending on [rotate mod 
 
 - `Mod1+shift+1` to `Mod1+shift+9` = **Move Focused Window to Workspace**  
   - Moves the currently focused window to the specified workspace.
+ 
+- `Mod1+ctrl+shift+arrows` = **Move Focused Workspace to Adjacent Monitor**  
+  - Moves the currently focused workspace to an adjacent monitor.
 
 ---
 
