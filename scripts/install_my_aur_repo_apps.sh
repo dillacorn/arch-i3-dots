@@ -77,6 +77,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             localsend-bin
             librewolf-bin
             mullvad-vpn-bin
+            rustdesk-bin
         )
 
         # Install each package and clean up afterward
