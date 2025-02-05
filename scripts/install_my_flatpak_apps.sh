@@ -40,6 +40,7 @@ flatpak_apps=(
   'com.obsproject.Studio.Plugin.DistroAV'
   'com.github.tchx84.Flatseal'
   'io.github.ungoogled_software.ungoogled_chromium'
+  'dev.deedles.Trayscale'
 )
 
 # Detect file system type of the root partition
