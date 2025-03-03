@@ -76,6 +76,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             sunshine-bin
             localsend-bin
             mullvad-browser-bin
+            ungoogled-chromium-bin
             mullvad-vpn-bin
             rustdesk-bin
         )

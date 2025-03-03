@@ -39,7 +39,6 @@ flatpak_apps=(
   'com.obsproject.Studio'
   'com.obsproject.Studio.Plugin.DistroAV'
   'com.github.tchx84.Flatseal'
-  'io.github.ungoogled_software.ungoogled_chromium'
   'dev.deedles.Trayscale'
 )
 
