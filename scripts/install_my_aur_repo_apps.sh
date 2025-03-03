@@ -75,7 +75,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             moonlight-qt-bin
             sunshine-bin
             localsend-bin
-            librewolf-bin
+            mullvad-browser-bin
             mullvad-vpn-bin
             rustdesk-bin
         )
