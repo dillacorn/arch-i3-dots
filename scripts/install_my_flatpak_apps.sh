@@ -34,7 +34,6 @@ flatpak_apps=(
   'io.itch.itch'
   'com.heroicgameslauncher.hgl'
   'com.ultimaker.cura'
-  'fr.handbrake.ghb'
   'com.dec05eba.gpu_screen_recorder'
   'com.obsproject.Studio'
   'com.obsproject.Studio.Plugin.DistroAV'

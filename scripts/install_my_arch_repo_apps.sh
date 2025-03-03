@@ -98,7 +98,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
 
     # Install Multimedia Tools
     echo -e "${CYAN}Installing multimedia tools...${NC}"
-    for pkg in ffmpeg avahi mpv peek cheese exiv2 audacity krita shotcut filezilla gthumb; do
+    for pkg in ffmpeg avahi mpv peek cheese exiv2 audacity krita shotcut filezilla gthumb handbrake; do
         install_package "$pkg"
     done
 
