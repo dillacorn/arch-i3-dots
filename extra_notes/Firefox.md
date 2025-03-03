@@ -1,15 +1,15 @@
-Notes From Repo: https://github.com/dillacorn/arch-i3-dots
+Notes From Repo: https://github.com/dillacorn/deb12-i3-dots
 
 # choose a browser
 
-- ## install librewolf
+# install librewolf from flathub
 ```sh
-sudo yay -S librewolf-bin
+flatpak install io.gitlab.librewolf-community
 ```
 
-- ## install mullvad-browser (prefered)
+# install mullvad-browser from flathub (prefered)
 ```sh
-sudo yay -S mullvad-browser-bin
+flatpak install net.mullvad.MullvadBrowser
 ```
 
 # config

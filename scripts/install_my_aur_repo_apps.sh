@@ -70,15 +70,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             qimgv
             cava
             otpclient
-            vibrantlinux
-            protonup-qt-bin
-            moonlight-qt-bin
-            sunshine-bin
-            localsend-bin
-            mullvad-browser-bin
-            ungoogled-chromium-bin
             mullvad-vpn-bin
-            rustdesk-bin
         )
 
         # Install each package and clean up afterward

@@ -1,10 +1,8 @@
-notes from repo: https://github.com/dillacorn/arch-i3-dots
+notes from repo: https://github.com/dillacorn/deb12-i3-dots
 
-For when FireFox/Librewolf isn't capable of the task.. or for compatibility reasons..
-
-# install ungoogled-chromium from AUR
+# install ungoogled-chromium from flathub
 ```sh
-sudo yay -S ungoogled-chromium-bin
+flatpak install io.github.ungoogled_software.ungoogled_chromium
 ```
 
 # flags
