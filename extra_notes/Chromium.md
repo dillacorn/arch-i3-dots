@@ -2,12 +2,10 @@ notes from repo: https://github.com/dillacorn/arch-i3-dots
 
 For when FireFox/Librewolf isn't capable of the task.. or for compatibility reasons..
 
-# start here
+# install ungoogled-chromium from AUR
 ```sh
 sudo yay -S ungoogled-chromium-bin
 ```
-
-open "Ungoogled Chromium"
 
 # flags
 
