@@ -71,6 +71,7 @@ if [[ "$choice" == "y" || "$choice" == "Y" ]]; then
             cava
             otpclient
             mullvad-vpn-bin
+            linutil-bin
         )
 
         # Install each package and clean up afterward
