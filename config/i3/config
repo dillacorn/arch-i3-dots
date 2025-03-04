@@ -152,7 +152,7 @@ bindsym Mod1+0 exec --no-startup-id i3-msg workspace "10:  "
 
 # default workspaces for common programs
 assign [class="^Moonlight"] "1:  "
-assign [class="^LibreWolf$"] "2:  "
+assign [class="^net.mullvad.MullvadBrowser$"] "2:  "
 assign [class="^Io.github.ungoogled_software.ungoogled_chromium$"] "2:  "
 assign [class="^vesktop$"] "3:  "
 assign [class="^steam$"] "4:  "
