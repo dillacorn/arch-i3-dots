@@ -118,7 +118,7 @@ Install Flatpak applications using [install script](https://github.com/dillacorn
 ---
 
 ### P.S.
-My goal is to learn as much as I can with X11, with the hope that this knowledge can eventually be applied to a separate repository using Sway-wm and/or Hyperland-wm.
+My goal is to learn as much as I can with X11, with the hope that this knowledge can eventually be applied to a separate repository using Sway-wm and/or Hyprland-wm.
 
 At present, i3-wm seems more flexible (especially for gaming), but with ongoing developments, it's likely that the gap will eventually close, and we may all need to transition to a Wayland-based window manager.
 
