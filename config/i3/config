@@ -283,5 +283,4 @@ exec --no-startup-id xsettingsd
 exec --no-startup-id lxpolkit
 exec --no-startup-id blueman-applet
 exec --no-startup-id nm-applet
-exec --no-startup-id solaar --window hide
 exec_always --no-startup-id dunst
