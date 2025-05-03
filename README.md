@@ -44,17 +44,19 @@ Here are some of my custom keybinds from the i3 configuration:
 
 - `Mod4+shift+w` = **Wallpaper Selector**
   - Opens `nitrogen`
-  
-- `Mod4+shift+g` = **Capture a GIF**  
-  - Starts a GIF recording with the `peek`
+
+- `mod4+shift+g` = **Capture a GIF**  
+  - Starts a GIF recording with the script: [gif.sh](https://github.com/dillacorn/arch-i3-dots/blob/main/config/i3/scripts/gif.sh).  
+  - **Repeat the keybind to finish recording!**
+  - `gif_date_time.gif` saved in `~/Videos` directory.
   
 - `Mod4+shift+s` = **maim screenshot**  
   - Takes a screenshot using maim and copies to clipboard.
-  - `date_time.png` saved in `~/Pictures` directory.
+  - `date_time.png` saved in `~/Pictures/screenshots` directory.
 
-- `Mod4+ctrl+shift+s` = **Flameshot screenshot**  
+- `Mod4+shift+f` = **Flameshot screenshot**  
   - Takes a screenshot using Flameshot with more customization options.
-  - `date_time.png` normally saved in `~/Pictures` directory.
+  - `date_time.png` normally saved in `~/Pictures/screenshots` directory.
 
 ---
 
