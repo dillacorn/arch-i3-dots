@@ -464,6 +464,7 @@ required_dirs=(
     "$HOME_DIR/.config"
     "$HOME_DIR/Videos"
     "$HOME_DIR/Pictures/wallpapers"
+    "$HOME_DIR/Pictures/screenshots"
     "$HOME_DIR/Documents"
     "$HOME_DIR/Downloads"
     "$HOME_DIR/.local/share/icons"
