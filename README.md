@@ -1,3 +1,8 @@
+# Moved to Hyprland! (**this git is archived**)
+### -> https://github.com/dillacorn/arch-hypr-dots (I do not recommend i3 on Arch anymore!)
+
+---
+
 # `arch dilla.i3.files`
 - **Preview Images**: [View Here](https://github.com/dillacorn/arch-i3-dots/tree/main/preview_images/preview_page.md)
 - **Distro**: [Arch Linux](https://archlinux.org/)
